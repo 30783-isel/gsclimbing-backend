@@ -34,9 +34,7 @@ public class AuthController {
 		if (role.isPresent()) {
 			roleStr = role.get();
 		}
-
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(roleStr.getAuthority()));
-
+		return ResponseEntity.status(HttpStatus.OK).body(ResponseMessage.builder().message(roleStr.getAuthority()).build());
 	}
 	
 }

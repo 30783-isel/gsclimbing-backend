@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,7 +59,7 @@ public class ProjectController {
 				turbineService.createTurbine(turbine);
 			}
 
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+			return null;
 		}
 		message = "There is already a project with that name.";
 		return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
@@ -81,33 +82,18 @@ public class ProjectController {
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete/{name}")
-	public ResponseEntity<?> deleteProject(@PathVariable String name) {
-		String message = "";
-		boolean bool = false;
-		for (User user : userService.getAllUsers()) {
-			if (user.getProjects().stream().filter(project -> name.equals(project.getName())).findAny().orElse(null) != null) {
-				bool = true;
-			}
-		}
-
-		if (!bool) {
-			Project project = projectService.getProjectByName(name);
-			List<Turbine> listaTurbinas = turbineService.getTurbinesByProjectId(project.getIdProject());
-			listaTurbinas.stream().forEach(turbine -> deleteByTurbine(turbine));
-			projectService.deleteProject(name);
-
-			message = "Project deleted";
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
-		}
-		message = "Cannot delete Project " + name + " cause she still had users.";
-		return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
+	public void deleteProject(@PathVariable String name) {
+		Project project = projectService.getProjectByName(name);
+		List<Turbine> listaTurbinas = turbineService.getTurbinesByProjectId(project.getIdProject());
+		listaTurbinas.stream().forEach(turbine -> deleteByTurbine(turbine));
+		projectService.deleteProject(name);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/all")
 	public List<Project> getProjects() {
 		return projectService.getAllProjects();
 	}
-	
+
 	@RequestMapping(method = RequestMethod.GET, value = "/add-turbine/{id}")
 	public ResponseEntity<?> addTurbine(@PathVariable int id) {
 		String message = null;
@@ -120,7 +106,7 @@ public class ProjectController {
 			project.get().setNumberTurbines(project.get().getNumberTurbines() + 1);
 			turbineService.createTurbine(turbine);
 			message = "Turbine added.";
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+			return null;
 		}
 		message = "Cannot insert the turbine.";
 		return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);

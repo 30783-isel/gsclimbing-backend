@@ -39,6 +39,8 @@ public class UserController {
 	
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete/{username}")
 	public void deleteUser(@PathVariable String username) {
+		Optional<User> user = userService.getUser(username);
+		user.get().setProjects(null);
 		userService.deleteUser(username);
 	}
 
@@ -54,15 +56,21 @@ public class UserController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/create")
 	public ResponseEntity<?> createUsers(@RequestBody User user) {
+		
 		String message = null;
+		if(StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())|| StringUtils.isEmpty(user.getRoles())) {
+			message = "Fill all fields";
+			return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		if (!userService.getUser(user.getUsername()).isPresent()) {
 			user.setActive("true");
 			userService.createUser(user);
-			message = "Project deleted";
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+			message = "User created";
+			return null;
+		}else {
+			message = "There is already a user with this username";
+			return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		message = "There is already a user with this username";
-		return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/user/{id}")
