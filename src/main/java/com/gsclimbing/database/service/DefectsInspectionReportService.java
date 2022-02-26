@@ -17,10 +17,9 @@ import org.springframework.util.StringUtils;
 
 import com.gsclimbing.ftp.FTPDownloadFiles;
 import com.gsclimbing.database.entity.DefectsInspectionReport;
+import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.repository.DefectsInspectionReportRepository;
 import com.gsclimbing.database.repository.UserRepository;
-import com.gsclimbing.files.FileData;
-import com.gsclimbing.files.FileService;
 import com.gsclimbing.historic.Alteration;
 import com.gsclimbing.historic.AlterationService;
 import com.gsclimbing.historic.HistoricReport;

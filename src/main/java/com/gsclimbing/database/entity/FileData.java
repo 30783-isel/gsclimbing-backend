@@ -1,4 +1,4 @@
-package com.gsclimbing.files;
+package com.gsclimbing.database.entity;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;

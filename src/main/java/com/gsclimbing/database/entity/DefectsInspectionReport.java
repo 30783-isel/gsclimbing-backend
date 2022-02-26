@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
-import com.gsclimbing.files.FileData;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
@@ -35,6 +35,7 @@ public class DefectsInspectionReport implements Cloneable {
 	private int numberPictures;
 	
 	@OneToOne
+	@JsonIgnore
 	private Turbine turbine;
 	
 	@Transient

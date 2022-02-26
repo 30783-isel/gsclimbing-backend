@@ -111,7 +111,7 @@ public class ProjectController {
 			@RequestParam("measurementsMwSwitchgear") boolean measurementsMwSwitchgear, @RequestParam("onboardCraneInspectionReport") boolean onboardCraneInspectionReport,
 			@RequestParam("performanceReportRepairElevator") boolean performanceReportRepairElevator, @RequestParam("statutoryInspectionReport") boolean statutoryInspectionReport) {
 		try {
-			Turbine turbine = turbineService.getTurbine(Integer.parseInt(turbineId)).get();
+			Turbine turbine = turbineService.getTurbine(Integer.parseInt(turbineId));
 			
 			turbine.setDefectsInspectionReport(defectsInspectionReport);
 			turbine.setDefectsInspectionReport(defectsInspectionReport);
@@ -132,8 +132,7 @@ public class ProjectController {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/turbine-by-id/{id}")
 	public Turbine getTurbine(@PathVariable int id) {
-		Optional<Turbine> turbine = turbineService.getTurbine(id);
-		return turbine.get();
+		return turbineService.getTurbine(id);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/turbines/{idProject}")
@@ -143,20 +142,20 @@ public class ProjectController {
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete-turbine/{id}")
 	public ResponseEntity<?> deleteTurbine(@PathVariable int id) {
-		Optional<Turbine> turbine = turbineService.getTurbine(id);
+		Turbine turbine = turbineService.getTurbine(id);
 		int idProject = 0;
-		if (turbine.isPresent()) {
+		if (turbine != null) {
 		} else {
 			return new ResponseEntity<>("Cannot find the turbine", HttpStatus.EXPECTATION_FAILED);
 		}
 		try {
-			if (turbine.isPresent()) {
-				turbineService.deleteTurbine(turbine.get());
+			if (turbine != null) {
+				turbineService.deleteTurbine(turbine);
 			}
 		} catch (Exception e) {
 			return new ResponseEntity<>("Error deleting the Turbine", HttpStatus.EXPECTATION_FAILED);
 		}
-		Project project = turbine.get().getProject();
+		Project project = turbine.getProject();
 		int numberTurbines = project.getNumberTurbines();
 		project.setNumberTurbines(numberTurbines - 1);
 		projectService.updateProject(project);

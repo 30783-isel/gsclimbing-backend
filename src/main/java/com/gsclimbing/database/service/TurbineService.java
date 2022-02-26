@@ -16,8 +16,8 @@ public class TurbineService {
 	@Autowired
 	private TurbineRepository turbineRepository;
 	
-	public Optional<Turbine> getTurbine(int id) {
-		return turbineRepository.findById(id);
+	public Turbine getTurbine(Integer id) {
+		return turbineRepository.findById(id).orElse(null);
 	}
 	
 	public List<Turbine> getTurbinesByProject(Project project) {
