@@ -123,7 +123,17 @@ public class ProjectController {
 			@RequestParam("performanceReportRepairElevator") boolean performanceReportRepairElevator, @RequestParam("statutoryInspectionReport") boolean statutoryInspectionReport) {
 		try {
 			Turbine turbine = turbineService.getTurbine(Integer.parseInt(turbineId)).get();
+			
 			turbine.setDefectsInspectionReport(defectsInspectionReport);
+			turbine.setDefectsInspectionReport(defectsInspectionReport);
+			turbine.setExaminationTransformer(examinationTransformer);
+			turbine.setMeasurements6KV(measurements6KV);
+			turbine.setMeasurements690V400V(measurements690V400V);
+			turbine.setMeasurementsMwSwitchgear(measurementsMwSwitchgear);
+			turbine.setOnboardCraneInspectionReport(onboardCraneInspectionReport);
+			turbine.setPerformanceReportRepairElevator(performanceReportRepairElevator);
+			turbine.setStatutoryInspectionReport(statutoryInspectionReport);
+			
 			turbineService.updateTurbine(turbine);
 		} catch (Exception e) {
 			return new ResponseEntity<>("Turbine not updated", HttpStatus.EXPECTATION_FAILED);
