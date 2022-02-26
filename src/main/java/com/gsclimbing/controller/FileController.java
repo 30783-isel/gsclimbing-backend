@@ -86,7 +86,7 @@ public class FileController {
 
 		Project project = projectService.getProject(projectId);
 
-		List<Turbine> listTurbines = turbineService.getTurbinesByProjectId(project.getIdProject());
+		List<Turbine> listTurbines = turbineService.getTurbinesByProject(project);
 
 		for (Turbine turbine : listTurbines) {
 

@@ -1,6 +1,8 @@
 package com.gsclimbing.database.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -9,7 +11,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -40,5 +44,8 @@ public class Project {
     @ManyToMany(mappedBy = "projects")
     @JsonIgnoreProperties({"users", "projects"})
     private Set<User> users = new HashSet<>();
-	
+    
+    @OneToMany(mappedBy = "project", cascade = { CascadeType.ALL } )
+    @JsonIgnore
+	private List<Turbine> turbines = new ArrayList<>();
 }

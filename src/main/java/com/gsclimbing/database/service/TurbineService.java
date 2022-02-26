@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gsclimbing.database.entity.Project;
 import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.repository.TurbineRepository;
 
@@ -19,8 +20,8 @@ public class TurbineService {
 		return turbineRepository.findById(id);
 	}
 	
-	public List<Turbine> getTurbinesByProjectId(int projectId) {
-		return turbineRepository.findByProjectId(projectId);
+	public List<Turbine> getTurbinesByProject(Project project) {
+		return turbineRepository.findByProject(project);
 	}
 	
 	public void createTurbine(Turbine turbine) {

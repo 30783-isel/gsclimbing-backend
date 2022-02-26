@@ -2,9 +2,12 @@ package com.gsclimbing.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gsclimbing.database.entity.Project;
@@ -23,8 +27,6 @@ import com.gsclimbing.database.service.DefectsInspectionReportService;
 import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.TurbineService;
 import com.gsclimbing.database.service.UserService;
-
-import com.gsclimbing.commons.ResponseMessage;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
@@ -45,47 +47,41 @@ public class ProjectController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/create")
 	public ResponseEntity<?> createProject(@RequestBody Project project) {
-
-		String message = null;
 		if (projectService.getProjectByName(project.getName()) == null) {
+			List<Turbine> turbinas = getListTurbines(project.getNumberTurbines(), project);
+			project.setTurbines(turbinas);
 			projectService.createProject(project);
-
-			for (int i = 1; i < project.getNumberTurbines() + 1; i++) {
-
-				Turbine turbine = new Turbine();
-				turbine.setProjectId(project.getIdProject());
-				turbine.setProjectName(project.getName());
-				turbine.setNumberTurbine(i);
-				turbineService.createTurbine(turbine);
-			}
-
 			return null;
 		}
-		message = "There is already a project with that name.";
-		return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
+		return new ResponseEntity<>("There is already a project with that name.", HttpStatus.EXPECTATION_FAILED);
+	}
+
+	List<Turbine> getListTurbines(int numOfElements, Project project){
+	     return IntStream.range(0, numOfElements)
+	              .mapToObj(i -> new Turbine(project))  
+	              .collect(Collectors.toList()); 
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/project-by-name/{name}")
+	public Project getProjectByName(@PathVariable String name) {
+		return projectService.getProjectByName(name);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/projects-by-user/{username}")
 	public List<Project> getProjectsByUserId(final @PathVariable String username) {
 		Optional<User> user = userService.getUser(username);
-		Set<Project> listProjectUsers = user.get().getProjects();
-
 		List<Project> filteredList = null;
-
 		if (user.isPresent() && user.get().getRoles().equals("ADMIN")) {
 			filteredList = projectService.getAllProjects();
 		}
 		if (user.isPresent() && user.get().getRoles().equals("TECH")) {
-			filteredList = new ArrayList<>(listProjectUsers);
+			filteredList = new ArrayList<>(user.get().getProjects());
 		}
 		return filteredList;
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete/{name}")
-	public void deleteProject(@PathVariable String name) {
-		Project project = projectService.getProjectByName(name);
-		List<Turbine> listaTurbinas = turbineService.getTurbinesByProjectId(project.getIdProject());
-		listaTurbinas.stream().forEach(turbine -> deleteByTurbine(turbine));
+	public void deleteProject(@PathVariable final String name) {
 		projectService.deleteProject(name);
 	}
 
@@ -94,35 +90,66 @@ public class ProjectController {
 		return projectService.getAllProjects();
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value = "/turbine-by-id/{id}")
+	public Turbine getTurbine(@PathVariable int id) {
+		Optional<Turbine> turbine = turbineService.getTurbine(id);
+		return turbine.get();
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/turbines/{idProject}")
+	public List<Turbine> getTurbine(@PathVariable final Integer idProject) {
+		return turbineService.getTurbinesByProject(projectService.getProject(idProject));
+	}
+
 	@RequestMapping(method = RequestMethod.GET, value = "/add-turbine/{id}")
-	public ResponseEntity<?> addTurbine(@PathVariable int id) {
+	public ResponseEntity<?> addTurbine(@PathVariable final Integer id) {
 		String message = null;
 		Optional<Project> project = projectService.getProjectById(id);
 		if (project.isPresent()) {
-			Turbine turbine = new Turbine();
-			turbine.setProjectId(project.get().getIdProject());
-			turbine.setProjectName(project.get().getName());
-			turbine.setNumberTurbine(project.get().getNumberTurbines() + 1);
+			Turbine turbine = new Turbine(project.get());
 			project.get().setNumberTurbines(project.get().getNumberTurbines() + 1);
 			turbineService.createTurbine(turbine);
-			message = "Turbine added.";
+			project.get().getTurbines().add(turbine);
 			return null;
 		}
 		message = "Cannot insert the turbine.";
 		return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
 	}
 
-	private void deleteByTurbine(Turbine turbine) {
-		turbineService.deleteTurbine(turbine);
-		String turbineId = String.valueOf(turbine.getId());
+	@RequestMapping(method = RequestMethod.POST, value = "/update-turbine")
+	public ResponseEntity<?> updateTurbine(@RequestParam("turbineId") String turbineId, @RequestParam("defectsInspectionReport") boolean defectsInspectionReport,
+			@RequestParam("examinationTransformer") boolean examinationTransformer, @RequestParam("measurements6KV") boolean measurements6KV, @RequestParam("measurements690V400V") boolean measurements690V400V,
+			@RequestParam("measurementsMwSwitchgear") boolean measurementsMwSwitchgear, @RequestParam("onboardCraneInspectionReport") boolean onboardCraneInspectionReport,
+			@RequestParam("performanceReportRepairElevator") boolean performanceReportRepairElevator, @RequestParam("statutoryInspectionReport") boolean statutoryInspectionReport) {
+		try {
+			Turbine turbine = turbineService.getTurbine(Integer.parseInt(turbineId)).get();
+			turbine.setDefectsInspectionReport(defectsInspectionReport);
+			turbineService.updateTurbine(turbine);
+		} catch (Exception e) {
+			return new ResponseEntity<>("Turbine not updated", HttpStatus.EXPECTATION_FAILED);
+		}
+		return null;
+	}
 
-		defectsInspectionReportService.deleteDefectsInspectionReportByTurbineId(turbineId);
-//		examinationTransformerService.deleteExaminationTransformerByTurbineId(turbineId);
-//		masurementsMwSwitchgearService.deleteMeasurementsMwSwitchgearByTurbineId(turbineId);
-//		medidas690V400VService.deleteMedidas690V400VByTurbineId(turbineId);
-//		medidas6KvService.deleteMedidas6KvByTurbineId(turbineId);
-//		onboardCraneInspectionReportService.deleteOnboardCraneInspectionReportByTurbineId(turbineId);
-//		performanceReportRepairElevatorService.deletePerformanceReportRepairElevatorByTurbineId(turbineId);
-//		statutoryInspectionReportService.deleteStatutoryInspectionReportByTurbineId(turbineId);
+	@RequestMapping(method = RequestMethod.DELETE, value = "/delete-turbine/{id}")
+	public ResponseEntity<?> deleteTurbine(@PathVariable int id) {
+		Optional<Turbine> turbine = turbineService.getTurbine(id);
+		int idProject = 0;
+		if (turbine.isPresent()) {
+		} else {
+			return new ResponseEntity<>("Cannot find the turbine", HttpStatus.EXPECTATION_FAILED);
+		}
+		try {
+			if (turbine.isPresent()) {
+				turbineService.deleteTurbine(turbine.get());
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<>("Error deleting the Turbine", HttpStatus.EXPECTATION_FAILED);
+		}
+		Project project = turbine.get().getProject();
+		int numberTurbines = project.getNumberTurbines();
+		project.setNumberTurbines(numberTurbines - 1);
+		projectService.updateProject(project);
+		return null;
 	}
 }

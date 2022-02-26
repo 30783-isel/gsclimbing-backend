@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import com.gsclimbing.files.FileData;
@@ -22,9 +23,6 @@ public class DefectsInspectionReport implements Cloneable {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer reportId;
 	private String uuid;
-	private String projectId;
-	private String turbineId;
-	private String userId;
 	private LocalDateTime createDate;
 	private LocalDateTime modifiedDate;
 	private String locked;
@@ -35,6 +33,9 @@ public class DefectsInspectionReport implements Cloneable {
 	private String wtgType;
 	private String yearConstruction;
 	private int numberPictures;
+	
+	@OneToOne
+	private Turbine turbine;
 	
 	@Transient
 	private List<FileData> listImages = new ArrayList<FileData>();
