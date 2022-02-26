@@ -62,20 +62,25 @@ public class ProjectController {
 	              .collect(Collectors.toList()); 
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value = "/project-by-name/{name}")
-	public Project getProjectByName(@PathVariable String name) {
-		return projectService.getProjectByName(name);
+	@RequestMapping(method = RequestMethod.GET, value = "/all")
+	public List<Project> getProjects() {
+		return projectService.getAllProjects();
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/project-by-id/{idProject}")
+	public Project getProjectByName(@PathVariable Integer idProject) {
+		return projectService.getProjectById(idProject);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/projects-by-user/{username}")
 	public List<Project> getProjectsByUserId(final @PathVariable String username) {
-		Optional<User> user = userService.getUser(username);
+		User user = userService.getUser(username);
 		List<Project> filteredList = null;
-		if (user.isPresent() && user.get().getRoles().equals("ADMIN")) {
+		if (user != null && user.getRoles().equals("ADMIN")) {
 			filteredList = projectService.getAllProjects();
 		}
-		if (user.isPresent() && user.get().getRoles().equals("TECH")) {
-			filteredList = new ArrayList<>(user.get().getProjects());
+		if (user != null && user.getRoles().equals("TECH")) {
+			filteredList = new ArrayList<>(user.getProjects());
 		}
 		return filteredList;
 	}
@@ -85,31 +90,15 @@ public class ProjectController {
 		projectService.deleteProject(name);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/all")
-	public List<Project> getProjects() {
-		return projectService.getAllProjects();
-	}
-
-	@RequestMapping(method = RequestMethod.GET, value = "/turbine-by-id/{id}")
-	public Turbine getTurbine(@PathVariable int id) {
-		Optional<Turbine> turbine = turbineService.getTurbine(id);
-		return turbine.get();
-	}
-
-	@RequestMapping(method = RequestMethod.GET, value = "/turbines/{idProject}")
-	public List<Turbine> getTurbine(@PathVariable final Integer idProject) {
-		return turbineService.getTurbinesByProject(projectService.getProject(idProject));
-	}
-
 	@RequestMapping(method = RequestMethod.GET, value = "/add-turbine/{id}")
 	public ResponseEntity<?> addTurbine(@PathVariable final Integer id) {
 		String message = null;
-		Optional<Project> project = projectService.getProjectById(id);
-		if (project.isPresent()) {
-			Turbine turbine = new Turbine(project.get());
-			project.get().setNumberTurbines(project.get().getNumberTurbines() + 1);
+		Project project = projectService.getProjectById(id);
+		if (project!= null) {
+			Turbine turbine = new Turbine(project);
+			project.setNumberTurbines(project.getNumberTurbines() + 1);
 			turbineService.createTurbine(turbine);
-			project.get().getTurbines().add(turbine);
+			project.getTurbines().add(turbine);
 			return null;
 		}
 		message = "Cannot insert the turbine.";
@@ -139,6 +128,17 @@ public class ProjectController {
 			return new ResponseEntity<>("Turbine not updated", HttpStatus.EXPECTATION_FAILED);
 		}
 		return null;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/turbine-by-id/{id}")
+	public Turbine getTurbine(@PathVariable int id) {
+		Optional<Turbine> turbine = turbineService.getTurbine(id);
+		return turbine.get();
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/turbines/{idProject}")
+	public List<Turbine> getTurbine(@PathVariable final Integer idProject) {
+		return turbineService.getTurbinesByProject(projectService.getProject(idProject));
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete-turbine/{id}")

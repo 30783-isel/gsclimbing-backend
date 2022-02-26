@@ -21,8 +21,8 @@ public class ProjectService {
 	@Autowired
 	private UserService userService;
 	
-	public Optional<Project> getProjectById(int id){
-		return projectRepository.findById(id);
+	public Project getProjectById(Integer id){
+		return projectRepository.findById(id).orElse(null);
 	}
 	
 	public Project getProjectByName(String name){
