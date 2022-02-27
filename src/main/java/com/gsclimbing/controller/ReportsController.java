@@ -125,6 +125,11 @@ public class ReportsController {
 			return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
 		}
 	}
+	
+	@RequestMapping(method = RequestMethod.DELETE, value = "/delete-report/{id}")
+	public void deleteDefectsInspectionReport(@PathVariable Integer id) {
+		defectsInspectionReportService.deleteDefectsInspectionReport(id);
+	}
 
 	@RequestMapping("/turbine-report/{turbineId}")
 	public DefectsInspectionReport readDefectsInspectionReportByTurbine(final @PathVariable Integer turbineId) {

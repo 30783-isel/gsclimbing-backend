@@ -97,25 +97,15 @@ public class DefectsInspectionReportService {
 	}
 
 	private void deleteHistoricAndFileData(Integer id) {
-		// Historic
-		// ------------------------------------------------------------------------------------
 
 		List<HistoricReport> listHistoricReport = historicReportService.getHistoricReportByIdReportAndTypeReport(id, 1);
-
 		for (HistoricReport historicReport : listHistoricReport) {
-
 			List<Alteration> listAlterations = alterationService.getListAlterationsByIdHistoricReport(historicReport.getIdHistoricReport());
-
 			for (Alteration alteration : listAlterations) {
 				alterationService.deleteAlteration(alteration.getIdAlteration());
 			}
-
 			historicReportService.deleteHistoricReport(historicReport.getIdHistoricReport());
 		}
-
-		// FileData
-		// ------------------------------------------------------------------------------------
-
 		DefectsInspectionReport defectsInspectionReport = defectsInspectionReportService.readDefectsInspectionReport(id);
 		if (defectsInspectionReport != null) {
 			String uuid = defectsInspectionReport.getUuid();
