@@ -1,6 +1,8 @@
 package com.gsclimbing.controller;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -104,19 +107,11 @@ public class ReportsController {
 			return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
 		}
 	}
-
-//	@GetMapping("/update/{turbineId}")
-//	public List<DefectsInspectionReport> updateReport(@PathVariable String turbineId ) {
-//		List<DefectsInspectionReport> reports = defectsInspectionReportService.readDefectsInspectionReportByTurbineId( turbineId );
-//		List<DefectsInspectionReport> sortedList = reports.stream().sorted(Comparator.comparing(DefectsInspectionReport::getCreateDate).reversed()).collect(Collectors.toList());
-//		return sortedList;
-//	}
-//	
-//	@GetMapping("/turbine-report/{turbineId}")
-//	public List<DefectsInspectionReport> readDefectsInspectionReportByTurbine(@PathVariable String turbineId ) {
-//		List<DefectsInspectionReport> reports = defectsInspectionReportService.readDefectsInspectionReportByTurbineId( turbineId );
-//		List<DefectsInspectionReport> sortedList = reports.stream().sorted(Comparator.comparing(DefectsInspectionReport::getCreateDate).reversed()).collect(Collectors.toList());
-//		return sortedList;
-//	}
+	
+	@RequestMapping("/turbine-report/{turbineId}")
+	public DefectsInspectionReport readDefectsInspectionReportByTurbine(final @PathVariable Integer turbineId ) {
+		Turbine turbine = turbineService.getTurbine(turbineId);
+		return turbine.getDefectsInspectionReportOnTurbine();
+	}
 
 }
