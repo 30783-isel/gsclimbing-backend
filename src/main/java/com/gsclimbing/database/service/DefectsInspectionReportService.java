@@ -9,20 +9,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-//import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.FileData;
+import com.gsclimbing.database.entity.HistoricReport;
 import com.gsclimbing.database.repository.DefectsInspectionReportRepository;
 import com.gsclimbing.database.repository.UserRepository;
 import com.gsclimbing.ftp.FTPDownloadFiles;
-import com.gsclimbing.historic.Alteration;
-import com.gsclimbing.historic.AlterationService;
-import com.gsclimbing.historic.HistoricReport;
-import com.gsclimbing.historic.HistoricReportService;
 
 @Service
 public class DefectsInspectionReportService {
@@ -85,19 +81,16 @@ public class DefectsInspectionReportService {
 
 	public String getCurrentLoggedUser() {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
 		String username = null;
 		if (principal instanceof UserDetails) {
 			username = ((UserDetails) principal).getUsername();
 		} else {
 			username = principal.toString();
 		}
-
 		return username;
 	}
 
 	private void deleteHistoricAndFileData(Integer id) {
-
 		List<HistoricReport> listHistoricReport = historicReportService.getHistoricReportByIdReportAndTypeReport(id, 1);
 		for (HistoricReport historicReport : listHistoricReport) {
 			List<Alteration> listAlterations = alterationService.getListAlterationsByIdHistoricReport(historicReport.getIdHistoricReport());
@@ -124,14 +117,11 @@ public class DefectsInspectionReportService {
 	}
 
 	public List<String> chkIfAllFieldsNull(DefectsInspectionReport defectsInspectionReport) {
-
 		List<String> lista = new ArrayList<String>();
 		try {
 			for (Field field : defectsInspectionReport.getClass().getDeclaredFields()) {
 				field.setAccessible(true);
-
 				Object object = field.get(defectsInspectionReport);
-				
 				if(object instanceof ArrayList<?>) {
 					if(((ArrayList) object).size() == 0) {
 						lista.add(field.getName());
@@ -148,6 +138,4 @@ public class DefectsInspectionReportService {
 		}
 		return lista;
 	}
-
-
 }

@@ -27,20 +27,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.FileData;
+import com.gsclimbing.database.entity.HistoricReport;
 import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.entity.User;
+import com.gsclimbing.database.repository.AlterationRepository;
 import com.gsclimbing.database.repository.UserRepository;
+import com.gsclimbing.database.service.AlterationService;
 import com.gsclimbing.database.service.DefectsInspectionReportService;
 import com.gsclimbing.database.service.FileService;
+import com.gsclimbing.database.service.HistoricReportService;
 import com.gsclimbing.database.service.TurbineService;
 import com.gsclimbing.ftp.FTPUploadFile;
-import com.gsclimbing.historic.Alteration;
-import com.gsclimbing.historic.AlterationRepository;
-import com.gsclimbing.historic.AlterationService;
-import com.gsclimbing.historic.HistoricReport;
-import com.gsclimbing.historic.HistoricReportService;
 
 import lombok.Data;
 
@@ -87,6 +87,8 @@ public class ExtractDefectsInspection {
 	public DefectsInspectionReport readPDF(MultipartFile file, String projectId, Integer turbineId, Integer idReport, String operacao) throws IOException {
 
 		DefectsInspectionReport oldDefectsInspectionReport = null;
+		HistoricReport historicReport = null;
+		
 		if ("UPDATE".equals(operacao)) {
 			oldDefectsInspectionReport = defectsInspectionReportService.readDefectsInspectionReport(idReport);
 			if (oldDefectsInspectionReport != null) {
@@ -99,12 +101,12 @@ public class ExtractDefectsInspection {
 
 				defectsInspectionReport.setLocked("true");
 
-				HistoricReport historicReport = new HistoricReport();
+				historicReport = new HistoricReport();
 
 				historicReport.setIdReport(defectsInspectionReport.getReportId());
 				historicReport.setTypeReport(1);
 				historicReport.setLocalDateTime(LocalDateTime.now());
-//	     		historicReport.setIdProject(defectsInspectionReport.getProjectId());
+	     		historicReport.setIdProject(String.valueOf(defectsInspectionReport.getReportId()));
 				historicReport.setNumAlterations(0);
 
 				String username = defectsInspectionReportService.getCurrentLoggedUser();
@@ -113,7 +115,7 @@ public class ExtractDefectsInspection {
 				historicReport.setIdUser(user.get().getUsername());
 				historicReport.setUser(user.get().getUsername());
 
-				historicReportService.addHistoricReportByIdReportAndTypeReport(historicReport);
+				historicReport = historicReportService.addHistoricReportByIdReportAndTypeReport(historicReport);
 
 				setIdHistoric(Integer.toString(historicReport.getIdHistoricReport()));
 				
@@ -144,7 +146,7 @@ public class ExtractDefectsInspection {
 			populateAndCopy(document);
 		}
 		if ("UPDATE".equals(operacao)) {
-			alterationService.saveAlterationDefectsInspectionReport(oldDefectsInspectionReport, defectsInspectionReport, 0);
+			alterationService.saveAlterationDefectsInspectionReport(oldDefectsInspectionReport, defectsInspectionReport, historicReport.getIdHistoricReport());
 			updateDefectsInspectionReport(oldDefectsInspectionReport, defectsInspectionReport);
 			defectsInspectionReportService.updateDefectsInspectionReport(defectsInspectionReport);
 		} else {

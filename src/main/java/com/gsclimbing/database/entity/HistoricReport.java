@@ -1,4 +1,4 @@
-package com.gsclimbing.historic;
+package com.gsclimbing.database.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

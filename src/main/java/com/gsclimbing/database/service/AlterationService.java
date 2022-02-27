@@ -1,4 +1,4 @@
-package com.gsclimbing.historic;
+package com.gsclimbing.database.service;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.DefectsInspectionReport;
+import com.gsclimbing.database.repository.AlterationRepository;
 
 @Service
 public class AlterationService {
@@ -19,10 +21,11 @@ public class AlterationService {
 	@Autowired
 	private AlterationRepository alterationRepository;
 	
+	@Autowired
+	private DefectsInspectionReportService defectsInspectionReportService;
+	
 	public List<Alteration> getListAlterationsByIdHistoricReport(int idHr){
-		
-		List<Alteration> listAlterations = alterationRepository.findByIdHistoricReport(idHr);
-		
+		List<Alteration> listAlterations = alterationRepository.findByIdHistoricReport(idHr);	
 		return listAlterations;
 	}
 	
@@ -38,7 +41,6 @@ public class AlterationService {
 					if (oldField.getName().equals(newField.getName()) && newField.getName() != "modifiedDate") {
 						log.info(oldField.getName());
 						if ( oldField.get(oldDefectsInspectionReport) != null && newField.get(defectsInspectionReport) != null  && !oldField.get(oldDefectsInspectionReport).equals( newField.get(defectsInspectionReport)) &&  !"locked".equals(newField.getName()) ) {
-							
 							Alteration alteration = new Alteration();
 							alteration.setIdHistoricReport(idHistoricReport);
 							alteration.setField(newField.getName());
@@ -50,9 +52,7 @@ public class AlterationService {
 							alteration.setLocalDateTime(LocalDateTime.now());
 							alteration.setOldPicByte(null);
 							alteration.setNewPicByte(null);
-							
 							alterationRepository.save(alteration);
-							
 							break;
 						}
 					}
@@ -62,8 +62,8 @@ public class AlterationService {
 			e.printStackTrace();
 		}	
 	}
-
+	
 	public void deleteAlteration(int id) {
 		alterationRepository.deleteById(id);
-	}
+	}	
 }

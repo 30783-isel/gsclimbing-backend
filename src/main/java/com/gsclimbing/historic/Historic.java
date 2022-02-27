@@ -1,11 +1,13 @@
 package com.gsclimbing.historic;
 
 import java.util.List;
+import com.gsclimbing.database.entity.Alteration;
+import com.gsclimbing.database.entity.HistoricReport;
 
-public class HistoricRet implements Comparable<HistoricRet>{
+public class Historic implements Comparable<Historic> {
 
 	HistoricReport historicRecord = null;
-	
+
 	List<Alteration> listAlterations = null;
 
 	public HistoricReport getHistoricRecord() {
@@ -25,10 +27,8 @@ public class HistoricRet implements Comparable<HistoricRet>{
 	}
 
 	@Override
-	public int compareTo(HistoricRet o) {
-		return this.getHistoricRecord().getLocalDateTime().compareTo( o.getHistoricRecord().getLocalDateTime() );
+	public int compareTo(Historic o) {
+		return this.getHistoricRecord().getLocalDateTime().compareTo(o.getHistoricRecord().getLocalDateTime());
 	}
-	
-	
-	
+
 }

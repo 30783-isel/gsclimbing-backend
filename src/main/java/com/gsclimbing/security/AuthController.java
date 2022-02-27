@@ -28,12 +28,7 @@ public class AuthController {
 	
 	@RequestMapping("/basicauth")
 	public AuthenticationBean setAuthentication() {
-		try {
-			return new AuthenticationBean("You are authenticated");
-		}catch(AuthenticationException | NoSuchElementException e) {
-			log.info("No Value");
-			return new AuthenticationBean("Error");
-		}
+		return new AuthenticationBean("You are authenticated");
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/role")

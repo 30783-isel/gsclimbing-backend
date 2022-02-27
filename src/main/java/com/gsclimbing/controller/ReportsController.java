@@ -1,5 +1,7 @@
 package com.gsclimbing.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,18 +18,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.FileData;
+import com.gsclimbing.database.entity.HistoricReport;
 import com.gsclimbing.database.entity.Project;
 import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.entity.User;
+import com.gsclimbing.database.service.AlterationService;
 import com.gsclimbing.database.service.DefectsInspectionReportService;
 import com.gsclimbing.database.service.FileService;
+import com.gsclimbing.database.service.HistoricReportService;
 import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.TurbineService;
 import com.gsclimbing.database.service.UserService;
 import com.gsclimbing.email.SendEmail;
 import com.gsclimbing.ftp.FTPDownloadFiles;
+import com.gsclimbing.historic.Historic;
 import com.gsclimbing.reports.extract.ExtractDefectsInspection;
 import com.gsclimbing.reports.populater.DefectsInspectionPopulater;
 
@@ -58,7 +65,13 @@ public class ReportsController {
 
 	@Autowired
 	private DefectsInspectionPopulater defectsInspectionPopulater;
-
+	
+	@Autowired
+	private HistoricReportService historicReportService;
+	
+	@Autowired
+	private AlterationService alterationService;
+	
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
 	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("project") String projectId, @RequestParam("turbineId") Integer turbineId) {
 		String message = "";
@@ -174,6 +187,48 @@ public class ReportsController {
 			defectsInspectionReportService.updateDefectsInspectionReport(report);
 		}
 		return report;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/historic/{id}")
+	public List<Historic> getHistoricDefectsInspectionReport(@PathVariable Integer id) {
+		List<Historic> listHistoric = new ArrayList<Historic>();
+		List<HistoricReport> listHistoricRecord = historicReportService.getHistoricReportByIdReportAndTypeReport(id, 1);
+		for (HistoricReport historicReport : listHistoricRecord) {
+			List<Alteration> listAlterations = new ArrayList<Alteration>();
+			listAlterations = alterationService.getListAlterationsByIdHistoricReport(historicReport.getIdHistoricReport());
+			List<Alteration> listAlterations_ = addImages2Alterations(listAlterations);
+			Historic historic = new Historic();
+			historic.setHistoricRecord(historicReport);
+			historic.setListAlterations(listAlterations_);
+			listHistoric.add(historic);
+		}
+		Collections.sort(listHistoric, Collections.reverseOrder());
+		return listHistoric;
+	}
+
+	private List<Alteration> addImages2Alterations(List<Alteration> listAlterations) {
+		List<Alteration> listAlterationsWithImages = new ArrayList<Alteration>();
+		for (int i = 0; i < listAlterations.size(); i++) {
+			Alteration alteration = listAlterations.get(i);
+			if (alteration.isImage()) {
+				byte[] bytesOldImage = null;
+				byte[] bytesNewImage = null;
+				bytesOldImage = FTPDownloadFiles.downloadImageFromOldImages(alteration.getHash(), alteration.getImageChange());
+				if (alteration.getImageChange() < 5) {
+					int idx = alteration.getImageChange() + 1;
+					if (idx < 5) {
+						bytesNewImage = FTPDownloadFiles.downloadImageFromOldImages(alteration.getHash(), alteration.getImageChange() + 1);
+					}
+				}
+				if (bytesNewImage == null) {
+					bytesNewImage = FTPDownloadFiles.downloadFile2FTPServer(alteration.getHash());
+				}
+				alteration.setOldPicByte(bytesOldImage);
+				alteration.setNewPicByte(bytesNewImage);
+			}
+			listAlterationsWithImages.add(alteration);
+		}
+		return listAlterationsWithImages;
 	}
 
 	private String validateReport(DefectsInspectionReport defectsInspectionReport) {
