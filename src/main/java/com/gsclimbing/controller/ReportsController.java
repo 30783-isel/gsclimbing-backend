@@ -1,8 +1,7 @@
 package com.gsclimbing.controller;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,13 +18,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.FileData;
+import com.gsclimbing.database.entity.Project;
 import com.gsclimbing.database.entity.Turbine;
+import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.service.DefectsInspectionReportService;
 import com.gsclimbing.database.service.FileService;
+import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.TurbineService;
+import com.gsclimbing.database.service.UserService;
 import com.gsclimbing.email.SendEmail;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 import com.gsclimbing.reports.extract.ExtractDefectsInspection;
+import com.gsclimbing.reports.populater.DefectsInspectionPopulater;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
@@ -33,10 +37,10 @@ import com.gsclimbing.reports.extract.ExtractDefectsInspection;
 public class ReportsController {
 
 	Logger log = LoggerFactory.getLogger(getClass());
-	
+
 	@Autowired
 	private TurbineService turbineService;
-	
+
 	@Autowired
 	private DefectsInspectionReportService defectsInspectionReportService;
 
@@ -46,6 +50,15 @@ public class ReportsController {
 	@Autowired
 	private FileService fileService;
 
+	@Autowired
+	private ProjectService projectService;
+
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private DefectsInspectionPopulater defectsInspectionPopulater;
+
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
 	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("project") String projectId, @RequestParam("turbineId") Integer turbineId) {
 		String message = "";
@@ -53,51 +66,31 @@ public class ReportsController {
 		DefectsInspectionReport defectsInspectionReport = null;
 		SendEmail runnable = null;
 		try {
-
 			defectsInspectionReport = extractData.readPDF(file, projectId, turbineId, null, "UPLOAD");
 			Turbine turbine = turbineService.getTurbine(turbineId);
 			turbine.setDefectsInspectionReportOnTurbine(defectsInspectionReport);
 			log.info("Turbine updated");
-//			validateString = validateReport(defectsInspectionReport);
+			validateString = validateReport(defectsInspectionReport);
+			if (validateString.isEmpty()) {
+				String username = defectsInspectionReportService.getCurrentLoggedUser();
+				User user = userService.getUser(username);
+				Project project = projectService.getProjectById(defectsInspectionReport.getProjectozinhoId());
+				String subject = "User " + user.getUsername() + " inserted a new Defects Inspection Report on project " + project.getName();
+				byte[] bytes = null;
+				bytes = defectsInspectionPopulater.generatePDF(defectsInspectionReport);
+				runnable = new SendEmail(subject, "Defects Inspection Report.pdf", bytes);
+				Thread t = new Thread(runnable);
+				t.start();
+			} else {
+				throw new Exception("Exception message");
+			}
 
-//			if (validateString.isEmpty()) {
-//
-//				Optional<Turbine> turbine = turbineService.getTurbine(Integer.parseInt(turbineId));
-//
-//				int val = turbine.get().getDefectsInspectionReportInserted() + 1;
-//				
-//				turbine.get().setDefectsInspectionReportInserted(val);
-//
-//				turbineService.updateTurbine(turbine.get());
-//
-//				String username = defectsInspectionReportService.getCurrentLoggedUser();
-//				Optional<User> user = userService.findByUsername(username);
-//			
-//				Optional<Project> projectI = projectService.getProjectById(Integer.parseInt(defectsInspectionReport.getProjectId()));
-//				String subject = "User " + user.get().getUsername() + " inserted a new Defects Inspection Report on project "+ projectI.get().getName();
-//
-//				byte[] bytes = null;
-//				bytes = populater.generatePDF(defectsInspectionReport);
-//				
-//				runnable = new SendEmail(subject, "Defects Inspection Report.pdf", bytes);
-//				Thread t = new Thread(runnable);
-//				t.start();
-//
-//			} else {
-//				throw new Exception("Exception message");
-//			}
-//			message = "Uploaded the file successfully: " + file.getOriginalFilename();
-			//return new ResponseEntity<>(turbineService.getTurbine(turbineId), HttpStatus.OK);
 			return ResponseEntity.status(HttpStatus.OK).body(turbine);
 		} catch (Exception e) {
-
 			message = "Could not upload the file: " + file.getOriginalFilename() + "!!!\n" + validateString;
-
 			if (defectsInspectionReport != null) {
-
 				String uuid = defectsInspectionReport.getUuid();
 				List<FileData> listFileData = fileService.readFile(uuid);
-
 				listFileData.stream().forEach(fileData -> {
 					fileService.deleteFile(fileData.getFileId());
 					FTPDownloadFiles.deleteFile2FTPServer(fileData.getHash());
@@ -107,11 +100,102 @@ public class ReportsController {
 			return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
 		}
 	}
-	
+
+	@RequestMapping(method = RequestMethod.POST, value = "/update")
+	public ResponseEntity<?> updateFile(@RequestParam("file") MultipartFile file, @RequestParam("idReport") Integer idReport) {
+		String message = "";
+		String validateString = null;
+		DefectsInspectionReport defectsInspectionReport = null;
+		SendEmail runnable = null;
+		try {
+			defectsInspectionReport = extractData.readPDF(file, null, null, idReport, "UPDATE");
+			validateString = validateReport(defectsInspectionReport);
+			return null;
+		} catch (Exception e) {
+			message = "Could not upload the file: " + file.getOriginalFilename() + "!!!\n" + validateString;
+			if (defectsInspectionReport != null) {
+				String uuid = defectsInspectionReport.getUuid();
+				List<FileData> listFileData = fileService.readFile(uuid);
+				listFileData.stream().forEach(fileData -> {
+					fileService.deleteFile(fileData.getFileId());
+					FTPDownloadFiles.deleteFile2FTPServer(fileData.getHash());
+				});
+				defectsInspectionReportService.deleteDefectsInspectionReport(defectsInspectionReport.getReportId());
+			}
+			return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
+		}
+	}
+
 	@RequestMapping("/turbine-report/{turbineId}")
-	public DefectsInspectionReport readDefectsInspectionReportByTurbine(final @PathVariable Integer turbineId ) {
+	public DefectsInspectionReport readDefectsInspectionReportByTurbine(final @PathVariable Integer turbineId) {
 		Turbine turbine = turbineService.getTurbine(turbineId);
 		return turbine.getDefectsInspectionReportOnTurbine();
+	}
+
+	@RequestMapping("/report/{id}")
+	public DefectsInspectionReport readDefectsInspectionReport(@PathVariable Integer id) {
+		return defectsInspectionReportService.readDefectsInspectionReport(id);
+	}
+
+	@RequestMapping("/permission2edit/{id}")
+	public DefectsInspectionReport permission2edit(@PathVariable Integer id) {
+		DefectsInspectionReport report = defectsInspectionReportService.readDefectsInspectionReport(id);
+		if (report != null) {
+			report.setPermission2Edit("true");
+			defectsInspectionReportService.updateDefectsInspectionReport(report);
+			SendEmail runnable = null;
+			String username = defectsInspectionReportService.getCurrentLoggedUser();
+			User user = userService.getUser(username);
+			Project project = projectService.getProjectById(report.getProjectozinhoId());
+			String subject = "User " + user.getUsername() + " asked permission to edit a Defects Inspection Report on project " + project.getName();
+			Optional<FileData> fileData = null;
+			byte[] bytes = null;
+			List<FileData> list = fileService.readFile(report.getUuid());
+			fileData = list.stream().filter(filex -> filex.getMimeType().equals("application/pdf")).findAny();
+			bytes = defectsInspectionPopulater.generatePDF(report);
+			runnable = new SendEmail(subject, "Defects Inspection Report.pdf", bytes);
+			Thread t = new Thread(runnable);
+			t.start();
+		}
+		return report;
+	}
+
+	@RequestMapping("/permission2edit_granted/{id}")
+	public DefectsInspectionReport permission2edit_granted(@PathVariable Integer id) {
+		DefectsInspectionReport report = defectsInspectionReportService.readDefectsInspectionReport(id);
+		if (report != null) {
+			report.setLocked("false");
+			report.setPermission2Edit("false");
+			defectsInspectionReportService.updateDefectsInspectionReport(report);
+		}
+		return report;
+	}
+
+	private String validateReport(DefectsInspectionReport defectsInspectionReport) {
+//		List<String> lista = defectsInspectionReportService.chkIfAllFieldsNull(defectsInspectionReport);
+//		StringBuilder string = new StringBuilder();
+//		if (defectsInspectionReport.getSite() == null || defectsInspectionReport.getSite().isEmpty()) {
+//			string.append(System.lineSeparator() + "Field Site empty");
+//		}
+//		if (defectsInspectionReport.getWtgNumber() == null || defectsInspectionReport.getWtgNumber().isEmpty()) {
+//			string.append(System.lineSeparator() + "Field WTG Number empty");
+//		}
+//		if (defectsInspectionReport.getWtgType() == null || defectsInspectionReport.getWtgType().isEmpty()) {
+//			string.append(System.lineSeparator() + "Field WTG Type empty");
+//		}
+//		if (defectsInspectionReport.getYearConstruction() == null || defectsInspectionReport.getYearConstruction().isEmpty()) {
+//			string.append(System.lineSeparator() + "Field Year of Construction empty");
+//		}
+//		for (FileData fileData : defectsInspectionReport.getListImages()) {
+//			if (fileData.getDescription() == null || fileData.getDescription().isEmpty()) {
+//				string.append(System.lineSeparator() + "Field " + fileData.getNameField() + " empty");
+//			}
+//			if (!fileData.isInsertedOnFtpServer()) {
+//				string.append(System.lineSeparator() + "Image from " + fileData.getNameField() + " empty");
+//			}
+//		}
+//		return string.toString();
+		return null;
 	}
 
 }

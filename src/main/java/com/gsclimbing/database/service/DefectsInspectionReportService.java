@@ -3,7 +3,6 @@ package com.gsclimbing.database.service;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +14,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.gsclimbing.ftp.FTPDownloadFiles;
 import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.repository.DefectsInspectionReportRepository;
 import com.gsclimbing.database.repository.UserRepository;
+import com.gsclimbing.ftp.FTPDownloadFiles;
 import com.gsclimbing.historic.Alteration;
 import com.gsclimbing.historic.AlterationService;
 import com.gsclimbing.historic.HistoricReport;
@@ -52,8 +51,8 @@ public class DefectsInspectionReportService {
 		defectsInspectionReportRepository.save(defectsInspectionReport);
 	}
 
-	public Optional<DefectsInspectionReport> readDefectsInspectionReport(Integer id) {
-		return defectsInspectionReportRepository.findById(id);
+	public DefectsInspectionReport readDefectsInspectionReport(Integer id) {
+		return defectsInspectionReportRepository.findById(id).orElse(null);
 	}
 
 	public List<DefectsInspectionReport> readDefectsInspectionReportByTurbineId(String turbineId) {
@@ -117,9 +116,9 @@ public class DefectsInspectionReportService {
 		// FileData
 		// ------------------------------------------------------------------------------------
 
-		Optional<DefectsInspectionReport> defectsInspectionReport = defectsInspectionReportService.readDefectsInspectionReport(id);
-		if (defectsInspectionReport.isPresent()) {
-			String uuid = defectsInspectionReport.get().getUuid();
+		DefectsInspectionReport defectsInspectionReport = defectsInspectionReportService.readDefectsInspectionReport(id);
+		if (defectsInspectionReport != null) {
+			String uuid = defectsInspectionReport.getUuid();
 			List<FileData> listFileData = fileService.readFile(uuid);
 
 			listFileData.stream().forEach(fileData -> {

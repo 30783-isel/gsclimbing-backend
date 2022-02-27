@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.FileData;
+import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.repository.UserRepository;
 import com.gsclimbing.database.service.DefectsInspectionReportService;
@@ -85,12 +86,12 @@ public class ExtractDefectsInspection {
 
 	public DefectsInspectionReport readPDF(MultipartFile file, String projectId, Integer turbineId, Integer idReport, String operacao) throws IOException {
 
-		Optional<DefectsInspectionReport> oldDefectsInspectionReport = null;
+		DefectsInspectionReport oldDefectsInspectionReport = null;
 		if ("UPDATE".equals(operacao)) {
 			oldDefectsInspectionReport = defectsInspectionReportService.readDefectsInspectionReport(idReport);
-			if (oldDefectsInspectionReport.isPresent()) {
+			if (oldDefectsInspectionReport != null) {
 				try {
-					defectsInspectionReport = (DefectsInspectionReport) oldDefectsInspectionReport.get().clone();
+					defectsInspectionReport = (DefectsInspectionReport) oldDefectsInspectionReport.clone();
 				} catch (CloneNotSupportedException e) {
 					e.printStackTrace();
 				}
@@ -124,14 +125,11 @@ public class ExtractDefectsInspection {
 			defectsInspectionReport.setUuid(uuid);
 			defectsInspectionReport.setCreateDate(LocalDateTime.now());
 			defectsInspectionReport.setModifiedDate(LocalDateTime.now());
-//			defectsInspectionReport.setProjectId(project);
-			defectsInspectionReport.setTurbine( turbineService.getTurbine(turbineId) );
+			Turbine turbine = turbineService.getTurbine(turbineId);
+			defectsInspectionReport.setTurbine( turbine );
+			defectsInspectionReport.setProjectozinhoId(turbine.getProject().getIdProject());
+			defectsInspectionReport.setTurbinazinhaId(turbine.getId());
 		}
-
-		String username = defectsInspectionReportService.getCurrentLoggedUser();
-		Optional<User> user = userService.findByUsername(username);
-
-//		defectsInspectionReport.setUserId(user.get().getUsername());
 
 		defectsInspectionReport.setLocked("true");
 		defectsInspectionReport.setPermission2Edit("false");
@@ -146,8 +144,8 @@ public class ExtractDefectsInspection {
 			populateAndCopy(document);
 		}
 		if ("UPDATE".equals(operacao)) {
-			alterationService.saveAlterationDefectsInspectionReport(oldDefectsInspectionReport.get(), defectsInspectionReport, 0);
-			updateDefectsInspectionReport(oldDefectsInspectionReport.get(), defectsInspectionReport);
+			alterationService.saveAlterationDefectsInspectionReport(oldDefectsInspectionReport, defectsInspectionReport, 0);
+			updateDefectsInspectionReport(oldDefectsInspectionReport, defectsInspectionReport);
 			defectsInspectionReportService.updateDefectsInspectionReport(defectsInspectionReport);
 		} else {
 			defectsInspectionReportService.createDefectsInspectionReport(getDefectsInspectionReport());

@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -26,11 +27,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gsclimbing.database.entity.DefectsInspectionReport;
+import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.Project;
 import com.gsclimbing.database.entity.Turbine;
+import com.gsclimbing.database.service.DefectsInspectionReportService;
+import com.gsclimbing.database.service.FileService;
 import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.TurbineService;
 import com.gsclimbing.ftp.FTPDownloadFiles;
+import com.gsclimbing.reports.populater.DefectsInspectionPopulater;
 import com.gsclimbing.zip.ZipUtils;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
@@ -46,6 +52,27 @@ public class FileController {
 	@Autowired
 	private TurbineService turbineService;
 	
+	@Autowired
+	private DefectsInspectionReportService defectsInspectionReportService;
+	
+	@Autowired
+	private FileService fileService;
+	
+	@Autowired
+	private DefectsInspectionPopulater defectsInspectionPopulater;
+	
+	@RequestMapping("/download_pdf/{id}")
+	public ResponseEntity<byte[]> getFileByReportId(@PathVariable Integer id) {
+		Optional<FileData> fileData = null;
+		byte[] bytes = null;
+		DefectsInspectionReport report = defectsInspectionReportService.readDefectsInspectionReport(id);
+		if (report != null) {
+			List<FileData> list = fileService.readFile(report.getUuid());
+			fileData = list.stream().filter(file -> file.getMimeType().equals("application/pdf")).findAny();
+		}
+		bytes = defectsInspectionPopulater.generatePDF(report);
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "Defect Inspection Report.pdf" + "\"").body(bytes);
+	}
 	
 	@RequestMapping("/download_zip/{projectId}")
 	public ResponseEntity<byte[]> getZipFile(@PathVariable int projectId) throws IOException {

@@ -34,6 +34,9 @@ public class DefectsInspectionReport implements Cloneable {
 	private String yearConstruction;
 	private int numberPictures;
 	
+    private Integer projectozinhoId;
+    private Integer turbinazinhaId;
+	
 	@OneToOne
 	@JsonIgnore
 	private Turbine turbine;
