@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +85,7 @@ public class ReportsController {
 			turbine.setDefectsInspectionReportOnTurbine(defectsInspectionReport);
 			log.info("Turbine updated");
 			validateString = validateReport(defectsInspectionReport);
-			if (validateString.isEmpty()) {
+			if (ObjectUtils.isEmpty(validateString)) {
 				String username = defectsInspectionReportService.getCurrentLoggedUser();
 				User user = userService.getUser(username);
 				Project project = projectService.getProjectById(defectsInspectionReport.getProjectozinhoId());
