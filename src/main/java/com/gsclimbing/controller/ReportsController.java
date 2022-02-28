@@ -98,7 +98,6 @@ public class ReportsController {
 			} else {
 				throw new Exception("Exception message");
 			}
-
 			return ResponseEntity.status(HttpStatus.OK).body(turbine);
 		} catch (Exception e) {
 			message = "Could not upload the file: " + file.getOriginalFilename() + "!!!\n" + validateString;
@@ -193,7 +192,7 @@ public class ReportsController {
 	@RequestMapping(method = RequestMethod.GET, value = "/historic/{id}")
 	public List<Historic> getHistoricDefectsInspectionReport(@PathVariable Integer id) {
 		List<Historic> listHistoric = new ArrayList<Historic>();
-		List<HistoricReport> listHistoricRecord = historicReportService.getHistoricReportByIdReportAndTypeReport(id, 1);
+		List<HistoricReport> listHistoricRecord = defectsInspectionReportService.readDefectsInspectionReport(id).getListHistoric();
 		for (HistoricReport historicReport : listHistoricRecord) {
 			List<Alteration> listAlterations = new ArrayList<Alteration>();
 			listAlterations = alterationService.getListAlterationsByIdHistoricReport(historicReport.getIdHistoricReport());

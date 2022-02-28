@@ -54,7 +54,6 @@ public class ExtractDefectsInspection {
 	private String photo = null;
 	private String idHistoric = null;
 
-	
 	@Autowired
 	private DefectsInspectionReportService defectsInspectionReportService;
 	
@@ -85,10 +84,8 @@ public class ExtractDefectsInspection {
 	
 
 	public DefectsInspectionReport readPDF(MultipartFile file, String projectId, Integer turbineId, Integer idReport, String operacao) throws IOException {
-
 		DefectsInspectionReport oldDefectsInspectionReport = null;
 		HistoricReport historicReport = null;
-		
 		if ("UPDATE".equals(operacao)) {
 			oldDefectsInspectionReport = defectsInspectionReportService.readDefectsInspectionReport(idReport);
 			if (oldDefectsInspectionReport != null) {
@@ -98,27 +95,19 @@ public class ExtractDefectsInspection {
 					e.printStackTrace();
 				}
 				defectsInspectionReport.setModifiedDate(LocalDateTime.now());
-
 				defectsInspectionReport.setLocked("true");
-
 				historicReport = new HistoricReport();
-
-				historicReport.setIdReport(defectsInspectionReport.getReportId());
 				historicReport.setTypeReport(1);
 				historicReport.setLocalDateTime(LocalDateTime.now());
 	     		historicReport.setIdProject(String.valueOf(defectsInspectionReport.getReportId()));
 				historicReport.setNumAlterations(0);
-
 				String username = defectsInspectionReportService.getCurrentLoggedUser();
-
 				Optional<User> user = userService.findByUsername(username);
 				historicReport.setIdUser(user.get().getUsername());
 				historicReport.setUser(user.get().getUsername());
-
-				historicReport = historicReportService.addHistoricReportByIdReportAndTypeReport(historicReport);
-
+				historicReport.setDefectInspectionReport(defectsInspectionReport);
+				//historicReport = historicReportService.addHistoricReportByIdReportAndTypeReport(historicReport);
 				setIdHistoric(Integer.toString(historicReport.getIdHistoricReport()));
-				
 			}
 		} else if ("UPLOAD".equals(operacao)) {
 			defectsInspectionReport = new DefectsInspectionReport();
@@ -146,8 +135,9 @@ public class ExtractDefectsInspection {
 			populateAndCopy(document);
 		}
 		if ("UPDATE".equals(operacao)) {
-			alterationService.saveAlterationDefectsInspectionReport(oldDefectsInspectionReport, defectsInspectionReport, historicReport.getIdHistoricReport());
-			updateDefectsInspectionReport(oldDefectsInspectionReport, defectsInspectionReport);
+			List<Alteration> listaAlternation = alterationService.saveAlterationDefectsInspectionReport(oldDefectsInspectionReport, defectsInspectionReport);
+			historicReport.setListAlternation(listaAlternation);
+			defectsInspectionReport.getListHistoric().add(historicReport);
 			defectsInspectionReportService.updateDefectsInspectionReport(defectsInspectionReport);
 		} else {
 			defectsInspectionReportService.createDefectsInspectionReport(getDefectsInspectionReport());
@@ -156,20 +146,13 @@ public class ExtractDefectsInspection {
 	}
 
 	void populateAndCopy(PDDocument document) throws IOException {
-
 		getListPhotoNames().clear();
-
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
-
 		List<PDField> fields = acroForm.getFields();
-
 		for (PDField field : fields) {
-
 			if (field instanceof PDTextField) {
-
 				String valueField = ((PDTextField) field).getValue();
 				String nameField = field.getFullyQualifiedName();
-
 				if (nameField.equals("site"))
 					getDefectsInspectionReport().setSite(valueField);
 				if (nameField.equals("wtgNumber"))
@@ -178,40 +161,29 @@ public class ExtractDefectsInspection {
 					getDefectsInspectionReport().setWtgType(valueField);
 				if (nameField.equals("yearConstruction"))
 					getDefectsInspectionReport().setYearConstruction(valueField);
-
 				if (nameField.contains("Description")) {
-
 					setNameField(nameField);
 					setDescription(valueField);
-
 				}
 			} else if (field instanceof PDPushButton) {
-
 				String nameField = field.getFullyQualifiedName();
-
 				for (final PDAnnotationWidget widget : field.getWidgets()) {
-
 					WidgetImageChecker checker = new WidgetImageChecker(widget);
 					try {
 						if (checker.hasImages()) {
-
 							PDImage pDimage = checker.getpDimage();
-
 							setPhoto(nameField);
 							FileData fileData = new FileData();
 							fileData.setImageChange(0);
-
 							fileData.setNameField(getNameField());
 							fileData.setDescription(getDescription());
 							defectsInspectionReport.addImgOnListImages(fileData);
 							defectsInspectionReport.addOneMorePicture();
 							extractAnnotationImages(pDimage, nameField, fileData);
-
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					;
 				}
 			}
 		}
@@ -224,8 +196,6 @@ public class ExtractDefectsInspection {
 
 		if (!fileDataFiltered.isPresent()) {
 			fileData.setUuid(getDefectsInspectionReport().getUuid());
-//			fileData.setTeamId(getDefectsInspectionReport().get);
-//			fileData.setUserId(getDefectsInspectionReport().getUserId());
 			fileData.setCreateDate(getDefectsInspectionReport().getCreateDate());
 			fileData.setModifiedDate(getDefectsInspectionReport().getModifiedDate());
 			fileData.setName(nameFile);
@@ -265,7 +235,6 @@ public class ExtractDefectsInspection {
 		if (fileSize(file) != fileData.getSize()) {
 
 			Alteration alteration = new Alteration();
-			alteration.setIdHistoricReport(Integer.parseInt(idHistoric));
 			alteration.setField(imageFieldName);
 			alteration.setFieldOld(null);
 			alteration.setFieldNew(null);
@@ -279,12 +248,12 @@ public class ExtractDefectsInspection {
 
 			HistoricReport historicRecord = historicReportService.getHistoricReportByIdHistoricReport(Integer.parseInt(idHistoric));
 			if (historicRecord != null) {
+				historicRecord.getListAlternation().add(alteration);
 				historicRecord.addNumAlterations();
+				historicReportService.saveHistoricReport(historicRecord);
 			}
 
 			FTPUploadFile.replaceFile2FTPServer(file, hash, fileData.getImageChange());
-
-			alterationRepository.save(alteration);
 		}
 
 	}
@@ -378,10 +347,6 @@ public class ExtractDefectsInspection {
 		return convFile;
 	}
 
-
-	public boolean updateDefectsInspectionReport(final DefectsInspectionReport oldDefectsInspectionReport, final DefectsInspectionReport defectsInspectionReport) {
-		return true;
-	}
 
 	public long fileSize(File file) {
 		long bytes = file.length();

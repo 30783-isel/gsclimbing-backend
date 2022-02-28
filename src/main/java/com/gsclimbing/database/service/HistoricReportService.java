@@ -13,11 +13,6 @@ public class HistoricReportService {
 	
 	@Autowired
 	private HistoricReportRepository historicReportRepository;
-
-	public List<HistoricReport> getHistoricReportByIdReportAndTypeReport(int idReport, int typeReport) {
-		List<HistoricReport> historicReport = historicReportRepository.findByIdReportAndTypeReport(idReport, typeReport);
-		return historicReport;
-	}
 	
 	public HistoricReport getHistoricReportByIdHistoricReport(int idHistoricReport) {
 		HistoricReport historicReport = historicReportRepository.findByIdHistoricReport(idHistoricReport);
@@ -30,5 +25,9 @@ public class HistoricReportService {
 	
 	public void deleteHistoricReport(int id) {
 		historicReportRepository.deleteById(id);
+	}
+	
+	public void saveHistoricReport( HistoricReport historicReport ) {
+		historicReportRepository.save(historicReport);
 	}
 }

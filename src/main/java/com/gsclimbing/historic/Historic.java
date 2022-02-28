@@ -7,7 +7,6 @@ import com.gsclimbing.database.entity.HistoricReport;
 public class Historic implements Comparable<Historic> {
 
 	HistoricReport historicRecord = null;
-
 	List<Alteration> listAlterations = null;
 
 	public HistoricReport getHistoricRecord() {

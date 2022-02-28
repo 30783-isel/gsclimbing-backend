@@ -2,6 +2,7 @@ package com.gsclimbing.database.service;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -22,15 +23,15 @@ public class AlterationService {
 	private AlterationRepository alterationRepository;
 	
 	@Autowired
-	private DefectsInspectionReportService defectsInspectionReportService;
+	private HistoricReportService historicReportService;
 	
-	public List<Alteration> getListAlterationsByIdHistoricReport(int idHr){
-		List<Alteration> listAlterations = alterationRepository.findByIdHistoricReport(idHr);	
-		return listAlterations;
+	public List<Alteration> getListAlterationsByIdHistoricReport(int idHr){	
+		return historicReportService.getHistoricReportByIdHistoricReport(idHr).getListAlternation();
 	}
 	
-	public void saveAlterationDefectsInspectionReport(DefectsInspectionReport oldDefectsInspectionReport, DefectsInspectionReport defectsInspectionReport, int idHistoricReport){
+	public List<Alteration> saveAlterationDefectsInspectionReport(DefectsInspectionReport oldDefectsInspectionReport, DefectsInspectionReport defectsInspectionReport){
 
+		List<Alteration> listAlternation = new ArrayList<>();
 		try {
 			for (Field oldField : oldDefectsInspectionReport.getClass().getDeclaredFields()) {
 				oldField.setAccessible(true);
@@ -42,7 +43,6 @@ public class AlterationService {
 						log.info(oldField.getName());
 						if ( oldField.get(oldDefectsInspectionReport) != null && newField.get(defectsInspectionReport) != null  && !oldField.get(oldDefectsInspectionReport).equals( newField.get(defectsInspectionReport)) &&  !"locked".equals(newField.getName()) ) {
 							Alteration alteration = new Alteration();
-							alteration.setIdHistoricReport(idHistoricReport);
 							alteration.setField(newField.getName());
 							alteration.setFieldOld(String.valueOf(oldField.get(oldDefectsInspectionReport)));
 							alteration.setFieldNew(String.valueOf(newField.get(defectsInspectionReport)));
@@ -52,7 +52,7 @@ public class AlterationService {
 							alteration.setLocalDateTime(LocalDateTime.now());
 							alteration.setOldPicByte(null);
 							alteration.setNewPicByte(null);
-							alterationRepository.save(alteration);
+							listAlternation.add(alteration);
 							break;
 						}
 					}
@@ -61,6 +61,7 @@ public class AlterationService {
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 		}	
+		return listAlternation;
 	}
 	
 	public void deleteAlteration(int id) {
