@@ -27,8 +27,6 @@ public class HistoricReport {
 	private int idHistoricReport;
 	private java.time.LocalDateTime localDateTime;
 	private int typeReport;
-	private String idProject;
-	private String project;
 	private String user;
 	private String idUser;
 	private int numAlterations;

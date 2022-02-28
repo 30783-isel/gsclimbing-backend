@@ -98,7 +98,6 @@ public class ExtractDefectsInspection {
 				historicReport = new HistoricReport();
 				historicReport.setTypeReport(1);
 				historicReport.setLocalDateTime(LocalDateTime.now());
-	     		historicReport.setIdProject(String.valueOf(defectsInspectionReport.getReportId()));
 				historicReport.setNumAlterations(0);
 				String username = defectsInspectionReportService.getCurrentLoggedUser();
 				Optional<User> user = userService.findByUsername(username);

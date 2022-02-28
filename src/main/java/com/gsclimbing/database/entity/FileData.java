@@ -24,8 +24,6 @@ public class FileData {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer fileId;
 	private String uuid;
-	private String teamId;
-	private String userId;
 	private long size;
 	private String name;
 	private LocalDateTime createDate;

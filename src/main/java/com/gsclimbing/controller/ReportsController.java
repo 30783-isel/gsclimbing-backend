@@ -48,28 +48,20 @@ public class ReportsController {
 
 	@Autowired
 	private TurbineService turbineService;
-
 	@Autowired
 	private DefectsInspectionReportService defectsInspectionReportService;
-
 	@Autowired
 	private ExtractDefectsInspection extractData;
-
 	@Autowired
 	private FileService fileService;
-
 	@Autowired
 	private ProjectService projectService;
-
 	@Autowired
 	private UserService userService;
-
 	@Autowired
 	private DefectsInspectionPopulater defectsInspectionPopulater;
-	
 	@Autowired
 	private HistoricReportService historicReportService;
-	
 	@Autowired
 	private AlterationService alterationService;
 	

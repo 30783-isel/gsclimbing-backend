@@ -51,8 +51,6 @@ public class AlterationService {
 							alteration.setHash(null);
 							alteration.setImageChange(0);
 							alteration.setLocalDateTime(LocalDateTime.now());
-							alteration.setOldPicByte(null);
-							alteration.setNewPicByte(null);
 							alteration.setHistoricReport(historicReport);
 							listAlternation.add(alteration);
 							break;

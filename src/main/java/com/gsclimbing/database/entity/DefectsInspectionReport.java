@@ -32,7 +32,6 @@ public class DefectsInspectionReport implements Cloneable {
 	private LocalDateTime modifiedDate;
 	private String locked;
 	private String permission2Edit;
-	
 	private String site;
 	private String wtgNumber;
 	private String wtgType;
