@@ -85,6 +85,7 @@ public class ExtractDefectsInspection {
 
 	public DefectsInspectionReport readPDF(MultipartFile file, String projectId, Integer turbineId, Integer idReport, String operacao) throws IOException {
 		DefectsInspectionReport oldDefectsInspectionReport = null;
+		DefectsInspectionReport defectsInspectionReportReturned = null;
 		HistoricReport historicReport = null;
 		if ("UPDATE".equals(operacao)) {
 			oldDefectsInspectionReport = defectsInspectionReportService.readDefectsInspectionReport(idReport);
@@ -135,14 +136,14 @@ public class ExtractDefectsInspection {
 			populateAndCopy(document);
 		}
 		if ("UPDATE".equals(operacao)) {
-			List<Alteration> listaAlternation = alterationService.saveAlterationDefectsInspectionReport(oldDefectsInspectionReport, defectsInspectionReport);
+			List<Alteration> listaAlternation = alterationService.saveAlterationDefectsInspectionReport(oldDefectsInspectionReport, defectsInspectionReport, historicReport);
 			historicReport.setListAlternation(listaAlternation);
 			defectsInspectionReport.getListHistoric().add(historicReport);
-			defectsInspectionReportService.updateDefectsInspectionReport(defectsInspectionReport);
+			defectsInspectionReportReturned = defectsInspectionReportService.updateDefectsInspectionReport(defectsInspectionReport);
 		} else {
-			defectsInspectionReportService.createDefectsInspectionReport(getDefectsInspectionReport());
+			defectsInspectionReportReturned = defectsInspectionReportService.createDefectsInspectionReport(getDefectsInspectionReport());
 		}
-		return defectsInspectionReport;
+		return defectsInspectionReportReturned;
 	}
 
 	void populateAndCopy(PDDocument document) throws IOException {

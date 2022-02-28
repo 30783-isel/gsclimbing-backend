@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.DefectsInspectionReport;
+import com.gsclimbing.database.entity.HistoricReport;
 import com.gsclimbing.database.repository.AlterationRepository;
 
 @Service
@@ -29,7 +30,7 @@ public class AlterationService {
 		return historicReportService.getHistoricReportByIdHistoricReport(idHr).getListAlternation();
 	}
 	
-	public List<Alteration> saveAlterationDefectsInspectionReport(DefectsInspectionReport oldDefectsInspectionReport, DefectsInspectionReport defectsInspectionReport){
+	public List<Alteration> saveAlterationDefectsInspectionReport(DefectsInspectionReport oldDefectsInspectionReport, DefectsInspectionReport defectsInspectionReport, HistoricReport historicReport){
 
 		List<Alteration> listAlternation = new ArrayList<>();
 		try {
@@ -52,6 +53,7 @@ public class AlterationService {
 							alteration.setLocalDateTime(LocalDateTime.now());
 							alteration.setOldPicByte(null);
 							alteration.setNewPicByte(null);
+							alteration.setHistoricReport(historicReport);
 							listAlternation.add(alteration);
 							break;
 						}

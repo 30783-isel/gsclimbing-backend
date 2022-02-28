@@ -43,8 +43,8 @@ public class DefectsInspectionReportService {
 	@Autowired
 	private DefectsInspectionReportRepository defectsInspectionReportRepository;
 
-	public void createDefectsInspectionReport(DefectsInspectionReport defectsInspectionReport) {
-		defectsInspectionReportRepository.save(defectsInspectionReport);
+	public DefectsInspectionReport createDefectsInspectionReport(DefectsInspectionReport defectsInspectionReport) {
+		return defectsInspectionReportRepository.save(defectsInspectionReport);
 	}
 
 	public DefectsInspectionReport readDefectsInspectionReport(Integer id) {
@@ -61,8 +61,8 @@ public class DefectsInspectionReportService {
 		return reports;
 	}
 
-	public void updateDefectsInspectionReport(DefectsInspectionReport defectsInspectionReport) {
-		defectsInspectionReportRepository.save(defectsInspectionReport);
+	public DefectsInspectionReport updateDefectsInspectionReport(DefectsInspectionReport defectsInspectionReport) {
+		return defectsInspectionReportRepository.save(defectsInspectionReport);
 	}
 
 	public List<DefectsInspectionReport> searchDefectsInspectionReport(String site, String wtgNumber, String wtgType, String yearConstruction) {
