@@ -39,7 +39,6 @@ public class Turbine {
 	
 	@ManyToOne
     @JoinColumn(name="idProject", nullable=false)
-	@JsonIgnore
 	private Project project;
 
 	public Turbine(Project project) {

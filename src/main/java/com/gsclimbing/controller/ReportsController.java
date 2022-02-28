@@ -3,7 +3,6 @@ package com.gsclimbing.controller;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
@@ -29,7 +28,6 @@ import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.service.AlterationService;
 import com.gsclimbing.database.service.DefectsInspectionReportService;
 import com.gsclimbing.database.service.FileService;
-import com.gsclimbing.database.service.HistoricReportService;
 import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.TurbineService;
 import com.gsclimbing.database.service.UserService;
@@ -60,8 +58,6 @@ public class ReportsController {
 	private UserService userService;
 	@Autowired
 	private DefectsInspectionPopulater defectsInspectionPopulater;
-	@Autowired
-	private HistoricReportService historicReportService;
 	@Autowired
 	private AlterationService alterationService;
 	
@@ -111,7 +107,6 @@ public class ReportsController {
 		String message = "";
 		String validateString = null;
 		DefectsInspectionReport defectsInspectionReport = null;
-		SendEmail runnable = null;
 		try {
 			defectsInspectionReport = extractData.readPDF(file, null, null, idReport, "UPDATE");
 			validateString = validateReport(defectsInspectionReport);
@@ -158,10 +153,9 @@ public class ReportsController {
 			User user = userService.getUser(username);
 			Project project = projectService.getProjectById(report.getProjectozinhoId());
 			String subject = "User " + user.getUsername() + " asked permission to edit a Defects Inspection Report on project " + project.getName();
-			Optional<FileData> fileData = null;
 			byte[] bytes = null;
 			List<FileData> list = fileService.readFile(report.getUuid());
-			fileData = list.stream().filter(filex -> filex.getMimeType().equals("application/pdf")).findAny();
+			list.stream().filter(filex -> filex.getMimeType().equals("application/pdf")).findAny();
 			bytes = defectsInspectionPopulater.generatePDF(report);
 			runnable = new SendEmail(subject, "Defects Inspection Report.pdf", bytes);
 			Thread t = new Thread(runnable);
