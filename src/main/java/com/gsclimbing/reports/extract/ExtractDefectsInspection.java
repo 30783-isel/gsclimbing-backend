@@ -53,6 +53,7 @@ public class ExtractDefectsInspection {
 	private String nameField = null;
 	private String photo = null;
 	private String idHistoric = null;
+	private HistoricReport historicReport = null;
 
 	@Autowired
 	private DefectsInspectionReportService defectsInspectionReportService;
@@ -76,8 +77,6 @@ public class ExtractDefectsInspection {
 	private AlterationRepository alterationRepository;
 
 	private DefectsInspectionReport defectsInspectionReport;
-	
-	
 
 	List<String> listPhotoNames = new ArrayList<String>();
 	
@@ -86,7 +85,6 @@ public class ExtractDefectsInspection {
 	public DefectsInspectionReport readPDF(MultipartFile file, String projectId, Integer turbineId, Integer idReport, String operacao) throws IOException {
 		DefectsInspectionReport oldDefectsInspectionReport = null;
 		DefectsInspectionReport defectsInspectionReportReturned = null;
-		HistoricReport historicReport = null;
 		if ("UPDATE".equals(operacao)) {
 			oldDefectsInspectionReport = defectsInspectionReportService.readDefectsInspectionReport(idReport);
 			if (oldDefectsInspectionReport != null) {
@@ -107,8 +105,6 @@ public class ExtractDefectsInspection {
 				historicReport.setIdUser(user.get().getUsername());
 				historicReport.setUser(user.get().getUsername());
 				historicReport.setDefectInspectionReport(defectsInspectionReport);
-				//historicReport = historicReportService.addHistoricReportByIdReportAndTypeReport(historicReport);
-				setIdHistoric(Integer.toString(historicReport.getIdHistoricReport()));
 			}
 		} else if ("UPLOAD".equals(operacao)) {
 			defectsInspectionReport = new DefectsInspectionReport();
@@ -246,17 +242,14 @@ public class ExtractDefectsInspection {
 			alteration.setLocalDateTime(LocalDateTime.now());
 			alteration.setOldPicByte(null);
 			alteration.setNewPicByte(null);
-
-			HistoricReport historicRecord = historicReportService.getHistoricReportByIdHistoricReport(Integer.parseInt(idHistoric));
-			if (historicRecord != null) {
-				historicRecord.getListAlternation().add(alteration);
-				historicRecord.addNumAlterations();
-				historicReportService.saveHistoricReport(historicRecord);
+			alteration.setHistoricReport(historicReport);
+			if (historicReport != null) {
+				historicReport.getListAlternation().add(alteration);
+				historicReport.addNumAlterations();
+				historicReportService.saveHistoricReport(historicReport);
 			}
-
 			FTPUploadFile.replaceFile2FTPServer(file, hash, fileData.getImageChange());
 		}
-
 	}
 
 	static class WidgetImageChecker extends PDFGraphicsStreamEngine {

@@ -12,7 +12,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
+@Getter
+@Setter
 public class FileData {
 
 	@Id
@@ -32,126 +37,8 @@ public class FileData {
 	private int imageChange;
 	private boolean insertedOnFtpServer;;
 
-
-	
 	private static final int RADIX = 16;
 
-	public FileData() {
-	}
-
-	@Override
-	public String toString() {
-		return String.format("Image[uuid=%s, mimeType=%s, teamId='%d', userId='%d'']", uuid, mimeType, teamId, userId);
-	}
-
-	public Integer getFileId() {
-		return fileId;
-	}
-
-	public void setFileId(Integer fileId) {
-		this.fileId = fileId;
-	}
-
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
-
-	public String getTeamId() {
-		return teamId;
-	}
-
-	public void setTeamId(String teamId) {
-		this.teamId = teamId;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	public long getSize() {
-		return size;
-	}
-
-	public void setSize(long size) {
-		this.size = size;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public LocalDateTime getCreateDate() {
-		return createDate;
-	}
-
-	public void setCreateDate(LocalDateTime createDate) {
-		this.createDate = createDate;
-	}
-
-	public LocalDateTime getModifiedDate() {
-		return modifiedDate;
-	}
-
-	public void setModifiedDate(LocalDateTime modifiedDate) {
-		this.modifiedDate = modifiedDate;
-	}
-
-	public String getMimeType() {
-		return mimeType;
-	}
-
-	public void setMimeType(String mimeType) {
-		this.mimeType = mimeType;
-	}
-
-	public String getHash() {
-		return hash;
-	}
-	
-	public String getNameField() {
-		return nameField;
-	}
-
-	public void setNameField(String nameField) {
-		this.nameField = nameField;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	public boolean isInsertedOnFtpServer() {
-		return insertedOnFtpServer;
-	}
-
-	public void setInsertedOnFtpServer(boolean insertedOnFtpServer) {
-		this.insertedOnFtpServer = insertedOnFtpServer;
-	}
-	
-	public int getImageChange() {
-		return imageChange;
-	}
-
-	public void setImageChange(int imageChange) {
-		this.imageChange = imageChange;
-	}
-	
 	public void addImageChange() {
 		this.imageChange = this.imageChange + 1;
 	}
