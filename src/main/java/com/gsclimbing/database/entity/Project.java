@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.gsclimbing.dto.ProjectDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,4 +50,19 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = { CascadeType.ALL } )
     @JsonIgnore
 	private List<Turbine> turbines = new ArrayList<>();
+    
+    
+    public ProjectDto mapper() {
+    	return ProjectDto.builder()
+    				.idProject(this.idProject)
+    				.name(this.name)
+    				.country(this.country)
+    				.location(this.location)
+    				.numberTurbines(this.numberTurbines)
+    				.site(this.site)
+    				.number(this.number)
+    				.type(this.type)
+    				.turbines(this.turbines.stream().map(turbine -> turbine.mapper()).collect(Collectors.toList()))
+    				.build();
+    }
 }

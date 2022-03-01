@@ -27,6 +27,8 @@ import com.gsclimbing.database.service.DefectsInspectionReportService;
 import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.TurbineService;
 import com.gsclimbing.database.service.UserService;
+import com.gsclimbing.dto.ProjectDto;
+import com.gsclimbing.dto.TurbineDto;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
@@ -63,17 +65,17 @@ public class ProjectController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/all")
-	public List<Project> getProjects() {
-		return projectService.getAllProjects();
+	public List<ProjectDto> getProjects() {
+		return projectService.getAllProjects().stream().map(project -> project.mapper()).collect(Collectors.toList());
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/project-by-id/{idProject}")
-	public Project getProjectByName(@PathVariable Integer idProject) {
-		return projectService.getProjectById(idProject);
+	public ProjectDto getProjectByName(@PathVariable Integer idProject) {
+		return projectService.getProjectById(idProject).mapper();
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/projects-by-user/{username}")
-	public List<Project> getProjectsByUserId(final @PathVariable String username) {
+	public List<ProjectDto> getProjectsByUserId(final @PathVariable String username) {
 		User user = userService.getUser(username);
 		List<Project> filteredList = null;
 		if (user != null && user.getRoles().equals("ADMIN")) {
@@ -82,7 +84,7 @@ public class ProjectController {
 		if (user != null && user.getRoles().equals("TECH")) {
 			filteredList = new ArrayList<>(user.getProjects());
 		}
-		return filteredList;
+		return filteredList.stream().map(project -> project.mapper()).collect(Collectors.toList());
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete/{name}")
@@ -131,13 +133,13 @@ public class ProjectController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/turbine-by-id/{id}")
-	public Turbine getTurbine(@PathVariable int id) {
-		return turbineService.getTurbine(id);
+	public TurbineDto getTurbine(@PathVariable int id) {
+		return turbineService.getTurbine(id) != null ? turbineService.getTurbine(id).mapper() : null;
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/turbines/{idProject}")
-	public List<Turbine> getTurbine(@PathVariable final Integer idProject) {
-		return turbineService.getTurbinesByProject(projectService.getProject(idProject));
+	public List<TurbineDto> getTurbine(@PathVariable final Integer idProject) {
+		return turbineService.getTurbinesByProject(projectService.getProject(idProject) )  != null ? turbineService.getTurbinesByProject(projectService.getProject(idProject)).stream().map(turbine -> turbine.mapper()).collect(Collectors.toList()) : null;
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete-turbine/{id}")

@@ -31,7 +31,6 @@ public class ProjectService {
 	
 	public Project getProject(int id){
 		Optional<Project> project = projectRepository.findById(id);
-		
 		 return project.isPresent() ? project.get() : null;
 	}
 	

@@ -1,0 +1,19 @@
+package com.gsclimbing.dto;
+
+import java.io.Serializable;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class UserDto implements Serializable{
+
+	private static final long serialVersionUID = -8799969083917496826L;
+	
+	private Integer idUser;
+	private String username;
+	private String password;
+	private String active;
+	private String roles;
+}

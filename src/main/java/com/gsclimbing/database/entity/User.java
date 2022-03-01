@@ -13,6 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.gsclimbing.dto.UserDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,6 +46,16 @@ public class User {
     @JsonIgnoreProperties({"users", "projects"})
     Set<Project> projects = new HashSet<>();
     
+    
+    public UserDto mapper() {
+    	return UserDto.builder()
+    		.idUser(idUser)
+    		.username(username)
+    		.password(password)
+    		.active(active)
+    		.roles(roles)
+    		.build();
+    }
 	
 }
 

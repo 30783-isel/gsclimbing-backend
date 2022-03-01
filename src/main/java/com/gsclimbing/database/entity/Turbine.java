@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.gsclimbing.dto.TurbineDto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,6 +46,21 @@ public class Turbine {
 	public Turbine(Project project) {
 		super();
 		this.project = project;
+	}
+	
+	public TurbineDto mapper() {
+		return TurbineDto.builder()
+			.id(id)
+			.defectsInspectionReport(this.defectsInspectionReport)
+			.examinationTransformer(this.examinationTransformer)
+			.measurements6KV(this.measurements6KV)
+			.measurements690V400V(this.measurements690V400V)
+			.measurementsMwSwitchgear(this.measurementsMwSwitchgear)
+			.onboardCraneInspectionReport(this.onboardCraneInspectionReport)
+			.performanceReportRepairElevator(this.performanceReportRepairElevator)
+			.statutoryInspectionReport(this.statutoryInspectionReport)
+			.defectsInspectionReportOnTurbine(this.defectsInspectionReportOnTurbine)
+			.build();
 	}
 	
 	
