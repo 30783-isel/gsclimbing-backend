@@ -127,8 +127,10 @@ public class ReportsController {
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete-report/{id}")
-	public void deleteDefectsInspectionReport(@PathVariable Integer id) {
+	public Integer deleteDefectsInspectionReport(@PathVariable Integer id) {
+		Integer turbineId = defectsInspectionReportService.readDefectsInspectionReport(id).getTurbinazinhaId();
 		defectsInspectionReportService.deleteDefectsInspectionReport(id);
+		return turbineId;
 	}
 
 	@RequestMapping("/turbine-report/{turbineId}")
