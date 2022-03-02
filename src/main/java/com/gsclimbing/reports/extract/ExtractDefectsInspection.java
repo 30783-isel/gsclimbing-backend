@@ -186,10 +186,8 @@ public class ExtractDefectsInspection {
 	}
 
 	public void extractAnnotationImages(PDImage image, String nameFile, FileData fileData) throws IOException {
-
 		List<FileData> listFileData = fileService.readFile(defectsInspectionReport.getUuid()).stream().filter(filex -> filex.getMimeType().equals("JPG")).collect(Collectors.toList());
 		Optional<FileData> fileDataFiltered = listFileData.stream().filter(fileD -> nameFile.equals(fileD.getName())).findAny();
-
 		if (!fileDataFiltered.isPresent()) {
 			fileData.setUuid(getDefectsInspectionReport().getUuid());
 			fileData.setCreateDate(getDefectsInspectionReport().getCreateDate());
@@ -201,23 +199,17 @@ public class ExtractDefectsInspection {
 			} catch (NoSuchAlgorithmException e) {
 				e.printStackTrace();
 			}
-			
 			File file = File.createTempFile(fileData.getHash(), null);
 			ImageIO.write(image.getImage(), "jpg", file);
-			
 			fileData.setSize(fileSize(file));
-			
 			boolean inserted = FTPUploadFile.uploadFile2FTPServer(file, fileData.getHash());
 			fileData.setInsertedOnFtpServer(inserted);
-
 			getListPhotoNames().add(nameFile);
-
-			fileService.createFile(fileData);
-
+			fileData.setDefectsInspectionReport(defectsInspectionReport);
+			defectsInspectionReport.getListaFileData().add(fileData);
 		} else {
 			uploadImage(image, fileDataFiltered.get().getHash(), String.valueOf(getIdHistoric()), fileDataFiltered.get().getName());
 		}
-
 	}
 
 	private void uploadImage(PDImage image, String hash, String idHistoric, String imageFieldName) throws IOException {

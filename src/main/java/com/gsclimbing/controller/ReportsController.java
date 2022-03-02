@@ -71,7 +71,6 @@ public class ReportsController {
 			defectsInspectionReport = extractData.readPDF(file, projectId, turbineId, null, "UPLOAD");
 			Turbine turbine = turbineService.getTurbine(turbineId);
 			turbine.setDefectsInspectionReportOnTurbine(defectsInspectionReport);
-			log.info("Turbine updated");
 			validateString = validateReport(defectsInspectionReport);
 			if (ObjectUtils.isEmpty(validateString)) {
 				String username = defectsInspectionReportService.getCurrentLoggedUser();

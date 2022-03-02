@@ -46,7 +46,6 @@ public class SendEmail implements Runnable {
 		final String password = "gs.climbing";
 		String to = "reports@gsclimbing.com";
 		
-		log.info(" ---------- Prepare TLS email message ----------- ");
 		String host = "smtp.gmail.com";
 		Properties props = new Properties();
 		props.put("mail.smtp.host", host);
@@ -59,7 +58,6 @@ public class SendEmail implements Runnable {
 				return new PasswordAuthentication(username, password);
 			}
 		});
-		log.info(" Session created --- DONE ");
 		try {
 			MimeMessage message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(username));
@@ -78,7 +76,6 @@ public class SendEmail implements Runnable {
 			multipart.addBodyPart(messageBodyPart2);
 			message.setContent(multipart);
 			Transport.send(message);
-			log.info("message sent....");
 		} catch (MessagingException ex) {
 			ex.printStackTrace();
 		}

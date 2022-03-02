@@ -38,10 +38,7 @@ public class AlterationService {
 				oldField.setAccessible(true);
 				for (Field newField : defectsInspectionReport.getClass().getSuperclass().getDeclaredFields()) {
 					newField.setAccessible(true);
-					log.info(oldField.getName());
-					log.info(newField.getName());
 					if (oldField.getName().equals(newField.getName()) && newField.getName() != "modifiedDate") {
-						log.info(oldField.getName());
 						if ( oldField.get(oldDefectsInspectionReport) != null && newField.get(defectsInspectionReport) != null  && !oldField.get(oldDefectsInspectionReport).equals( newField.get(defectsInspectionReport)) &&  !"locked".equals(newField.getName()) ) {
 							Alteration alteration = new Alteration();
 							alteration.setField(newField.getName());

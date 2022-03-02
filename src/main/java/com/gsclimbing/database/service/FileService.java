@@ -31,10 +31,6 @@ public class FileService {
 		return files;
 	}
 
-	public void updateFile(Integer id, FileData file) {
-		fileRepository.save(file);
-	}
-
 	public void deleteFile(Integer id) {
 		fileRepository.deleteById(id);
 	}
@@ -45,13 +41,7 @@ public class FileService {
 	
 	public FileData readFileByHash(String hash) {
 		return fileRepository.findByHash(hash);
-	}
-	
-	public void saveFile(FileData file) {
-		fileRepository.save(file);
-	}
-
-	
+	}	
 }
 
 

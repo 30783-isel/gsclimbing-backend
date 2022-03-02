@@ -116,7 +116,6 @@ public class DefectsInspectionReportService {
 				field.setAccessible(true);
 				Object object = field.get(defectsInspectionReport);
 				if (object == null || ObjectUtils.isEmpty(object.toString())) {
-					log.info(field.getName());
 					lista.add(field.getName());
 				}
 			}
@@ -129,7 +128,6 @@ public class DefectsInspectionReportService {
 					}
 				} else {
 					if (object == null || ObjectUtils.isEmpty(object.toString())) {
-						log.info(field.getName());
 						lista.add(field.getName());
 					}
 				}

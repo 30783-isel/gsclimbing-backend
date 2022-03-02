@@ -11,6 +11,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -33,8 +37,13 @@ public class FileData {
 	private String nameField;
 	private String description;
 	private int imageChange;
-	private boolean insertedOnFtpServer;;
+	private boolean insertedOnFtpServer;
 
+	@ManyToOne
+	@JoinColumn(name="idDefectsInspectionReport", nullable=true)
+	@JsonIgnore
+	private DefectsInspectionReport defectsInspectionReport;
+	
 	private static final int RADIX = 16;
 
 	public void addImageChange() {
