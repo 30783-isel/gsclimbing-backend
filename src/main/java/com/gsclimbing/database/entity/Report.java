@@ -28,6 +28,7 @@ public class Report {
 	private String wtgType;
 	private String yearConstruction;
 	private int numberPictures;
+	private Integer type;
 	
 	public void addOneMorePicture() {
 		this.numberPictures = this.numberPictures + 1;
