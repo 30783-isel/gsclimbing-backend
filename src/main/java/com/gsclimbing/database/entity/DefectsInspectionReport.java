@@ -24,21 +24,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class DefectsInspectionReport implements Cloneable {
-
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Integer reportId;
-	private String uuid;
-	private LocalDateTime createDate;
-	private LocalDateTime modifiedDate;
-	private String locked;
-	private String permission2Edit;
-	private String site;
-	private String wtgNumber;
-	private String wtgType;
-	private String yearConstruction;
-	private int numberPictures;
+public class DefectsInspectionReport extends Report implements Cloneable {
 	
     private Integer projectozinhoId;
     private Integer turbinazinhaId;
@@ -57,10 +43,6 @@ public class DefectsInspectionReport implements Cloneable {
 	
 	public void addImgOnListImages(FileData fileData) {
 		this.listImages.add(fileData);
-	}
-	
-	public void addOneMorePicture() {
-		this.numberPictures = this.numberPictures + 1;
 	}
 	
 	public Object clone() throws CloneNotSupportedException {

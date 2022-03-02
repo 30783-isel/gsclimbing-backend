@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import com.gsclimbing.ftp.FTPDownloadFiles;
 public class DefectsInspectionReportService {
 
 	Logger log = LoggerFactory.getLogger(getClass());
-	
+
 	@Autowired
 	private FileService fileService;
 
@@ -111,16 +112,24 @@ public class DefectsInspectionReportService {
 	public List<String> chkIfAllFieldsNull(DefectsInspectionReport defectsInspectionReport) {
 		List<String> lista = new ArrayList<String>();
 		try {
+			for (Field field : defectsInspectionReport.getClass().getSuperclass().getDeclaredFields()) {
+				field.setAccessible(true);
+				Object object = field.get(defectsInspectionReport);
+				if (object == null || ObjectUtils.isEmpty(object.toString())) {
+					log.info(field.getName());
+					lista.add(field.getName());
+				}
+			}
 			for (Field field : defectsInspectionReport.getClass().getDeclaredFields()) {
 				field.setAccessible(true);
 				Object object = field.get(defectsInspectionReport);
-				if(object instanceof ArrayList<?>) {
-					if(((ArrayList) object).size() == 0) {
+				if (object instanceof ArrayList<?>) {
+					if (((ArrayList) object).size() == 0) {
 						lista.add(field.getName());
 					}
-				}else {
-					if(object == null || StringUtils.isEmpty(object.toString())) {
-						System.out.println(field.getName());
+				} else {
+					if (object == null || ObjectUtils.isEmpty(object.toString())) {
+						log.info(field.getName());
 						lista.add(field.getName());
 					}
 				}

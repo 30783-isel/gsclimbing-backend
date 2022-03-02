@@ -220,30 +220,29 @@ public class ReportsController {
 	}
 
 	private String validateReport(DefectsInspectionReport defectsInspectionReport) {
-//		List<String> lista = defectsInspectionReportService.chkIfAllFieldsNull(defectsInspectionReport);
-//		StringBuilder string = new StringBuilder();
-//		if (defectsInspectionReport.getSite() == null || defectsInspectionReport.getSite().isEmpty()) {
-//			string.append(System.lineSeparator() + "Field Site empty");
-//		}
-//		if (defectsInspectionReport.getWtgNumber() == null || defectsInspectionReport.getWtgNumber().isEmpty()) {
-//			string.append(System.lineSeparator() + "Field WTG Number empty");
-//		}
-//		if (defectsInspectionReport.getWtgType() == null || defectsInspectionReport.getWtgType().isEmpty()) {
-//			string.append(System.lineSeparator() + "Field WTG Type empty");
-//		}
-//		if (defectsInspectionReport.getYearConstruction() == null || defectsInspectionReport.getYearConstruction().isEmpty()) {
-//			string.append(System.lineSeparator() + "Field Year of Construction empty");
-//		}
-//		for (FileData fileData : defectsInspectionReport.getListImages()) {
-//			if (fileData.getDescription() == null || fileData.getDescription().isEmpty()) {
-//				string.append(System.lineSeparator() + "Field " + fileData.getNameField() + " empty");
-//			}
-//			if (!fileData.isInsertedOnFtpServer()) {
-//				string.append(System.lineSeparator() + "Image from " + fileData.getNameField() + " empty");
-//			}
-//		}
-//		return string.toString();
-		return null;
+		List<String> lista = defectsInspectionReportService.chkIfAllFieldsNull(defectsInspectionReport);
+		StringBuilder string = new StringBuilder();
+		if (defectsInspectionReport.getSite() == null || defectsInspectionReport.getSite().isEmpty()) {
+			string.append(System.lineSeparator() + "Field Site empty");
+		}
+		if (defectsInspectionReport.getWtgNumber() == null || defectsInspectionReport.getWtgNumber().isEmpty()) {
+			string.append(System.lineSeparator() + "Field WTG Number empty");
+		}
+		if (defectsInspectionReport.getWtgType() == null || defectsInspectionReport.getWtgType().isEmpty()) {
+			string.append(System.lineSeparator() + "Field WTG Type empty");
+		}
+		if (defectsInspectionReport.getYearConstruction() == null || defectsInspectionReport.getYearConstruction().isEmpty()) {
+			string.append(System.lineSeparator() + "Field Year of Construction empty");
+		}
+		for (FileData fileData : defectsInspectionReport.getListImages()) {
+			if (fileData.getDescription() == null || fileData.getDescription().isEmpty()) {
+				string.append(System.lineSeparator() + "Field " + fileData.getNameField() + " empty");
+			}
+			if (!fileData.isInsertedOnFtpServer()) {
+				string.append(System.lineSeparator() + "Image from " + fileData.getNameField() + " empty");
+			}
+		}
+		return string.toString();
 	}
 
 }

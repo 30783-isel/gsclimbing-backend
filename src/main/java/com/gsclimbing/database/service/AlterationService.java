@@ -34,14 +34,35 @@ public class AlterationService {
 
 		List<Alteration> listAlternation = new ArrayList<>();
 		try {
-			for (Field oldField : oldDefectsInspectionReport.getClass().getDeclaredFields()) {
+			for (Field oldField : oldDefectsInspectionReport.getClass().getSuperclass().getDeclaredFields()) {
 				oldField.setAccessible(true);
-				
-				for (Field newField : defectsInspectionReport.getClass().getDeclaredFields()) {
+				for (Field newField : defectsInspectionReport.getClass().getSuperclass().getDeclaredFields()) {
 					newField.setAccessible(true);
-					
+					log.info(oldField.getName());
+					log.info(newField.getName());
 					if (oldField.getName().equals(newField.getName()) && newField.getName() != "modifiedDate") {
 						log.info(oldField.getName());
+						if ( oldField.get(oldDefectsInspectionReport) != null && newField.get(defectsInspectionReport) != null  && !oldField.get(oldDefectsInspectionReport).equals( newField.get(defectsInspectionReport)) &&  !"locked".equals(newField.getName()) ) {
+							Alteration alteration = new Alteration();
+							alteration.setField(newField.getName());
+							alteration.setFieldOld(String.valueOf(oldField.get(oldDefectsInspectionReport)));
+							alteration.setFieldNew(String.valueOf(newField.get(defectsInspectionReport)));
+							alteration.setImage(false);
+							alteration.setHash(null);
+							alteration.setImageChange(0);
+							alteration.setLocalDateTime(LocalDateTime.now());
+							alteration.setHistoricReport(historicReport);
+							listAlternation.add(alteration);
+							break;
+						}
+					}
+				}
+			}
+			for (Field oldField : oldDefectsInspectionReport.getClass().getDeclaredFields()) {
+				oldField.setAccessible(true);
+				for (Field newField : defectsInspectionReport.getClass().getDeclaredFields()) {
+					newField.setAccessible(true);
+					if (oldField.getName().equals(newField.getName())) {
 						if ( oldField.get(oldDefectsInspectionReport) != null && newField.get(defectsInspectionReport) != null  && !oldField.get(oldDefectsInspectionReport).equals( newField.get(defectsInspectionReport)) &&  !"locked".equals(newField.getName()) ) {
 							Alteration alteration = new Alteration();
 							alteration.setField(newField.getName());
