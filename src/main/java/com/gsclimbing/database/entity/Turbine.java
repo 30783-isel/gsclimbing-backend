@@ -59,6 +59,7 @@ public class Turbine {
 			.onboardCraneInspectionReport(this.onboardCraneInspectionReport)
 			.performanceReportRepairElevator(this.performanceReportRepairElevator)
 			.statutoryInspectionReport(this.statutoryInspectionReport)
+			.project(this.project)
 			.defectsInspectionReportOnTurbine(this.defectsInspectionReportOnTurbine)
 			.build();
 	}

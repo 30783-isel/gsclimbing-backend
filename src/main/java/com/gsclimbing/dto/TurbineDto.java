@@ -3,6 +3,7 @@ package com.gsclimbing.dto;
 import java.io.Serializable;
 
 import com.gsclimbing.database.entity.DefectsInspectionReport;
+import com.gsclimbing.database.entity.Project;
 
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,7 @@ public class TurbineDto implements Serializable {
 	private boolean performanceReportRepairElevator;
 	private boolean statutoryInspectionReport;
 	
+	private Project project;
 	private DefectsInspectionReport defectsInspectionReportOnTurbine;
 	
 }
