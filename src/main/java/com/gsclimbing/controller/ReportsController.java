@@ -31,6 +31,7 @@ import com.gsclimbing.database.service.FileService;
 import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.TurbineService;
 import com.gsclimbing.database.service.UserService;
+import com.gsclimbing.dto.ReportDto;
 import com.gsclimbing.email.SendEmail;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 import com.gsclimbing.historic.Historic;
@@ -71,11 +72,10 @@ public class ReportsController {
 			defectsInspectionReport = extractData.readPDF(file, projectId, turbineId, null, "UPLOAD");
 			Turbine turbine = turbineService.getTurbine(turbineId);
 			turbine.setDefectsInspectionReportOnTurbine(defectsInspectionReport);
-			validateString = validateReport(defectsInspectionReport);
 			if (ObjectUtils.isEmpty(validateString)) {
 				String username = defectsInspectionReportService.getCurrentLoggedUser();
 				User user = userService.getUser(username);
-				Project project = projectService.getProjectById(defectsInspectionReport.getProjectozinhoId());
+				Project project = projectService.getProjectById(Integer.parseInt(projectId));
 				String subject = "User " + user.getUsername() + " inserted a new Defects Inspection Report on project " + project.getName();
 				byte[] bytes = null;
 				bytes = defectsInspectionPopulater.generatePDF(defectsInspectionReport);
@@ -127,7 +127,7 @@ public class ReportsController {
 	
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete-report/{id}")
 	public Integer deleteDefectsInspectionReport(@PathVariable Integer id) {
-		Integer turbineId = defectsInspectionReportService.readDefectsInspectionReport(id).getTurbinazinhaId();
+		Integer turbineId = defectsInspectionReportService.readDefectsInspectionReport(id).getTurbinaId();
 		defectsInspectionReportService.deleteDefectsInspectionReport(id);
 		return turbineId;
 	}
@@ -139,8 +139,8 @@ public class ReportsController {
 	}
 
 	@RequestMapping("/report/{id}")
-	public DefectsInspectionReport readDefectsInspectionReport(@PathVariable Integer id) {
-		return defectsInspectionReportService.readDefectsInspectionReport(id);
+	public ReportDto readDefectsInspectionReport(@PathVariable Integer id) {
+		return defectsInspectionReportService.readDefectsInspectionReport(id).mapper();
 	}
 
 	@RequestMapping("/permission2edit/{id}")
@@ -152,7 +152,7 @@ public class ReportsController {
 			SendEmail runnable = null;
 			String username = defectsInspectionReportService.getCurrentLoggedUser();
 			User user = userService.getUser(username);
-			Project project = projectService.getProjectById(report.getProjectozinhoId());
+			Project project = projectService.getProjectById(report.getProjectoId());
 			String subject = "User " + user.getUsername() + " asked permission to edit a Defects Inspection Report on project " + project.getName();
 			byte[] bytes = null;
 			List<FileData> list = fileService.readFile(report.getUuid());

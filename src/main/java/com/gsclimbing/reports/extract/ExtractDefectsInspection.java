@@ -112,10 +112,12 @@ public class ExtractDefectsInspection {
 			defectsInspectionReport.setUuid(uuid);
 			defectsInspectionReport.setCreateDate(LocalDateTime.now());
 			defectsInspectionReport.setModifiedDate(LocalDateTime.now());
+			
 			Turbine turbine = turbineService.getTurbine(turbineId);
-			defectsInspectionReport.setTurbine( turbine );
-			defectsInspectionReport.setProjectozinhoId(turbine.getProject().getIdProject());
-			defectsInspectionReport.setTurbinazinhaId(turbine.getId());
+			defectsInspectionReport.setTurbine(turbine);
+			defectsInspectionReport.setProjectoId(turbine.getProject().getIdProject());
+			defectsInspectionReport.setTurbinaId(turbine.getId());
+			turbine.setDefectsInspectionReportOnTurbine(defectsInspectionReport);
 		}
 
 		defectsInspectionReport.setLocked("true");

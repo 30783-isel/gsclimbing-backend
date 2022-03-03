@@ -20,10 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DefectsInspectionReport extends Report implements Cloneable {
-	
-    private Integer projectozinhoId;
-    private Integer turbinazinhaId;
-	
+		
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "turbine_id")
     @JsonIgnore
