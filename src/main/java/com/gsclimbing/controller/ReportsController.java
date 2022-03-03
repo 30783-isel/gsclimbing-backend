@@ -63,13 +63,13 @@ public class ReportsController {
 	private AlterationService alterationService;
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
-	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("project") String projectId, @RequestParam("turbineId") Integer turbineId) {
+	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("project") String projectId, @RequestParam("turbineId") Integer turbineId, @RequestParam("typeReport") Integer typeReport) {
 		String message = "";
 		String validateString = null;
 		DefectsInspectionReport defectsInspectionReport = null;
 		SendEmail runnable = null;
 		try {
-			defectsInspectionReport = extractData.readPDF(file, projectId, turbineId, null, "UPLOAD");
+			defectsInspectionReport = extractData.readPDF(file, projectId, turbineId, typeReport, null, "UPLOAD");
 			Turbine turbine = turbineService.getTurbine(turbineId);
 			turbine.setDefectsInspectionReportOnTurbine(defectsInspectionReport);
 			if (ObjectUtils.isEmpty(validateString)) {
@@ -107,7 +107,7 @@ public class ReportsController {
 		String validateString = null;
 		DefectsInspectionReport defectsInspectionReport = null;
 		try {
-			defectsInspectionReport = extractData.readPDF(file, null, null, idReport, "UPDATE");
+			defectsInspectionReport = extractData.readPDF(file, null, null, null, idReport, "UPDATE");
 			validateString = validateReport(defectsInspectionReport);
 			return null;
 		} catch (Exception e) {

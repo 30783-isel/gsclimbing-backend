@@ -22,7 +22,7 @@ public class ReportDto {
 	private String wtgType;
 	private String yearConstruction;
 	private Integer numberPictures;
-	private Integer type;
+	private Integer typeReport;
     private Integer projectoId;
     private Integer turbinaId;
 	private Turbine turbine;

@@ -30,7 +30,7 @@ public class Report {
 	private String wtgType;
 	private String yearConstruction;
 	private int numberPictures;
-	private Integer type;
+	private Integer typeReport;
     private Integer projectoId;
     private Integer turbinaId;
 	
@@ -52,7 +52,7 @@ public class Report {
 			.wtgType(wtgType)
 			.yearConstruction(yearConstruction)
 			.numberPictures(numberPictures)
-			.type(type)
+			.typeReport(typeReport)
 			.projectoId(projectoId)
 			.turbinaId(turbinaId)
 			.build();

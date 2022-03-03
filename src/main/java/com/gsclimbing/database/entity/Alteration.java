@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.springframework.data.annotation.Transient;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -27,8 +29,9 @@ public class Alteration {
 	private String hash;
 	private int imageChange;
 	private java.time.LocalDateTime localDateTime;
-	
+	@Transient
 	private byte[] oldPicByte;
+	@Transient
 	private byte[] newPicByte;
 	
 	@ManyToOne

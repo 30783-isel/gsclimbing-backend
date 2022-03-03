@@ -82,7 +82,7 @@ public class ExtractDefectsInspection {
 	
 	
 
-	public DefectsInspectionReport readPDF(MultipartFile file, String projectId, Integer turbineId, Integer idReport, String operacao) throws IOException {
+	public DefectsInspectionReport readPDF(MultipartFile file, String projectId, Integer turbineId, Integer typeReport, Integer idReport, String operacao) throws IOException {
 		DefectsInspectionReport oldDefectsInspectionReport = null;
 		DefectsInspectionReport defectsInspectionReportReturned = null;
 		if ("UPDATE".equals(operacao)) {
@@ -110,6 +110,7 @@ public class ExtractDefectsInspection {
 			final String uuid = UUID.randomUUID().toString().replace("-", "");
 			setUuidStr(uuid);
 			defectsInspectionReport.setUuid(uuid);
+			defectsInspectionReport.setTypeReport(typeReport);
 			defectsInspectionReport.setCreateDate(LocalDateTime.now());
 			defectsInspectionReport.setModifiedDate(LocalDateTime.now());
 			
