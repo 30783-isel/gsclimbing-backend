@@ -1,6 +1,6 @@
-package com.gsclimbing.dto;
+package com.gsclimbing.commons.enums;
 
-public enum ReportsEnum{
+public enum ReportEnum{
 
 	DIR("Defect Inspection Report"),
     ET("Examination transformer"),
@@ -13,12 +13,12 @@ public enum ReportsEnum{
 
     public final String label;
 
-    private ReportsEnum(String label) {
+    private ReportEnum(String label) {
         this.label = label;
     }
     
-    public static ReportsEnum valueOfLabel(String label) {
-        for (ReportsEnum e : values()) {
+    public static ReportEnum valueOfLabel(String label) {
+        for (ReportEnum e : values()) {
             if (e.label.equals(label)) {
                 return e;
             }
