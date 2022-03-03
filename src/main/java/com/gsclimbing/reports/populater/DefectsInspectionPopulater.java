@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.FileData;
+import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.service.FileService;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 
@@ -48,7 +49,7 @@ public class DefectsInspectionPopulater {
 
 	private PDDocument _pdfDocument;
 
-	public byte[] generatePDF(DefectsInspectionReport report) {
+	public byte[] generatePDF(Report report) {
 
 		byte[] bytes = null;
 		try {
@@ -60,7 +61,7 @@ public class DefectsInspectionPopulater {
 		return bytes;
 	}
 
-	private byte[] populateAndCopy(DefectsInspectionReport report) throws IOException {
+	private byte[] populateAndCopy(Report report) throws IOException {
 
 		
 		String filename = "Defect Inspection Report.pdf";

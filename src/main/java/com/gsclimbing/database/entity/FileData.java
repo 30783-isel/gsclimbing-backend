@@ -40,9 +40,9 @@ public class FileData {
 	private boolean insertedOnFtpServer;
 
 	@ManyToOne
-	@JoinColumn(name="idDefectsInspectionReport", nullable=true)
+	@JoinColumn(name="idReport", nullable=true)
 	@JsonIgnore
-	private DefectsInspectionReport defectsInspectionReport;
+	private Report report;
 	
 	private static final int RADIX = 16;
 

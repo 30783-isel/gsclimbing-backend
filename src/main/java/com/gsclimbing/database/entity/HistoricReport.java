@@ -34,7 +34,7 @@ public class HistoricReport {
 	@ManyToOne
     @JoinColumn(name="idReport", nullable=true)
 	@JsonIgnore
-	private DefectsInspectionReport defectInspectionReport;
+	private Report report;
 	
     @OneToMany(mappedBy = "historicReport", cascade = { CascadeType.ALL } )
     @JsonIgnore

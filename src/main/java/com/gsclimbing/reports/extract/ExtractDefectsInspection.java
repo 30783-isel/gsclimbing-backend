@@ -103,7 +103,7 @@ public class ExtractDefectsInspection {
 				Optional<User> user = userService.findByUsername(username);
 				historicReport.setIdUser(user.get().getUsername());
 				historicReport.setUser(user.get().getUsername());
-				historicReport.setDefectInspectionReport(defectsInspectionReport);
+				historicReport.setReport(defectsInspectionReport);
 			}
 		} else if ("UPLOAD".equals(operacao)) {
 			defectsInspectionReport = new DefectsInspectionReport();
@@ -118,7 +118,7 @@ public class ExtractDefectsInspection {
 			defectsInspectionReport.setTurbine(turbine);
 			defectsInspectionReport.setProjectoId(turbine.getProject().getIdProject());
 			defectsInspectionReport.setTurbinaId(turbine.getId());
-			turbine.setDefectsInspectionReportOnTurbine(defectsInspectionReport);
+			turbine.getListReports().add(defectsInspectionReport);
 		}
 
 		defectsInspectionReport.setLocked("true");
@@ -208,7 +208,7 @@ public class ExtractDefectsInspection {
 			boolean inserted = FTPUploadFile.uploadFile2FTPServer(file, fileData.getHash());
 			fileData.setInsertedOnFtpServer(inserted);
 			getListPhotoNames().add(nameFile);
-			fileData.setDefectsInspectionReport(defectsInspectionReport);
+			fileData.setReport(defectsInspectionReport);
 			defectsInspectionReport.getListaFileData().add(fileData);
 		} else {
 			uploadImage(image, fileDataFiltered.get().getHash(), String.valueOf(getIdHistoric()), fileDataFiltered.get().getName());

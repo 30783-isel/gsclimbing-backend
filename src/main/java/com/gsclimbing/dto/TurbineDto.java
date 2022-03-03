@@ -1,11 +1,14 @@
 package com.gsclimbing.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.Project;
+import com.gsclimbing.database.entity.Report;
 
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
 
 @Data
@@ -23,8 +26,8 @@ public class TurbineDto implements Serializable {
 	private boolean onboardCraneInspectionReport;
 	private boolean performanceReportRepairElevator;
 	private boolean statutoryInspectionReport;
-	
 	private Project project;
-	private DefectsInspectionReport defectsInspectionReportOnTurbine;
+	@Default
+	private List<Report> listReports = new ArrayList<>();
 	
 }

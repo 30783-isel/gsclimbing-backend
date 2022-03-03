@@ -1,5 +1,8 @@
 package com.gsclimbing.database.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,9 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gsclimbing.dto.TurbineDto;
 
 import lombok.Getter;
@@ -36,8 +38,8 @@ public class Turbine {
 	private boolean performanceReportRepairElevator;
 	private boolean statutoryInspectionReport;
 	
-	@OneToOne(mappedBy = "turbine", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
-	private DefectsInspectionReport defectsInspectionReportOnTurbine;
+	@OneToMany(mappedBy = "turbine", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Report> listReports = new ArrayList<>();
 	
 	@ManyToOne
     @JoinColumn(name="idProject", nullable=false)
@@ -60,7 +62,7 @@ public class Turbine {
 			.performanceReportRepairElevator(this.performanceReportRepairElevator)
 			.statutoryInspectionReport(this.statutoryInspectionReport)
 			.project(this.project)
-			.defectsInspectionReportOnTurbine(this.defectsInspectionReportOnTurbine)
+			.listReports(this.listReports)
 			.build();
 	}
 	
