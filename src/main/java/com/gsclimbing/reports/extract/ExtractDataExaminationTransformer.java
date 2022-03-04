@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
@@ -29,7 +30,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.gsclimbing.database.entity.Alteration;
-import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.ExaminationTransformer;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.HistoricReport;
@@ -38,6 +38,7 @@ import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.repository.UserRepository;
 import com.gsclimbing.database.service.AlterationService;
 import com.gsclimbing.database.service.ExaminationTransformerService;
+import com.gsclimbing.database.service.HistoricReportService;
 import com.gsclimbing.database.service.TurbineService;
 import com.gsclimbing.ftp.FTPUploadFile;
 
@@ -55,13 +56,15 @@ public class ExtractDataExaminationTransformer {
 	private HistoricReport historicReport = null;
 	List<String> listPhotoNames = new ArrayList<String>();
 	private ExaminationTransformer examinationTransformer;
-	
+	 
 	@Autowired
 	private UserRepository userService;
 	@Autowired
 	private TurbineService turbineService;
 	@Autowired
 	private AlterationService alterationService;
+	@Autowired
+	private HistoricReportService historicReportService;
 	@Autowired
 	private ExaminationTransformerService examinationTransformerService;
 	@Autowired
@@ -119,7 +122,7 @@ public class ExtractDataExaminationTransformer {
 			populateAndCopy(document);
 		}
 		if ("UPDATE".equals(operacao)) {
-			List<Alteration> listaAlternation = alterationService.saveAlterationExaminationTransformer(oldExaminationTransformer, examinationTransformer, historicReport);
+			List<Alteration> listaAlternation = alterationService.saveAlterationReport(oldExaminationTransformer, examinationTransformer, historicReport);
 			historicReport.setListAlternation(listaAlternation);
 			examinationTransformer.getListHistoric().add(historicReport);
 			examinationTransformerReturned = examinationTransformerService.updateExaminationTransformer(examinationTransformer);
@@ -132,68 +135,22 @@ public class ExtractDataExaminationTransformer {
 	
 	
 	
-	public ExaminationTransformer readPDF(MultipartFile file, String project, String turbineId) throws IOException {
 
-		examinationTransformer = new ExaminationTransformer();
-
-		final String uuid = UUID.randomUUID().toString().replace("-", "");
-		setUuidStr(uuid);
-		examinationTransformer.setUuid(uuid);
-		examinationTransformer.setCreateDate(LocalDateTime.now());
-		examinationTransformer.setModifiedDate(LocalDateTime.now());
-
-		String username = examinationTransformerService.getCurrentLoggedUser();
-		Optional<User> user = userService.findByUsername(username);
-		examinationTransformer.setUserId(user.get().getUsername());
-
-		examinationTransformer.setProjectId(project);
-		examinationTransformer.setTurbineId(turbineId);
-		examinationTransformer.setLocked("true");
-		examinationTransformer.setPermission2Edit("false");
-
-		setExaminationTransformer(examinationTransformer);
-
-		File convfile = null;
-		try {
-			convfile = multipartToFile(file, file.getOriginalFilename());
-
-		} catch (IllegalStateException | IOException e) {
-			e.printStackTrace();
-		}
-
-		try (PDDocument document = PDDocument.load(convfile)) {
-
-			populateAndCopy(document);
-
-		}
-		examinationTransformerService.createExaminationTransformer(getExaminationTransformer());
-
-		return examinationTransformer;
-	}
 
 	void populateAndCopy(PDDocument document) throws IOException {
-
 		getListPhotoNames().clear();
-
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
-
 		List<PDField> fields = acroForm.getFields();
-
 		for (PDField field : fields) {
-
 			if (field instanceof PDTextField) {
-
 				String valueField = ((PDTextField) field).getValue();
 				String nameField = field.getFullyQualifiedName();
-
 				if (nameField.equals("site"))
 					getExaminationTransformer().setSite(valueField);
 				if (nameField.equals("wtgNumber"))
 					getExaminationTransformer().setWtgNumber(valueField);
-
 				if (nameField.equals("site"))
 					getExaminationTransformer().setSite(valueField);
-
 				if (nameField.equals("dateOfMeasurement"))
 					getExaminationTransformer().setDateOfMeasurement(valueField);
 				if (nameField.equals("site"))
@@ -210,7 +167,6 @@ public class ExtractDataExaminationTransformer {
 					getExaminationTransformer().setCorrect1(valueField);
 				if (nameField.equals("notCorrect1"))
 					getExaminationTransformer().setNotCorrect1(valueField);
-
 				if (nameField.equals("equipamentType1"))
 					getExaminationTransformer().setEquipamentType1(valueField);
 				if (nameField.equals("serialNumber1"))
@@ -219,7 +175,6 @@ public class ExtractDataExaminationTransformer {
 					getExaminationTransformer().setCalibrationDate1(valueField);
 				if (nameField.equals("nextCalibrationDate1"))
 					getExaminationTransformer().setNextCalibrationDate1(valueField);
-
 				if (nameField.equals("terminals1_1"))
 					getExaminationTransformer().setTerminals1_1(valueField);
 				if (nameField.equals("terminals1_2"))
@@ -238,7 +193,6 @@ public class ExtractDataExaminationTransformer {
 					getExaminationTransformer().setTerminals3_2(valueField);
 				if (nameField.equals("terminals3_3"))
 					getExaminationTransformer().setTerminals3_3(valueField);
-
 				if (nameField.equals("tolerancia1"))
 					getExaminationTransformer().setTolerancia1(valueField);
 				if (nameField.equals("tolerancia2"))
@@ -251,7 +205,6 @@ public class ExtractDataExaminationTransformer {
 					getExaminationTransformer().setTolerancia5(valueField);
 				if (nameField.equals("tolerancia6"))
 					getExaminationTransformer().setTolerancia6(valueField);
-
 				if (nameField.equals("equipamentType2"))
 					getExaminationTransformer().setEquipamentType2(valueField);
 				if (nameField.equals("serialNumber2"))
@@ -260,7 +213,6 @@ public class ExtractDataExaminationTransformer {
 					getExaminationTransformer().setCalibrationDate2(valueField);
 				if (nameField.equals("nextCalibrationDate2"))
 					getExaminationTransformer().setNextCalibrationDate2(valueField);
-
 				if (nameField.equals("voltage1"))
 					getExaminationTransformer().setVoltage1(valueField);
 				if (nameField.equals("voltage2"))
@@ -273,7 +225,6 @@ public class ExtractDataExaminationTransformer {
 					getExaminationTransformer().setVoltage5(valueField);
 				if (nameField.equals("voltage6"))
 					getExaminationTransformer().setVoltage6(valueField);
-
 				if (nameField.equals("resistencia1"))
 					getExaminationTransformer().setResistencia1(valueField);
 				if (nameField.equals("resistencia2"))
@@ -286,7 +237,6 @@ public class ExtractDataExaminationTransformer {
 					getExaminationTransformer().setResistencia5(valueField);
 				if (nameField.equals("resistencia6"))
 					getExaminationTransformer().setResistencia6(valueField);
-
 				if (nameField.equals("medida1"))
 					getExaminationTransformer().setMedida1(valueField);
 				if (nameField.equals("medida2"))
@@ -299,7 +249,6 @@ public class ExtractDataExaminationTransformer {
 					getExaminationTransformer().setMedida5(valueField);
 				if (nameField.equals("medida6"))
 					getExaminationTransformer().setMedida6(valueField);
-
 				if (nameField.equals("equipamentType3"))
 					getExaminationTransformer().setEquipamentType3(valueField);
 				if (nameField.equals("serialNumber3"))
@@ -308,14 +257,12 @@ public class ExtractDataExaminationTransformer {
 					getExaminationTransformer().setCalibrationDate3(valueField);
 				if (nameField.equals("nextCalibrationDate3"))
 					getExaminationTransformer().setNextCalibrationDate3(valueField);
-
 				if (nameField.equals("voltage"))
 					getExaminationTransformer().setVoltage(valueField);
 				if (nameField.equals("corrent1"))
 					getExaminationTransformer().setCorrent1(valueField);
 				if (nameField.equals("corrent2"))
 					getExaminationTransformer().setCorrent2(valueField);
-
 				if (nameField.equals("equipamentType4"))
 					getExaminationTransformer().setEquipamentType4(valueField);
 				if (nameField.equals("serialNumber4"))
@@ -328,8 +275,6 @@ public class ExtractDataExaminationTransformer {
 					getExaminationTransformer().setInsulationResistance(valueField);
 				if (nameField.equals("ratioTest"))
 					getExaminationTransformer().setRatioTest(valueField);
-
-
 				if (nameField.equals("conclusion"))
 					getExaminationTransformer().setConclusion(valueField);
 				if (nameField.equals("performedBy"))
@@ -338,38 +283,26 @@ public class ExtractDataExaminationTransformer {
 					getExaminationTransformer().setDate(valueField);
 
 			} else if (field instanceof PDCheckBox) {
-
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDCheckBox) field).getValue();
-
 				if (nameField.equals("correct1"))
 					getExaminationTransformer().setCorrect1(valueField);
 				if (nameField.equals("notCorrect1"))
 					getExaminationTransformer().setNotCorrect1(valueField);
-				
 				if (nameField.equals("correct2"))
 					getExaminationTransformer().setCorrect2(valueField);
 				if (nameField.equals("notCorrect2"))
 					getExaminationTransformer().setNotCorrect2(valueField);
-
 			} else if (field instanceof PDRadioButton) {
-
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDRadioButton) field).getValue();
-
-
 			} else if (field instanceof PDPushButton) {
-
 				String nameField = field.getFullyQualifiedName();
-
 				for (final PDAnnotationWidget widget : field.getWidgets()) {
-
 					WidgetImageChecker checker = new WidgetImageChecker(widget);
 					try {
 						if (checker.hasImages()) {
-					
 							PDImage pDimage = checker.getpDimage();
-
 							setPhoto(nameField);
 							FileData fileData = new FileData();
 							fileData.setImageChange(0);
@@ -378,117 +311,117 @@ public class ExtractDataExaminationTransformer {
 							examinationTransformer.addImgOnListImages(fileData);
 							examinationTransformer.addOneMorePicture();
 							extractAnnotationImages(pDimage, nameField, fileData);
-
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					;
 				}
-
 			}
 		}
-
 	}
-
+	
 	public void extractAnnotationImages(PDImage image, String nameFile, FileData fileData) throws IOException {
-
-		if (!getListPhotoNames().contains(nameFile)) {
-
+		List<FileData> listFileData = fileService.readFile(getExaminationTransformer().getUuid()).stream().filter(filex -> filex.getMimeType().equals("JPG")).collect(Collectors.toList());
+		Optional<FileData> fileDataFiltered = listFileData.stream().filter(fileD -> nameFile.equals(fileD.getName())).findAny();
+		if (!fileDataFiltered.isPresent()) {
 			fileData.setUuid(getExaminationTransformer().getUuid());
-			fileData.setTeamId(getExaminationTransformer().getProjectId());
-			fileData.setUserId(getExaminationTransformer().getUserId());
 			fileData.setCreateDate(getExaminationTransformer().getCreateDate());
 			fileData.setModifiedDate(getExaminationTransformer().getModifiedDate());
-
 			fileData.setName(nameFile);
-			fileData.setSize(100);
 			fileData.setMimeType("JPG");
-
 			try {
 				fileData.setHash();
 			} catch (NoSuchAlgorithmException e) {
 				e.printStackTrace();
 			}
-
 			File file = File.createTempFile(fileData.getHash(), null);
-
 			ImageIO.write(image.getImage(), "jpg", file);
-
+			fileData.setSize(fileSize(file));
 			boolean inserted = FTPUploadFile.uploadFile2FTPServer(file, fileData.getHash());
 			fileData.setInsertedOnFtpServer(inserted);
-
 			getListPhotoNames().add(nameFile);
-
-			fileService.createFile(fileData);
-
+			fileData.setReport(getExaminationTransformer());
+			getExaminationTransformer().getListaFileData().add(fileData);
+		} else {
+			uploadImage(image, fileDataFiltered.get().getHash(), String.valueOf(getIdHistoric()), fileDataFiltered.get().getName());
 		}
-
+	}
+	
+	private void uploadImage(PDImage image, String hash, String idHistoric, String imageFieldName) throws IOException {
+		File file = File.createTempFile(imageFieldName, null);
+		ImageIO.write(image.getImage(), "jpg", file);
+		FileData fileData = fileService.readFileByHash(hash);
+		fileData.addImageChange();
+		if (fileSize(file) != fileData.getSize()) {
+			Alteration alteration = new Alteration();
+			alteration.setField(imageFieldName);
+			alteration.setFieldOld(null);
+			alteration.setFieldNew(null);
+			alteration.setImage(true);
+			alteration.setHash(hash);
+			alteration.setImage(true);
+			alteration.setImageChange(fileData.getImageChange());
+			alteration.setLocalDateTime(LocalDateTime.now());
+			alteration.setOldPicByte(null);
+			alteration.setNewPicByte(null);
+			alteration.setHistoricReport(historicReport);
+			if (historicReport != null) {
+				historicReport.getListAlternation().add(alteration);
+				historicReport.addNumAlterations();
+				historicReportService.saveHistoricReport(historicReport);
+			}
+			FTPUploadFile.replaceFile2FTPServer(file, hash, fileData.getImageChange());
+		}
 	}
 
 	static class WidgetImageChecker extends PDFGraphicsStreamEngine {
-
 		private PDImage pDimage;
-
 		WidgetImageChecker(PDAnnotationWidget widget) {
 			super(widget.getPage());
 			this.widget = widget;
 		}
-
 		boolean hasImages() throws IOException {
 			count = 0;
 			PDAppearanceStream normalAppearance = widget.getNormalAppearanceStream();
 			processChildStream(normalAppearance, widget.getPage());
 			return count != 0;
 		}
-
 		@Override
 		public void drawImage(PDImage pdImage) throws IOException {
 			count++;
 			this.pDimage = pdImage;
 		}
-
 		@Override
 		public void appendRectangle(Point2D p0, Point2D p1, Point2D p2, Point2D p3) throws IOException {
 		}
-
 		@Override
 		public void clip(int windingRule) throws IOException {
 		}
-
 		@Override
 		public void moveTo(float x, float y) throws IOException {
 		}
-
 		@Override
 		public void lineTo(float x, float y) throws IOException {
 		}
-
 		@Override
 		public void curveTo(float x1, float y1, float x2, float y2, float x3, float y3) throws IOException {
 		}
-
 		@Override
 		public Point2D getCurrentPoint() throws IOException {
 			return null;
 		}
-
 		@Override
 		public void closePath() throws IOException {
 		}
-
 		@Override
 		public void endPath() throws IOException {
 		}
-
 		@Override
 		public void strokePath() throws IOException {
 		}
-
 		@Override
 		public void fillPath(int windingRule) throws IOException {
 		}
-
 		@Override
 		public void fillAndStrokePath(int windingRule) throws IOException {
 		}
@@ -496,18 +429,14 @@ public class ExtractDataExaminationTransformer {
 		@Override
 		public void shadingFill(COSName shadingName) throws IOException {
 		}
-
 		final PDAnnotationWidget widget;
 		int count = 0;
-
 		public PDImage getpDimage() {
 			return pDimage;
 		}
-
 		public void setpDimage(PDImage pDimage) {
 			this.pDimage = pDimage;
 		}
-
 	}
 
 	public File multipartToFile(MultipartFile multipart, String fileName) throws IllegalStateException, IOException {
@@ -565,4 +494,9 @@ public class ExtractDataExaminationTransformer {
 		this.listPhotoNames = listPhotoNames;
 	}
 
+	public long fileSize(File file) {
+		long bytes = file.length();
+		long kilobytes = (bytes / 1024);
+		return kilobytes;
+	}
 }

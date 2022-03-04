@@ -33,7 +33,6 @@ import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.HistoricReport;
 import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.entity.User;
-import com.gsclimbing.database.repository.AlterationRepository;
 import com.gsclimbing.database.repository.UserRepository;
 import com.gsclimbing.database.service.AlterationService;
 import com.gsclimbing.database.service.DefectsInspectionReportService;
@@ -77,12 +76,12 @@ public class ExtractDefectsInspection {
 			oldDefectsInspectionReport = defectsInspectionReportService.readDefectsInspectionReport(idReport);
 			if (oldDefectsInspectionReport != null) {
 				try {
-					defectsInspectionReport = (DefectsInspectionReport) oldDefectsInspectionReport.clone();
+					setDefectsInspectionReport( (DefectsInspectionReport) oldDefectsInspectionReport.clone() );
 				} catch (CloneNotSupportedException e) {
 					e.printStackTrace();
 				}
-				defectsInspectionReport.setModifiedDate(LocalDateTime.now());
-				defectsInspectionReport.setLocked("true");
+				getDefectsInspectionReport().setModifiedDate(LocalDateTime.now());
+				getDefectsInspectionReport().setLocked("true");
 				historicReport = new HistoricReport();
 				historicReport.setTypeReport(1);
 				historicReport.setLocalDateTime(LocalDateTime.now());
@@ -91,27 +90,27 @@ public class ExtractDefectsInspection {
 				Optional<User> user = userService.findByUsername(username);
 				historicReport.setIdUser(user.get().getUsername());
 				historicReport.setUser(user.get().getUsername());
-				historicReport.setReport(defectsInspectionReport);
+				historicReport.setReport(getDefectsInspectionReport());
 			}
 		} else if ("UPLOAD".equals(operacao)) {
-			defectsInspectionReport = new DefectsInspectionReport();
+			setDefectsInspectionReport(new DefectsInspectionReport());;
 			final String uuid = UUID.randomUUID().toString().replace("-", "");
 			setUuidStr(uuid);
-			defectsInspectionReport.setUuid(uuid);
-			defectsInspectionReport.setTypeReport(typeReport);
-			defectsInspectionReport.setCreateDate(LocalDateTime.now());
-			defectsInspectionReport.setModifiedDate(LocalDateTime.now());
+			getDefectsInspectionReport().setUuid(uuid);
+			getDefectsInspectionReport().setTypeReport(typeReport);
+			getDefectsInspectionReport().setCreateDate(LocalDateTime.now());
+			getDefectsInspectionReport().setModifiedDate(LocalDateTime.now());
 			
 			Turbine turbine = turbineService.getTurbine(turbineId);
-			defectsInspectionReport.setTurbine(turbine);
-			defectsInspectionReport.setProjectoId(turbine.getProject().getIdProject());
-			defectsInspectionReport.setTurbinaId(turbine.getId());
-			turbine.getListReports().add(defectsInspectionReport);
+			getDefectsInspectionReport().setTurbine(turbine);
+			getDefectsInspectionReport().setProjectoId(turbine.getProject().getIdProject());
+			getDefectsInspectionReport().setTurbinaId(turbine.getId());
+			turbine.getListReports().add(getDefectsInspectionReport());
 		}
 
-		defectsInspectionReport.setLocked("true");
-		defectsInspectionReport.setPermission2Edit("false");
-		setDefectsInspectionReport(defectsInspectionReport);
+		getDefectsInspectionReport().setLocked("true");
+		getDefectsInspectionReport().setPermission2Edit("false");
+		setDefectsInspectionReport(getDefectsInspectionReport());
 		File convfile = null;
 		try {
 			convfile = multipartToFile(file, file.getOriginalFilename());
@@ -122,10 +121,10 @@ public class ExtractDefectsInspection {
 			populateAndCopy(document);
 		}
 		if ("UPDATE".equals(operacao)) {
-			List<Alteration> listaAlternation = alterationService.saveAlterationDefectsInspectionReport(oldDefectsInspectionReport, defectsInspectionReport, historicReport);
+			List<Alteration> listaAlternation = alterationService.saveAlterationReport(oldDefectsInspectionReport, getDefectsInspectionReport(), historicReport);
 			historicReport.setListAlternation(listaAlternation);
-			defectsInspectionReport.getListHistoric().add(historicReport);
-			defectsInspectionReportReturned = defectsInspectionReportService.updateDefectsInspectionReport(defectsInspectionReport);
+			getDefectsInspectionReport().getListHistoric().add(historicReport);
+			defectsInspectionReportReturned = defectsInspectionReportService.updateDefectsInspectionReport(getDefectsInspectionReport());
 		} else {
 			defectsInspectionReportReturned = defectsInspectionReportService.createDefectsInspectionReport(getDefectsInspectionReport());
 		}
@@ -164,8 +163,8 @@ public class ExtractDefectsInspection {
 							fileData.setImageChange(0);
 							fileData.setNameField(getNameField());
 							fileData.setDescription(getDescription());
-							defectsInspectionReport.addImgOnListImages(fileData);
-							defectsInspectionReport.addOneMorePicture();
+							getDefectsInspectionReport().addImgOnListImages(fileData);
+							getDefectsInspectionReport().addOneMorePicture();
 							extractAnnotationImages(pDimage, nameField, fileData);
 						}
 					} catch (IOException e) {
@@ -177,7 +176,7 @@ public class ExtractDefectsInspection {
 	}
 
 	public void extractAnnotationImages(PDImage image, String nameFile, FileData fileData) throws IOException {
-		List<FileData> listFileData = fileService.readFile(defectsInspectionReport.getUuid()).stream().filter(filex -> filex.getMimeType().equals("JPG")).collect(Collectors.toList());
+		List<FileData> listFileData = fileService.readFile(getDefectsInspectionReport().getUuid()).stream().filter(filex -> filex.getMimeType().equals("JPG")).collect(Collectors.toList());
 		Optional<FileData> fileDataFiltered = listFileData.stream().filter(fileD -> nameFile.equals(fileD.getName())).findAny();
 		if (!fileDataFiltered.isPresent()) {
 			fileData.setUuid(getDefectsInspectionReport().getUuid());
@@ -196,8 +195,8 @@ public class ExtractDefectsInspection {
 			boolean inserted = FTPUploadFile.uploadFile2FTPServer(file, fileData.getHash());
 			fileData.setInsertedOnFtpServer(inserted);
 			getListPhotoNames().add(nameFile);
-			fileData.setReport(defectsInspectionReport);
-			defectsInspectionReport.getListaFileData().add(fileData);
+			fileData.setReport(getDefectsInspectionReport());
+			getDefectsInspectionReport().getListaFileData().add(fileData);
 		} else {
 			uploadImage(image, fileDataFiltered.get().getHash(), String.valueOf(getIdHistoric()), fileDataFiltered.get().getName());
 		}
@@ -212,7 +211,6 @@ public class ExtractDefectsInspection {
 		fileData.addImageChange();
 
 		if (fileSize(file) != fileData.getSize()) {
-
 			Alteration alteration = new Alteration();
 			alteration.setField(imageFieldName);
 			alteration.setFieldOld(null);
@@ -222,8 +220,6 @@ public class ExtractDefectsInspection {
 			alteration.setImage(true);
 			alteration.setImageChange(fileData.getImageChange());
 			alteration.setLocalDateTime(LocalDateTime.now());
-			alteration.setOldPicByte(null);
-			alteration.setNewPicByte(null);
 			alteration.setHistoricReport(historicReport);
 			if (historicReport != null) {
 				historicReport.getListAlternation().add(alteration);
