@@ -28,37 +28,110 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.gsclimbing.database.entity.Alteration;
+import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.ExaminationTransformer;
 import com.gsclimbing.database.entity.FileData;
+import com.gsclimbing.database.entity.HistoricReport;
+import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.repository.UserRepository;
+import com.gsclimbing.database.service.AlterationService;
 import com.gsclimbing.database.service.ExaminationTransformerService;
+import com.gsclimbing.database.service.TurbineService;
 import com.gsclimbing.ftp.FTPUploadFile;
 
+import lombok.Data;
+
+@Data
 @Service
 public class ExtractDataExaminationTransformer {
-
+	
+	private String uuidStr;
+	private String description = null;
+	private String nameField = null;
+	private String photo = null;
+	private String idHistoric = null;
+	private HistoricReport historicReport = null;
+	List<String> listPhotoNames = new ArrayList<String>();
+	private ExaminationTransformer examinationTransformer;
+	
+	@Autowired
+	private UserRepository userService;
+	@Autowired
+	private TurbineService turbineService;
+	@Autowired
+	private AlterationService alterationService;
 	@Autowired
 	private ExaminationTransformerService examinationTransformerService;
-
 	@Autowired
 	private com.gsclimbing.database.service.FileService fileService;
 
-	@Autowired
-	private UserRepository userService;
+	public ExaminationTransformer readPDF(MultipartFile file, String projectId, Integer turbineId, Integer typeReport, Integer idReport, String operacao) throws IOException {
+		ExaminationTransformer oldExaminationTransformer = null;
+		ExaminationTransformer examinationTransformerReturned = null;
+		if ("UPDATE".equals(operacao)) {
+			oldExaminationTransformer = examinationTransformerService.readExaminationTransformer(idReport);
+			if (oldExaminationTransformer != null) {
+				try {
+					examinationTransformer = (ExaminationTransformer) oldExaminationTransformer.clone();
+				} catch (CloneNotSupportedException e) {
+					e.printStackTrace();
+				}
+				examinationTransformer.setModifiedDate(LocalDateTime.now());
+				examinationTransformer.setLocked("true");
+				historicReport = new HistoricReport();
+				historicReport.setTypeReport(1);
+				historicReport.setLocalDateTime(LocalDateTime.now());
+				historicReport.setNumAlterations(0);
+				String username = examinationTransformerService.getCurrentLoggedUser();
+				Optional<User> user = userService.findByUsername(username);
+				historicReport.setIdUser(user.get().getUsername());
+				historicReport.setUser(user.get().getUsername());
+				historicReport.setReport(examinationTransformer);
+			}
+		} else if ("UPLOAD".equals(operacao)) {
+			examinationTransformer = new ExaminationTransformer();
+			final String uuid = UUID.randomUUID().toString().replace("-", "");
+			setUuidStr(uuid);
+			examinationTransformer.setUuid(uuid);
+			examinationTransformer.setTypeReport(typeReport);
+			examinationTransformer.setCreateDate(LocalDateTime.now());
+			examinationTransformer.setModifiedDate(LocalDateTime.now());
+			
+			Turbine turbine = turbineService.getTurbine(turbineId);
+			examinationTransformer.setTurbine(turbine);
+			examinationTransformer.setProjectoId(turbine.getProject().getIdProject());
+			examinationTransformer.setTurbinaId(turbine.getId());
+			turbine.getListReports().add(examinationTransformer);
+		}
 
-	List<String> listPhotoNames = new ArrayList<String>();
-
-	private ExaminationTransformer examinationTransformer;
-
-	private String uuidStr;
-
-	private String description = null;
-
-	private String nameField = null;
-
-	private String photo = null;
-
+		examinationTransformer.setLocked("true");
+		examinationTransformer.setPermission2Edit("false");
+		setExaminationTransformer(examinationTransformer);
+		File convfile = null;
+		try {
+			convfile = multipartToFile(file, file.getOriginalFilename());
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		}
+		try (PDDocument document = PDDocument.load(convfile)) {
+			populateAndCopy(document);
+		}
+		if ("UPDATE".equals(operacao)) {
+			List<Alteration> listaAlternation = alterationService.saveAlterationExaminationTransformer(oldExaminationTransformer, examinationTransformer, historicReport);
+			historicReport.setListAlternation(listaAlternation);
+			examinationTransformer.getListHistoric().add(historicReport);
+			examinationTransformerReturned = examinationTransformerService.updateExaminationTransformer(examinationTransformer);
+		} else {
+			examinationTransformerReturned = examinationTransformerService.createExaminationTransformer(getExaminationTransformer());
+		}
+		return examinationTransformerReturned;
+	}
+	
+	
+	
+	
 	public ExaminationTransformer readPDF(MultipartFile file, String project, String turbineId) throws IOException {
 
 		examinationTransformer = new ExaminationTransformer();

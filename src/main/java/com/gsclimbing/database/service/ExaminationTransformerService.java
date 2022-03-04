@@ -2,7 +2,6 @@ package com.gsclimbing.database.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,12 +26,12 @@ public class ExaminationTransformerService {
 	@Autowired
 	private ExaminationTransformerRepository examinationTransformerRepository;
 
-	public void createExaminationTransformer(ExaminationTransformer examinationTransformer) {
-		examinationTransformerRepository.save(examinationTransformer);
+	public ExaminationTransformer createExaminationTransformer(ExaminationTransformer examinationTransformer) {
+		return examinationTransformerRepository.save(examinationTransformer);
 	}
 
-	public Optional<ExaminationTransformer> readExaminationTransformer(Integer id) {
-		return examinationTransformerRepository.findById(id);
+	public ExaminationTransformer readExaminationTransformer(Integer id) {
+		return examinationTransformerRepository.findById(id).orElse(null);
 	}
 
 	public List<ExaminationTransformer> readAllExaminationTransformer() {
@@ -45,8 +44,8 @@ public class ExaminationTransformerService {
 		return examinationTransformerRepository.findByTurbineId(turbineId);
 	}
 
-	public void updateExaminationTransformer(Integer id, ExaminationTransformer examinationTransformer) {
-		examinationTransformerRepository.save(examinationTransformer);
+	public ExaminationTransformer updateExaminationTransformer(ExaminationTransformer examinationTransformer) {
+		return examinationTransformerRepository.save(examinationTransformer);
 	}
 
 	public List<ExaminationTransformer> searchExaminationTransformer(String site, String wtgNumber, String wtgType) {
@@ -65,21 +64,19 @@ public class ExaminationTransformerService {
 
 	public String getCurrentLoggedUser() {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
 		String username = null;
 		if (principal instanceof UserDetails) {
 			username = ((UserDetails) principal).getUsername();
 		} else {
 			username = principal.toString();
 		}
-
 		return username;
 	}
 
 	private void deleteHistoricAndFileData(int id) {
-		Optional<ExaminationTransformer> examinationTransformer = examinationTransformerService.readExaminationTransformer(id);
-		if (examinationTransformer.isPresent()) {
-			String uuid = examinationTransformer.get().getUuid();
+		ExaminationTransformer examinationTransformer = examinationTransformerService.readExaminationTransformer(id);
+		if (examinationTransformer != null) {
+			String uuid = examinationTransformer.getUuid();
 			List<FileData> listFileData = fileService.readFile(uuid);
 
 			listFileData.stream().forEach(fileData -> {

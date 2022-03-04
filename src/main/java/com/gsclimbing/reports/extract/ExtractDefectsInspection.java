@@ -54,33 +54,21 @@ public class ExtractDefectsInspection {
 	private String photo = null;
 	private String idHistoric = null;
 	private HistoricReport historicReport = null;
-
-	@Autowired
-	private DefectsInspectionReportService defectsInspectionReportService;
-	
-	@Autowired
-	private TurbineService turbineService;
-
-	@Autowired
-	private FileService fileService;
-
-	@Autowired
-	private UserRepository userService;
-
-	@Autowired
-	private HistoricReportService historicReportService;
-
-	@Autowired
-	private AlterationService alterationService;
-
-	@Autowired
-	private AlterationRepository alterationRepository;
-
 	private DefectsInspectionReport defectsInspectionReport;
-
 	List<String> listPhotoNames = new ArrayList<String>();
 	
-	
+	@Autowired
+	private DefectsInspectionReportService defectsInspectionReportService;
+	@Autowired
+	private TurbineService turbineService;
+	@Autowired
+	private FileService fileService;
+	@Autowired
+	private UserRepository userService;
+	@Autowired
+	private HistoricReportService historicReportService;
+	@Autowired
+	private AlterationService alterationService;
 
 	public DefectsInspectionReport readPDF(MultipartFile file, String projectId, Integer turbineId, Integer typeReport, Integer idReport, String operacao) throws IOException {
 		DefectsInspectionReport oldDefectsInspectionReport = null;
