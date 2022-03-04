@@ -1,5 +1,6 @@
 package com.gsclimbing.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.gsclimbing.commons.enums.ReportEnum;
 import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.FileData;
@@ -27,7 +29,6 @@ import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.service.AlterationService;
-import com.gsclimbing.database.service.DefectsInspectionReportService;
 import com.gsclimbing.database.service.FileService;
 import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.ReportService;
@@ -40,7 +41,10 @@ import com.gsclimbing.historic.Historic;
 import com.gsclimbing.reports.extract.ExtractDefectsInspection;
 import com.gsclimbing.reports.populater.DefectsInspectionPopulater;
 
+import lombok.Data;
+
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
+@Data
 @RestController
 @RequestMapping(path = "/api/reports")
 public class ReportsController {
@@ -59,20 +63,22 @@ public class ReportsController {
 	private UserService userService;
 	@Autowired
 	private AlterationService alterationService;
-	
 	@Autowired
-	private ExtractDefectsInspection extractData;
+	private ExtractDefectsInspection extractDefectsInspection;
 	@Autowired
 	private DefectsInspectionPopulater defectsInspectionPopulater;
+	
+	private Report report;
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
 	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("project") String projectId, @RequestParam("turbineId") Integer turbineId, @RequestParam("typeReport") Integer typeReport) {
 		String message = "";
 		String validateString = null;
 		Report report = null;
+		instaceSelection(typeReport);
 		SendEmail runnable = null;
 		try {
-			report = extractData.readPDF(file, projectId, turbineId, typeReport, null, "UPLOAD");
+			report = readPdf(file, projectId, turbineId, typeReport, null, "UPLOAD");
 			Turbine turbine = turbineService.getTurbine(turbineId);
 			turbine.getListReports().add(report);
 			if (ObjectUtils.isEmpty(validateString)) {
@@ -81,7 +87,7 @@ public class ReportsController {
 				Project project = projectService.getProjectById(Integer.parseInt(projectId));
 				String subject = "User " + user.getUsername() + " inserted a new Defects Inspection Report on project " + project.getName();
 				byte[] bytes = null;
-				bytes = defectsInspectionPopulater.generatePDF(report);
+				bytes = generatePDF(typeReport, getReport());
 				runnable = new SendEmail(subject, "Defects Inspection Report.pdf", bytes);
 				Thread t = new Thread(runnable);
 				t.start();
@@ -103,26 +109,63 @@ public class ReportsController {
 			return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
 		}
 	}
+	
+	public void instaceSelection(Integer typeReport) {
+		ReportEnum reportEnum = ReportEnum.values()[typeReport];
+		switch (reportEnum) {
+		case DIR:
+			setReport(new DefectsInspectionReport());
+			break;
+		case ET:
+
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public Report readPdf(MultipartFile file, String projectId, Integer turbineId, Integer typeReport, Integer idReport, String operation) throws IOException {
+		ReportEnum reportEnum = ReportEnum.values()[typeReport];
+		switch (reportEnum) {
+		case DIR:
+			return extractDefectsInspection.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
+		case ET:
+			return null;
+		}
+		return null;
+	}
+	
+	public byte[] generatePDF(Integer typeReport, Report report)  {
+		ReportEnum reportEnum = ReportEnum.values()[typeReport];
+		switch (reportEnum) {
+		case DIR:
+			return defectsInspectionPopulater.generatePDF(report);
+		case ET:
+			return null;
+		}
+		return null;
+	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/update")
-	public ResponseEntity<?> updateFile(@RequestParam("file") MultipartFile file, @RequestParam("idReport") Integer idReport) {
+	public ResponseEntity<?> updateFile(@RequestParam("file") MultipartFile file, @RequestParam("idReport") Integer idReport, @RequestParam("typeReport") Integer typeReport) {
 		String message = "";
 		String validateString = null;
-		DefectsInspectionReport defectsInspectionReport = null;
+		Report report = null;
+		instaceSelection(typeReport);
 		try {
-			defectsInspectionReport = extractData.readPDF(file, null, null, null, idReport, "UPDATE");
-			validateString = validateReport(defectsInspectionReport);
+			report = readPdf(file, null, null, typeReport, idReport, "UPDATE");
+			validateString = validateReport(report);
 			return null;
 		} catch (Exception e) {
 			message = "Could not upload the file: " + file.getOriginalFilename() + "!!!\n" + validateString;
-			if (defectsInspectionReport != null) {
-				String uuid = defectsInspectionReport.getUuid();
+			if (report != null) {
+				String uuid = report.getUuid();
 				List<FileData> listFileData = fileService.readFile(uuid);
 				listFileData.stream().forEach(fileData -> {
 					fileService.deleteFile(fileData.getFileId());
 					FTPDownloadFiles.deleteFile2FTPServer(fileData.getHash());
 				});
-				reportService.deleteReport(defectsInspectionReport.getReportId());
+				reportService.deleteReport(report.getReportId());
 			}
 			return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
 		}
@@ -161,6 +204,8 @@ public class ReportsController {
 			List<FileData> list = fileService.readFile(report.getUuid());
 			list.stream().filter(filex -> filex.getMimeType().equals("application/pdf")).findAny();
 			bytes = defectsInspectionPopulater.generatePDF(report);
+			//TODO
+			//bytes = generatePDF(typeReport, getReport());
 			runnable = new SendEmail(subject, "Defects Inspection Report.pdf", bytes);
 			Thread t = new Thread(runnable);
 			t.start();
