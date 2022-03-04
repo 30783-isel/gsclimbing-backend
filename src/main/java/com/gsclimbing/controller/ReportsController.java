@@ -52,17 +52,18 @@ public class ReportsController {
 	@Autowired
 	private ReportService reportService;
 	@Autowired
-	private ExtractDefectsInspection extractData;
-	@Autowired
 	private FileService fileService;
 	@Autowired
 	private ProjectService projectService;
 	@Autowired
 	private UserService userService;
 	@Autowired
-	private DefectsInspectionPopulater defectsInspectionPopulater;
-	@Autowired
 	private AlterationService alterationService;
+	
+	@Autowired
+	private ExtractDefectsInspection extractData;
+	@Autowired
+	private DefectsInspectionPopulater defectsInspectionPopulater;
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
 	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("project") String projectId, @RequestParam("turbineId") Integer turbineId, @RequestParam("typeReport") Integer typeReport) {

@@ -11,16 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
-import com.gsclimbing.database.entity.Alteration;
-import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.FileData;
-import com.gsclimbing.database.entity.HistoricReport;
 import com.gsclimbing.database.entity.Report;
-import com.gsclimbing.database.repository.DefectsInspectionReportRepository;
 import com.gsclimbing.database.repository.ReportRepository;
-import com.gsclimbing.database.repository.UserRepository;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 
 @Service
