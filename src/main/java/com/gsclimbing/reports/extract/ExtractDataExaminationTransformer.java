@@ -77,12 +77,12 @@ public class ExtractDataExaminationTransformer {
 			oldExaminationTransformer = examinationTransformerService.readExaminationTransformer(idReport);
 			if (oldExaminationTransformer != null) {
 				try {
-					examinationTransformer = (ExaminationTransformer) oldExaminationTransformer.clone();
+					setExaminationTransformer((ExaminationTransformer) oldExaminationTransformer.clone());
 				} catch (CloneNotSupportedException e) {
 					e.printStackTrace();
 				}
-				examinationTransformer.setModifiedDate(LocalDateTime.now());
-				examinationTransformer.setLocked("true");
+				getExaminationTransformer().setModifiedDate(LocalDateTime.now());
+				getExaminationTransformer().setLocked("true");
 				historicReport = new HistoricReport();
 				historicReport.setTypeReport(1);
 				historicReport.setLocalDateTime(LocalDateTime.now());
@@ -91,27 +91,27 @@ public class ExtractDataExaminationTransformer {
 				Optional<User> user = userService.findByUsername(username);
 				historicReport.setIdUser(user.get().getUsername());
 				historicReport.setUser(user.get().getUsername());
-				historicReport.setReport(examinationTransformer);
+				historicReport.setReport(getExaminationTransformer());
 			}
 		} else if ("UPLOAD".equals(operacao)) {
-			examinationTransformer = new ExaminationTransformer();
+			setExaminationTransformer(new ExaminationTransformer());
 			final String uuid = UUID.randomUUID().toString().replace("-", "");
 			setUuidStr(uuid);
-			examinationTransformer.setUuid(uuid);
-			examinationTransformer.setTypeReport(typeReport);
-			examinationTransformer.setCreateDate(LocalDateTime.now());
-			examinationTransformer.setModifiedDate(LocalDateTime.now());
+			getExaminationTransformer().setUuid(uuid);
+			getExaminationTransformer().setTypeReport(typeReport);
+			getExaminationTransformer().setCreateDate(LocalDateTime.now());
+			getExaminationTransformer().setModifiedDate(LocalDateTime.now());
 			
 			Turbine turbine = turbineService.getTurbine(turbineId);
-			examinationTransformer.setTurbine(turbine);
-			examinationTransformer.setProjectoId(turbine.getProject().getIdProject());
-			examinationTransformer.setTurbinaId(turbine.getId());
-			turbine.getListReports().add(examinationTransformer);
+			getExaminationTransformer().setTurbine(turbine);
+			getExaminationTransformer().setProjectoId(turbine.getProject().getIdProject());
+			getExaminationTransformer().setTurbinaId(turbine.getId());
+			turbine.getListReports().add(getExaminationTransformer());
 		}
 
-		examinationTransformer.setLocked("true");
-		examinationTransformer.setPermission2Edit("false");
-		setExaminationTransformer(examinationTransformer);
+		getExaminationTransformer().setLocked("true");
+		getExaminationTransformer().setPermission2Edit("false");
+		setExaminationTransformer(getExaminationTransformer());
 		File convfile = null;
 		try {
 			convfile = multipartToFile(file, file.getOriginalFilename());
@@ -124,19 +124,14 @@ public class ExtractDataExaminationTransformer {
 		if ("UPDATE".equals(operacao)) {
 			List<Alteration> listaAlternation = alterationService.saveAlterationReport(oldExaminationTransformer, examinationTransformer, historicReport);
 			historicReport.setListAlternation(listaAlternation);
-			examinationTransformer.getListHistoric().add(historicReport);
-			examinationTransformerReturned = examinationTransformerService.updateExaminationTransformer(examinationTransformer);
+			getExaminationTransformer().getListHistoric().add(historicReport);
+			examinationTransformerReturned = examinationTransformerService.updateExaminationTransformer(getExaminationTransformer());
 		} else {
 			examinationTransformerReturned = examinationTransformerService.createExaminationTransformer(getExaminationTransformer());
 		}
 		return examinationTransformerReturned;
 	}
 	
-	
-	
-	
-
-
 	void populateAndCopy(PDDocument document) throws IOException {
 		getListPhotoNames().clear();
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
@@ -145,18 +140,17 @@ public class ExtractDataExaminationTransformer {
 			if (field instanceof PDTextField) {
 				String valueField = ((PDTextField) field).getValue();
 				String nameField = field.getFullyQualifiedName();
+
 				if (nameField.equals("site"))
 					getExaminationTransformer().setSite(valueField);
 				if (nameField.equals("wtgNumber"))
 					getExaminationTransformer().setWtgNumber(valueField);
-				if (nameField.equals("site"))
-					getExaminationTransformer().setSite(valueField);
+				if (nameField.equals("wtgType"))
+					getExaminationTransformer().setWtgType(valueField);
+				if (nameField.equals("yearConstruction"))
+					getExaminationTransformer().setYearConstruction(valueField);
 				if (nameField.equals("dateOfMeasurement"))
 					getExaminationTransformer().setDateOfMeasurement(valueField);
-				if (nameField.equals("site"))
-					getExaminationTransformer().setSite(valueField);
-				if (nameField.equals("wtgNumber"))
-					getExaminationTransformer().setWtgNumber(valueField);
 				if (nameField.equals("manufacturer"))
 					getExaminationTransformer().setManufacturer(valueField);
 				if (nameField.equals("type"))

@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.gsclimbing.commons.enums.ReportEnum;
 import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.DefectsInspectionReport;
+import com.gsclimbing.database.entity.ExaminationTransformer;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.HistoricReport;
 import com.gsclimbing.database.entity.Project;
@@ -38,8 +39,10 @@ import com.gsclimbing.dto.ReportDto;
 import com.gsclimbing.email.SendEmail;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 import com.gsclimbing.historic.Historic;
+import com.gsclimbing.reports.extract.ExtractDataExaminationTransformer;
 import com.gsclimbing.reports.extract.ExtractDefectsInspection;
 import com.gsclimbing.reports.populater.DefectsInspectionPopulater;
+import com.gsclimbing.reports.populater.ExaminationTransformerPopulater;
 
 import lombok.Data;
 
@@ -67,6 +70,11 @@ public class ReportsController {
 	private ExtractDefectsInspection extractDefectsInspection;
 	@Autowired
 	private DefectsInspectionPopulater defectsInspectionPopulater;
+	@Autowired
+	private ExtractDataExaminationTransformer extractDataExaminationTransformer;
+	@Autowired
+	private ExaminationTransformerPopulater examinationTransformerPopulater;
+
 	
 	private Report report;
 	
@@ -117,7 +125,7 @@ public class ReportsController {
 			setReport(new DefectsInspectionReport());
 			break;
 		case ET:
-
+			setReport(new ExaminationTransformer());
 			break;
 		default:
 			break;
@@ -130,7 +138,7 @@ public class ReportsController {
 		case DIR:
 			return extractDefectsInspection.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
 		case ET:
-			return null;
+			return extractDataExaminationTransformer.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
 		}
 		return null;
 	}
@@ -141,7 +149,7 @@ public class ReportsController {
 		case DIR:
 			return defectsInspectionPopulater.generatePDF(report);
 		case ET:
-			return null;
+			return examinationTransformerPopulater.generatePDF(report);
 		}
 		return null;
 	}

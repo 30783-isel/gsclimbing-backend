@@ -27,16 +27,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gsclimbing.commons.enums.ReportEnum;
 import com.gsclimbing.database.entity.DefectsInspectionReport;
+import com.gsclimbing.database.entity.ExaminationTransformer;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.Project;
 import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.service.DefectsInspectionReportService;
+import com.gsclimbing.database.service.ExaminationTransformerService;
 import com.gsclimbing.database.service.FileService;
 import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.TurbineService;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 import com.gsclimbing.reports.populater.DefectsInspectionPopulater;
+import com.gsclimbing.reports.populater.ExaminationTransformerPopulater;
 import com.gsclimbing.zip.ZipUtils;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
@@ -44,34 +48,47 @@ import com.gsclimbing.zip.ZipUtils;
 @RestController
 @RequestMapping(path = "/api/files")
 public class FileController {
-
-	
 	@Autowired
 	private ProjectService projectService;
-	
 	@Autowired
 	private TurbineService turbineService;
 	
 	@Autowired
 	private DefectsInspectionReportService defectsInspectionReportService;
+	@Autowired
+	private DefectsInspectionPopulater defectsInspectionPopulater;
+	@Autowired
+	private ExaminationTransformerService examinationTransformerService;
+	@Autowired
+	private ExaminationTransformerPopulater examinationTransformerPopulater;
 	
 	@Autowired
 	private FileService fileService;
 	
-	@Autowired
-	private DefectsInspectionPopulater defectsInspectionPopulater;
+
 	
-	@RequestMapping("/download_pdf/{id}")
-	public ResponseEntity<byte[]> getFileByReportId(@PathVariable Integer id) {
-		Optional<FileData> fileData = null;
+	@RequestMapping("/download_pdf/{typeReport}/{id}")
+	public ResponseEntity<byte[]> getFileByReportId(final @PathVariable Integer typeReport, final @PathVariable Integer id) {
 		byte[] bytes = null;
-		DefectsInspectionReport report = defectsInspectionReportService.readDefectsInspectionReport(id);
-		if (report != null) {
-			List<FileData> list = fileService.readFile(report.getUuid());
-			fileData = list.stream().filter(file -> file.getMimeType().equals("application/pdf")).findAny();
+		String fileName = null;
+		bytes = donwloadPdf(typeReport, id,fileName);
+
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"").body(bytes);
+	}
+	
+	public byte[]  donwloadPdf(Integer typeReport, Integer id, String fileName) {
+		ReportEnum reportEnum = ReportEnum.values()[typeReport];
+		switch (reportEnum) {
+		case DIR:
+			fileName = "Defect Inspection Report.pdf";
+			DefectsInspectionReport defectsInspectionReport = defectsInspectionReportService.readDefectsInspectionReport(id);
+			return defectsInspectionPopulater.generatePDF(defectsInspectionReport);
+		case ET:
+			fileName = "Examination Transformer.pdf";
+			ExaminationTransformer examinationTransformer = examinationTransformerService.readExaminationTransformer(id);
+			return examinationTransformerPopulater.generatePDF(examinationTransformer);
 		}
-		bytes = defectsInspectionPopulater.generatePDF(report);
-		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "Defect Inspection Report.pdf" + "\"").body(bytes);
+		return null;
 	}
 	
 	@RequestMapping("/download_zip/{projectId}")

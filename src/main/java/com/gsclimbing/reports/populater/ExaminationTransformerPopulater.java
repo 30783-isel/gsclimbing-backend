@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import com.gsclimbing.database.entity.ExaminationTransformer;
 import com.gsclimbing.database.entity.FileData;
+import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.service.FileService;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 
@@ -42,10 +43,10 @@ public class ExaminationTransformerPopulater {
 	private FileService fileService;
 	private PDDocument _pdfDocument;
 
-	public byte[] generatePDF(ExaminationTransformer report) {
+	public byte[] generatePDF(Report report) {
 		byte[] bytes = null;
 		try {
-			bytes = populateAndCopy(report);
+			bytes = populateAndCopy((ExaminationTransformer)report);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -65,7 +66,8 @@ public class ExaminationTransformerPopulater {
 		setField("manufacturer", report.getManufacturer());
 		setField("type", report.getType());
 		setField("equipamentSerialNumber", report.getEquipamentSerialNumber());
-		setField("correct1", report.getCorrect1());
+		//TODO
+		//setField("correct1", report.getCorrect1());
 		setField("notCorrect1", report.getNotCorrect1());
 		setField("equipamentType1", report.getEquipamentType1());
 		setField("serialNumber1", report.getSerialNumber1());
@@ -121,8 +123,8 @@ public class ExaminationTransformerPopulater {
 		setField("nextCalibrationDate4", report.getNextCalibrationDate4());
 		setField("insulationResistance", report.getInsulationResistance());
 		setField("ratioTest", report.getRatioTest());
-		setField("correct2", report.getCorrect2());
-		setField("notCorrect2", report.getNotCorrect2());
+//		setField("correct2", report.getCorrect2());
+//		setField("notCorrect2", report.getNotCorrect2());
 		setField("conclusion", report.getConclusion());
 		setField("performedBy", report.getPerformedBy());
 		setField("date", report.getDate());

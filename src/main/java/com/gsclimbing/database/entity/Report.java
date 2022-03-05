@@ -43,7 +43,7 @@ public class Report {
 	private String wtgNumber;
 	private String wtgType;
 	private String yearConstruction;
-	private int numberPictures;
+	private Integer numberPictures = 0;
 	private Integer typeReport;
     private Integer projectoId;
     private Integer turbinaId;
