@@ -163,7 +163,6 @@ public class ExtractDefectsInspection {
 							fileData.setImageChange(0);
 							fileData.setNameField(getNameField());
 							fileData.setDescription(getDescription());
-							getDefectsInspectionReport().addImgOnListImages(fileData);
 							getDefectsInspectionReport().addOneMorePicture();
 							extractAnnotationImages(pDimage, nameField, fileData);
 						}

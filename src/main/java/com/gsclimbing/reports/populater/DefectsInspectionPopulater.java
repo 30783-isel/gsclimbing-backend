@@ -57,16 +57,15 @@ public class DefectsInspectionPopulater {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return bytes;
 	}
 
 	private byte[] populateAndCopy(Report report) throws IOException {
 
-		
 		String filename = "Defect Inspection Report.pdf";
-		
-		InputStream inputStream = FTPDownloadFiles.downloadPdfReportByTeamToTempFile( "/defectInspectionReport/", "Defect Inspection Report.pdf");
+
+		InputStream inputStream = FTPDownloadFiles.downloadPdfReportByTeamToTempFile("/defectInspectionReport/", "Defect Inspection Report.pdf");
 
 		_pdfDocument = PDDocument.load(inputStream);
 
@@ -76,7 +75,7 @@ public class DefectsInspectionPopulater {
 		setField("wtgNumber", report.getWtgNumber());
 		setField("wtgType", report.getWtgType());
 		setField("yearConstruction", report.getYearConstruction());
-		
+
 		List<FileData> listFileData = null;
 		byte[] bytes = null;
 
@@ -86,7 +85,7 @@ public class DefectsInspectionPopulater {
 		}
 
 		int i = 0;
-		
+
 		for (FileData fileData : listFileData) {
 
 			if (fileData != null)
@@ -98,18 +97,18 @@ public class DefectsInspectionPopulater {
 			setImageField((String) fileData.getName(), bufferedImage);
 
 			setField(fileData.getNameField(), fileData.getDescription());
-			
+
 			i++;
 
 		}
-		if(i < 3) {
+		if (i < 3) {
 			_pdfDocument.removePage(2);
 			_pdfDocument.removePage(1);
 		}
-		if(i > 2 && i < 7) {
+		if (i > 2 && i < 7) {
 			_pdfDocument.removePage(2);
 		}
-		
+
 		byte[] data = null;
 
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -164,7 +163,6 @@ public class DefectsInspectionPopulater {
 			float width = height * imageScaleRatio;
 			float x = buttonPosition.getLowerLeftX();
 			float y = buttonPosition.getLowerLeftY();
-			
 
 			float ratio = 0;
 			float imageWidth = 0;
@@ -177,19 +175,19 @@ public class DefectsInspectionPopulater {
 				imageHeigth = (float) (bigger / ratio);
 				Math.round(imageHeigth);
 			}
-			
+
 			if (pdImageXObject.getWidth() < pdImageXObject.getHeight()) {
 				ratio = calcV(pdImageXObject.getHeight(), pdImageXObject.getWidth());
 				float bigger = buttonPosition.getHeight();
 				imageHeigth = bigger;
-				imageWidth = (float) ( bigger / ratio );
+				imageWidth = (float) (bigger / ratio);
 				Math.round(imageWidth);
 			}
 
 			PDAppearanceStream pdAppearanceStream = new PDAppearanceStream(_pdfDocument);
 			pdAppearanceStream.setResources(new PDResources());
 			try (PDPageContentStream pdPageContentStream = new PDPageContentStream(_pdfDocument, pdAppearanceStream)) {
-				pdPageContentStream.drawImage( pdImageXObject, x, y, imageWidth, imageHeigth );
+				pdPageContentStream.drawImage(pdImageXObject, x, y, imageWidth, imageHeigth);
 			}
 			pdAppearanceStream.setBBox(new PDRectangle(x, y, buttonPosition.getWidth(), buttonPosition.getHeight()));
 
@@ -204,16 +202,16 @@ public class DefectsInspectionPopulater {
 		}
 
 	}
-	
-    private PDRectangle getFieldArea(PDField field) {
-        COSDictionary fieldDict = field.getCOSObject();
-        COSArray fieldAreaArray = (COSArray) fieldDict.getDictionaryObject(COSName.RECT);
-        return new PDRectangle(fieldAreaArray);
-    }
+
+	private PDRectangle getFieldArea(PDField field) {
+		COSDictionary fieldDict = field.getCOSObject();
+		COSArray fieldAreaArray = (COSArray) fieldDict.getDictionaryObject(COSName.RECT);
+		return new PDRectangle(fieldAreaArray);
+	}
 
 	float calcV(float s, float t) {
 		float v = s / t;
 		return v;
 	}
-	
+
 }
