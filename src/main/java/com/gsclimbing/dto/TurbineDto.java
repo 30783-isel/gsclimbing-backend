@@ -26,8 +26,8 @@ public class TurbineDto implements Serializable {
 	private boolean onboardCraneInspectionReport;
 	private boolean performanceReportRepairElevator;
 	private boolean statutoryInspectionReport;
-	private Project project;
+	private ProjectDto project;
 	@Default
-	private List<Report> listReports = new ArrayList<>();
+	private List<ReportDto> listReports = new ArrayList<>();
 	
 }

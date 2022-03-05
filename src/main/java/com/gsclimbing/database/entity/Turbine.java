@@ -2,6 +2,7 @@ package com.gsclimbing.database.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gsclimbing.dto.TurbineDto;
 
 import lombok.Getter;
@@ -39,6 +41,7 @@ public class Turbine {
 	private boolean statutoryInspectionReport;
 	
 	@OneToMany(mappedBy = "turbine", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonIgnore
 	private List<Report> listReports = new ArrayList<>();
 	
 	@ManyToOne
@@ -61,8 +64,8 @@ public class Turbine {
 			.onboardCraneInspectionReport(this.onboardCraneInspectionReport)
 			.performanceReportRepairElevator(this.performanceReportRepairElevator)
 			.statutoryInspectionReport(this.statutoryInspectionReport)
-			.project(this.project)
-			.listReports(this.listReports)
+			.project(this.project.mapper())
+			.listReports(this.listReports.stream().map(report->report.mapper()).collect(Collectors.toList()))
 			.build();
 	}
 	

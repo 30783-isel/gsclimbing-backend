@@ -62,7 +62,7 @@ public class Project {
     				.site(this.site)
     				.number(this.number)
     				.type(this.type)
-    				.turbines(this.turbines.stream().map(turbine -> turbine.mapper()).collect(Collectors.toList()))
+    				//.turbines(this.turbines.stream().map(turbine -> turbine.mapper()).collect(Collectors.toList()))
     				.build();
     }
 }
