@@ -134,7 +134,8 @@ public class ProjectController {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/turbine-by-id/{id}")
 	public TurbineDto getTurbine(@PathVariable int id) {
-		return turbineService.getTurbine(id) != null ? turbineService.getTurbine(id).mapper() : null;
+		TurbineDto turbineDto = turbineService.getTurbine(id) != null ? turbineService.getTurbine(id).mapper() : null;
+		return turbineDto;
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/turbines/{idProject}")

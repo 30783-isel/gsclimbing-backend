@@ -1,11 +1,7 @@
 package com.gsclimbing.database.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,12 +13,6 @@ public class ExaminationTransformer extends Report implements Cloneable{
 
 	@Column(length = 100)
 	private String dateOfMeasurement;
-	
-	@Column(length = 100)
-	private String site;
-	
-	@Column(length = 100)
-	private String wtgNumber;
 	
 	@Column(length = 100)
 	private String manufacturer;
