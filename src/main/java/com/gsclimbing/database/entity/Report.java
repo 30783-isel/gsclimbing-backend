@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -43,6 +44,7 @@ public class Report {
 	private String wtgNumber;
 	private String wtgType;
 	private String yearConstruction;
+	@Column(columnDefinition = "integer default 25")
 	private Integer numberPictures = 0;
 	private Integer typeReport;
     private Integer projectoId;

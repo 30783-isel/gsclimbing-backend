@@ -68,7 +68,5 @@ public class Turbine {
 			.listReports(this.listReports.stream().map(report->report.mapper()).collect(Collectors.toList()))
 			.build();
 	}
-	
-	
-	
+
 }

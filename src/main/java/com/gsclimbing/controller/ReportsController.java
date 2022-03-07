@@ -25,6 +25,7 @@ import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.ExaminationTransformer;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.HistoricReport;
+import com.gsclimbing.database.entity.MeasurementsMwSwitchgear;
 import com.gsclimbing.database.entity.Project;
 import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.entity.Turbine;
@@ -40,9 +41,11 @@ import com.gsclimbing.email.SendEmail;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 import com.gsclimbing.historic.Historic;
 import com.gsclimbing.reports.extract.ExtractDataExaminationTransformer;
+import com.gsclimbing.reports.extract.ExtractDataMeasurementsMwSwitchgear;
 import com.gsclimbing.reports.extract.ExtractDefectsInspection;
 import com.gsclimbing.reports.populater.DefectsInspectionPopulater;
 import com.gsclimbing.reports.populater.ExaminationTransformerPopulater;
+import com.gsclimbing.reports.populater.MeasurementsMwSwitchgearPopulater;
 
 import lombok.Data;
 
@@ -74,6 +77,10 @@ public class ReportsController {
 	private ExtractDataExaminationTransformer extractDataExaminationTransformer;
 	@Autowired
 	private ExaminationTransformerPopulater examinationTransformerPopulater;
+	@Autowired
+	private ExtractDataMeasurementsMwSwitchgear extractDataMeasurementsMwSwitchgear;
+	@Autowired
+	private MeasurementsMwSwitchgearPopulater measurementsMwSwitchgearPopulater;
 
 	
 	private Report report;
@@ -127,6 +134,9 @@ public class ReportsController {
 		case ET:
 			setReport(new ExaminationTransformer());
 			break;
+		case MMSSC:
+			setReport(new MeasurementsMwSwitchgear());
+			break;
 		default:
 			break;
 		}
@@ -139,6 +149,8 @@ public class ReportsController {
 			return extractDefectsInspection.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
 		case ET:
 			return extractDataExaminationTransformer.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
+		case MMSSC:
+			return extractDataMeasurementsMwSwitchgear.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
 		}
 		return null;
 	}
@@ -150,6 +162,8 @@ public class ReportsController {
 			return defectsInspectionPopulater.generatePDF(report);
 		case ET:
 			return examinationTransformerPopulater.generatePDF(report);
+		case MMSSC:
+			return measurementsMwSwitchgearPopulater.generatePDF(report);
 		}
 		return null;
 	}
