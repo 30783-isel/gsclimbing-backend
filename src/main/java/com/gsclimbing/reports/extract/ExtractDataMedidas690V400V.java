@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
@@ -28,93 +29,125 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.gsclimbing.database.entity.Alteration;
+import com.gsclimbing.database.entity.FileData;
+import com.gsclimbing.database.entity.HistoricReport;
+import com.gsclimbing.database.entity.Medidas690V400V;
+import com.gsclimbing.database.entity.Turbine;
+import com.gsclimbing.database.entity.User;
+import com.gsclimbing.database.repository.UserRepository;
+import com.gsclimbing.database.service.AlterationService;
+import com.gsclimbing.database.service.HistoricReportService;
+import com.gsclimbing.database.service.Medidas690V400VService;
+import com.gsclimbing.database.service.TurbineService;
+import com.gsclimbing.ftp.FTPUploadFile;
+
+import lombok.Data;
+
+@Data
 @Service
 public class ExtractDataMedidas690V400V {
 
-	@Autowired
-	private Medidas690V400VService medidas690V400VService;
-
-	@Autowired
-	private FileService fileService;
-
+	private String uuidStr;
+	private String description = null;
+	private String nameField = null;
+	private String photo = null;
+	private String idHistoric = null;
+	private HistoricReport historicReport = null;
+	List<String> listPhotoNames = new ArrayList<String>();
+	
+	private Medidas690V400V medidas690V400V;
+	 
 	@Autowired
 	private UserRepository userService;
+	@Autowired
+	private TurbineService turbineService;
+	@Autowired
+	private AlterationService alterationService;
+	@Autowired
+	private HistoricReportService historicReportService;
+	@Autowired
+	private Medidas690V400VService medidas690V400VService;
+	@Autowired
+	private com.gsclimbing.database.service.FileService fileService;
 
-	List<String> listPhotoNames = new ArrayList<String>();
+	public Medidas690V400V readPDF(MultipartFile file, String projectId, Integer turbineId, Integer typeReport, Integer idReport,  String operacao) throws IOException {
+		Medidas690V400V oldMedidas690V400 = null;
+		Medidas690V400V medidas690V400Returned = null;
+		if ("UPDATE".equals(operacao)) {
+			oldMedidas690V400 = medidas690V400VService.readMedidas690V400V(idReport);
+			if (oldMedidas690V400 != null) {
+				try {
+					setMedidas690V400V((Medidas690V400V) oldMedidas690V400.clone());
+				} catch (CloneNotSupportedException e) {
+					e.printStackTrace();
+				}
+				getMedidas690V400V().setModifiedDate(LocalDateTime.now());
+				getMedidas690V400V().setLocked("true");
+				historicReport = new HistoricReport();
+				historicReport.setTypeReport(1);
+				historicReport.setLocalDateTime(LocalDateTime.now());
+				historicReport.setNumAlterations(0);
+				String username = medidas690V400VService.getCurrentLoggedUser();
+				Optional<User> user = userService.findByUsername(username);
+				historicReport.setIdUser(user.get().getUsername());
+				historicReport.setUser(user.get().getUsername());
+				historicReport.setReport(getMedidas690V400V());
+			}
+		} else if ("UPLOAD".equals(operacao)) {
+			setMedidas690V400V(new Medidas690V400V());
+			final String uuid = UUID.randomUUID().toString().replace("-", "");
+			setUuidStr(uuid);
+			getMedidas690V400V().setUuid(uuid);
+			getMedidas690V400V().setTypeReport(typeReport);
+			getMedidas690V400V().setCreateDate(LocalDateTime.now());
+			getMedidas690V400V().setModifiedDate(LocalDateTime.now());
+			
+			Turbine turbine = turbineService.getTurbine(turbineId);
+			getMedidas690V400V().setTurbine(turbine);
+			getMedidas690V400V().setProjectoId(turbine.getProject().getIdProject());
+			getMedidas690V400V().setTurbinaId(turbine.getId());
+			turbine.getListReports().add(getMedidas690V400V());
+		}
 
-	private Medidas690V400V medidas690V400V;
-
-	private String uuidStr;
-
-	private String description = null;
-
-	private String nameField = null;
-
-	private String photo = null;
-
-	public Medidas690V400V readPDF(MultipartFile file, String project, String turbineId) throws IOException {
-
-		medidas690V400V = new Medidas690V400V();
-
-		final String uuid = UUID.randomUUID().toString().replace("-", "");
-		setUuidStr(uuid);
-		medidas690V400V.setUuid(uuid);
-		medidas690V400V.setCreateDate(LocalDateTime.now());
-		medidas690V400V.setModifiedDate(LocalDateTime.now());
-
-		String username = medidas690V400VService.getCurrentLoggedUser();
-		Optional<User> user = userService.findByUsername(username);
-		medidas690V400V.setUserId(user.get().getUsername());
-
-		medidas690V400V.setProjectId(project);
-		medidas690V400V.setTurbineId(turbineId);
-		medidas690V400V.setLocked("true");
-		medidas690V400V.setPermission2Edit("false");
-
-		setMedidas690V400V(medidas690V400V);
-
+		getMedidas690V400V().setLocked("true");
+		getMedidas690V400V().setPermission2Edit("false");
+		setMedidas690V400V(getMedidas690V400V());
 		File convfile = null;
 		try {
 			convfile = multipartToFile(file, file.getOriginalFilename());
-
 		} catch (IllegalStateException | IOException e) {
 			e.printStackTrace();
 		}
-
 		try (PDDocument document = PDDocument.load(convfile)) {
-
 			populateAndCopy(document);
-
 		}
-		medidas690V400VService.createMedidas690V400V(getMedidas690V400V());
-
-		return medidas690V400V;
+		if ("UPDATE".equals(operacao)) {
+			List<Alteration> listaAlternation = alterationService.saveAlterationReport(oldMedidas690V400, medidas690V400V, historicReport);
+			historicReport.setListAlternation(listaAlternation);
+			getMedidas690V400V().getListHistoric().add(historicReport);
+			medidas690V400Returned = medidas690V400VService.updateMedidas690V400V(getMedidas690V400V());
+		} else {
+			medidas690V400Returned = medidas690V400VService.createMedidas690V400V(getMedidas690V400V());
+		}
+		return medidas690V400Returned;
 	}
 
 	void populateAndCopy(PDDocument document) throws IOException {
-
 		getListPhotoNames().clear();
-
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
-
 		List<PDField> fields = acroForm.getFields();
-
 		for (PDField field : fields) {
-
 			if (field instanceof PDTextField) {
-
 				String valueField = ((PDTextField) field).getValue();
 				String nameField = field.getFullyQualifiedName();
-
-				if (nameField.equals("dateOfMeasurement"))getMedidas690V400V().setDateOfMeasurement(valueField);
+				if (nameField.equals("dateOfMeasurement"))getMedidas690V400V().setDateOfMeasurement(valueField);;
 				if (nameField.equals("site"))getMedidas690V400V().setSite(valueField);
 				if (nameField.equals("wtgNumber"))getMedidas690V400V().setWtgNumber(valueField);
-
 				if (nameField.equals("type1"))getMedidas690V400V().setType1(valueField);
 				if (nameField.equals("voltage1"))getMedidas690V400V().setVoltage1(valueField);
 				if (nameField.equals("length1"))getMedidas690V400V().setLength1(valueField);
 				if (nameField.equals("visual1"))getMedidas690V400V().setVisual1(valueField);
-
 				if (nameField.equals("box1_1"))getMedidas690V400V().setBox1_1(valueField);
 				if (nameField.equals("box1_2"))getMedidas690V400V().setBox1_2(valueField);
 				if (nameField.equals("box1_3"))getMedidas690V400V().setBox1_3(valueField);
@@ -124,12 +157,10 @@ public class ExtractDataMedidas690V400V {
 				if (nameField.equals("box1_7"))getMedidas690V400V().setBox1_7(valueField);
 				if (nameField.equals("box1_8"))getMedidas690V400V().setBox1_8(valueField);
 				if (nameField.equals("box1_9"))getMedidas690V400V().setBox1_9(valueField);
-
 				if (nameField.equals("type2"))getMedidas690V400V().setType2(valueField);
 				if (nameField.equals("voltage2"))getMedidas690V400V().setVoltage2(valueField);
 				if (nameField.equals("length2"))getMedidas690V400V().setLength2(valueField);
 				if (nameField.equals("visual2"))getMedidas690V400V().setVisual2(valueField);
-
 				if (nameField.equals("box2_1"))getMedidas690V400V().setBox2_1(valueField);
 				if (nameField.equals("box2_2"))getMedidas690V400V().setBox2_2(valueField);
 				if (nameField.equals("box2_3"))getMedidas690V400V().setBox2_3(valueField);
@@ -139,12 +170,10 @@ public class ExtractDataMedidas690V400V {
 				if (nameField.equals("box2_7"))getMedidas690V400V().setBox2_7(valueField);
 				if (nameField.equals("box2_8"))getMedidas690V400V().setBox2_8(valueField);
 				if (nameField.equals("box2_9"))getMedidas690V400V().setBox2_9(valueField);
-
 				if (nameField.equals("type3"))getMedidas690V400V().setType3(valueField);
 				if (nameField.equals("voltage3"))getMedidas690V400V().setVoltage3(valueField);
 				if (nameField.equals("length3"))getMedidas690V400V().setLength3(valueField);
 				if (nameField.equals("visual3"))getMedidas690V400V().setVisual3(valueField);
-
 				if (nameField.equals("box3_1"))getMedidas690V400V().setBox3_1(valueField);
 				if (nameField.equals("box3_2"))getMedidas690V400V().setBox3_2(valueField);
 				if (nameField.equals("box3_3"))getMedidas690V400V().setBox3_3(valueField);
@@ -154,12 +183,10 @@ public class ExtractDataMedidas690V400V {
 				if (nameField.equals("box3_7"))getMedidas690V400V().setBox3_7(valueField);
 				if (nameField.equals("box3_8"))getMedidas690V400V().setBox3_8(valueField);
 				if (nameField.equals("box3_9"))getMedidas690V400V().setBox3_9(valueField);
-
 				if (nameField.equals("type4"))getMedidas690V400V().setType4(valueField);
 				if (nameField.equals("voltage4"))getMedidas690V400V().setVoltage4(valueField);
 				if (nameField.equals("length4"))getMedidas690V400V().setLength4(valueField);
 				if (nameField.equals("visual4"))getMedidas690V400V().setVisual4(valueField);
-
 				if (nameField.equals("box4_1"))getMedidas690V400V().setBox4_1(valueField);
 				if (nameField.equals("box4_2"))getMedidas690V400V().setBox4_2(valueField);
 				if (nameField.equals("box4_3"))getMedidas690V400V().setBox4_3(valueField);
@@ -169,13 +196,10 @@ public class ExtractDataMedidas690V400V {
 				if (nameField.equals("box4_7"))getMedidas690V400V().setBox4_7(valueField);
 				if (nameField.equals("box4_8"))getMedidas690V400V().setBox4_8(valueField);
 				if (nameField.equals("box4_9"))getMedidas690V400V().setBox4_9(valueField);
-
-
 				if (nameField.equals("type5"))getMedidas690V400V().setType5(valueField);
 				if (nameField.equals("voltage5"))getMedidas690V400V().setVoltage5(valueField);
 				if (nameField.equals("length5"))getMedidas690V400V().setLength5(valueField);
 				if (nameField.equals("visual5"))getMedidas690V400V().setVisual5(valueField);
-
 				if (nameField.equals("box5_1"))getMedidas690V400V().setBox5_1(valueField);
 				if (nameField.equals("box5_2"))getMedidas690V400V().setBox5_2(valueField);
 				if (nameField.equals("box5_3"))getMedidas690V400V().setBox5_3(valueField);
@@ -188,7 +212,6 @@ public class ExtractDataMedidas690V400V {
 				if (nameField.equals("box5_10"))getMedidas690V400V().setBox5_10(valueField);
 				if (nameField.equals("box5_11"))getMedidas690V400V().setBox5_11(valueField);
 				if (nameField.equals("box5_12"))getMedidas690V400V().setBox5_12(valueField);
-
 				if (nameField.equals("box6_1"))getMedidas690V400V().setBox6_1(valueField);
 				if (nameField.equals("box6_2"))getMedidas690V400V().setBox6_2(valueField);
 				if (nameField.equals("box6_3"))getMedidas690V400V().setBox6_3(valueField);
@@ -213,11 +236,9 @@ public class ExtractDataMedidas690V400V {
 				if (nameField.equals("box6_22"))getMedidas690V400V().setBox6_22(valueField);
 				if (nameField.equals("box6_23"))getMedidas690V400V().setBox6_23(valueField);
 				if (nameField.equals("box6_24"))getMedidas690V400V().setBox6_24(valueField);
-
 				if (nameField.equals("type6"))getMedidas690V400V().setType6(valueField);
 				if (nameField.equals("voltage6"))getMedidas690V400V().setVoltage6(valueField);
 				if (nameField.equals("visual6"))getMedidas690V400V().setVisual6(valueField);
-
 				if (nameField.equals("box7_1"))getMedidas690V400V().setBox7_1(valueField);
 				if (nameField.equals("box7_2"))getMedidas690V400V().setBox7_2(valueField);
 				if (nameField.equals("box7_3"))getMedidas690V400V().setBox7_3(valueField);
@@ -245,37 +266,26 @@ public class ExtractDataMedidas690V400V {
 				if (nameField.equals("box7_25"))getMedidas690V400V().setBox7_25(valueField);
 				if (nameField.equals("box7_26"))getMedidas690V400V().setBox7_26(valueField);
 				if (nameField.equals("box7_27"))getMedidas690V400V().setBox7_27(valueField);
-
 				if (nameField.equals("equipmentType"))getMedidas690V400V().setEquipmentType(valueField);
 				if (nameField.equals("serialNumber"))getMedidas690V400V().setSerialNumber(valueField);
 				if (nameField.equals("calibrationDate"))getMedidas690V400V().setCalibrationDate(valueField);
 				if (nameField.equals("nextCalibrationDate"))getMedidas690V400V().setNextCalibrationDate(valueField);
-
 				if (nameField.equals("conclusion"))getMedidas690V400V().setConclusion(valueField);
 				if (nameField.equals("performedBy"))getMedidas690V400V().setPerformedBy(valueField);
 				if (nameField.equals("closedDate"))getMedidas690V400V().setClosedDate(valueField);
-
 			} else if (field instanceof PDCheckBox) {
-
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDCheckBox) field).getValue();
-
 			} else if (field instanceof PDRadioButton) {
-
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDRadioButton) field).getValue();
-
 			} else if (field instanceof PDPushButton) {
-
 				String nameField = field.getFullyQualifiedName();
-
 				for (final PDAnnotationWidget widget : field.getWidgets()) {
-
 					WidgetImageChecker checker = new WidgetImageChecker(widget);
 					try {
 						if (checker.hasImages()) {
 							PDImage pDimage = checker.getpDimage();
-
 							setPhoto(nameField);
 							FileData fileData = new FileData();
 							fileData.setImageChange(0);
@@ -284,53 +294,69 @@ public class ExtractDataMedidas690V400V {
 							medidas690V400V.addImgOnListImages(fileData);
 							medidas690V400V.addOneMorePicture();
 							extractAnnotationImages(pDimage, nameField, fileData);
-
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					;
 				}
-
 			}
 		}
-
 	}
 
 	public void extractAnnotationImages(PDImage image, String nameFile, FileData fileData) throws IOException {
-
-		if (!getListPhotoNames().contains(nameFile)) {
-
+		List<FileData> listFileData = fileService.readFile(getMedidas690V400V().getUuid()).stream().filter(filex -> filex.getMimeType().equals("JPG")).collect(Collectors.toList());
+		Optional<FileData> fileDataFiltered = listFileData.stream().filter(fileD -> nameFile.equals(fileD.getName())).findAny();
+		if (!fileDataFiltered.isPresent()) {
 			fileData.setUuid(getMedidas690V400V().getUuid());
-			fileData.setTeamId(getMedidas690V400V().getProjectId());
-			fileData.setUserId(getMedidas690V400V().getUserId());
 			fileData.setCreateDate(getMedidas690V400V().getCreateDate());
 			fileData.setModifiedDate(getMedidas690V400V().getModifiedDate());
-
 			fileData.setName(nameFile);
-			fileData.setSize(100);
 			fileData.setMimeType("JPG");
-
 			try {
 				fileData.setHash();
 			} catch (NoSuchAlgorithmException e) {
 				e.printStackTrace();
 			}
-
 			File file = File.createTempFile(fileData.getHash(), null);
-
 			ImageIO.write(image.getImage(), "jpg", file);
-
+			fileData.setSize(fileSize(file));
 			boolean inserted = FTPUploadFile.uploadFile2FTPServer(file, fileData.getHash());
 			fileData.setInsertedOnFtpServer(inserted);
-
 			getListPhotoNames().add(nameFile);
-
-			fileService.createFile(fileData);
-
+			fileData.setReport(getMedidas690V400V());
+			getMedidas690V400V().getListaFileData().add(fileData);
+		} else {
+			uploadImage(image, fileDataFiltered.get().getHash(), String.valueOf(getIdHistoric()), fileDataFiltered.get().getName());
 		}
-
 	}
+	
+	private void uploadImage(PDImage image, String hash, String idHistoric, String imageFieldName) throws IOException {
+		File file = File.createTempFile(imageFieldName, null);
+		ImageIO.write(image.getImage(), "jpg", file);
+		FileData fileData = fileService.readFileByHash(hash);
+		fileData.addImageChange();
+		if (fileSize(file) != fileData.getSize()) {
+			Alteration alteration = new Alteration();
+			alteration.setField(imageFieldName);
+			alteration.setFieldOld(null);
+			alteration.setFieldNew(null);
+			alteration.setImage(true);
+			alteration.setHash(hash);
+			alteration.setImage(true);
+			alteration.setImageChange(fileData.getImageChange());
+			alteration.setLocalDateTime(LocalDateTime.now());
+			alteration.setOldPicByte(null);
+			alteration.setNewPicByte(null);
+			alteration.setHistoricReport(historicReport);
+			if (historicReport != null) {
+				historicReport.getListAlternation().add(alteration);
+				historicReport.addNumAlterations();
+				historicReportService.saveHistoricReport(historicReport);
+			}
+			FTPUploadFile.replaceFile2FTPServer(file, hash, fileData.getImageChange());
+		}
+	}
+
 
 	static class WidgetImageChecker extends PDFGraphicsStreamEngine {
 
@@ -471,4 +497,9 @@ public class ExtractDataMedidas690V400V {
 		this.listPhotoNames = listPhotoNames;
 	}
 
+	public long fileSize(File file) {
+		long bytes = file.length();
+		long kilobytes = (bytes / 1024);
+		return kilobytes;
+	}
 }

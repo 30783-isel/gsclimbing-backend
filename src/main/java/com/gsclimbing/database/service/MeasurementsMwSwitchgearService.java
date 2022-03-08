@@ -48,8 +48,8 @@ public class MeasurementsMwSwitchgearService {
 		return measurementsMwSwitchgearRepository.save(measurementsMwSwitchgear);
 	}
 
-	public List<MeasurementsMwSwitchgear> searchMeasurementsMwSwitchgear(String site, String wtgNumber, String wtgType) {
-		return measurementsMwSwitchgearRepository.findBySiteAndWtgNumberAndWtgType(site, wtgNumber, wtgType);
+	public List<MeasurementsMwSwitchgear> searchMeasurementsMwSwitchgear(String site, String wtgNumber, String wtgType, String yearConstruction) {
+		return measurementsMwSwitchgearRepository.findBySiteAndWtgNumberWtgTypeAndYearConstruction(site, wtgNumber, wtgType, yearConstruction);
 	}
 
 	public void deleteMeasurementsMwSwitchgear(Integer id) {

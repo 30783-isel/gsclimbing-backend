@@ -20,6 +20,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDPushButton;
 import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
@@ -28,16 +29,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.gsclimbing.database.entity.Alteration;
-import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.HistoricReport;
+import com.gsclimbing.database.entity.PerformanceReportRepairElevator;
 import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.repository.UserRepository;
 import com.gsclimbing.database.service.AlterationService;
-import com.gsclimbing.database.service.DefectsInspectionReportService;
+import com.gsclimbing.database.service.ExaminationTransformerService;
 import com.gsclimbing.database.service.FileService;
 import com.gsclimbing.database.service.HistoricReportService;
+import com.gsclimbing.database.service.PerformanceReportRepairElevatorService;
 import com.gsclimbing.database.service.TurbineService;
 import com.gsclimbing.ftp.FTPUploadFile;
 
@@ -45,7 +47,7 @@ import lombok.Data;
 
 @Data
 @Service
-public class ExtractDefectsInspection {
+public class ExtractDataPrre {
 
 	private String uuidStr;
 	private String description = null;
@@ -53,11 +55,11 @@ public class ExtractDefectsInspection {
 	private String photo = null;
 	private String idHistoric = null;
 	private HistoricReport historicReport = null;
-	private DefectsInspectionReport defectsInspectionReport;
+	private PerformanceReportRepairElevator performanceReportRepairElevator;
 	List<String> listPhotoNames = new ArrayList<String>();
 	
 	@Autowired
-	private DefectsInspectionReportService defectsInspectionReportService;
+	private PerformanceReportRepairElevatorService performanceReportRepairElevatorService;
 	@Autowired
 	private TurbineService turbineService;
 	@Autowired
@@ -69,48 +71,48 @@ public class ExtractDefectsInspection {
 	@Autowired
 	private AlterationService alterationService;
 
-	public DefectsInspectionReport readPDF(MultipartFile file, String projectId, Integer turbineId, Integer typeReport, Integer idReport, String operacao) throws IOException {
-		DefectsInspectionReport oldDefectsInspectionReport = null;
-		DefectsInspectionReport defectsInspectionReportReturned = null;
+	public PerformanceReportRepairElevator readPDF(MultipartFile file, String projectId, Integer turbineId, Integer typeReport, Integer idReport, String operacao) throws IOException {
+		PerformanceReportRepairElevator oldPerformanceReportRepairElevator = null;
+		PerformanceReportRepairElevator performanceReportRepairElevatorReturned = null;
 		if ("UPDATE".equals(operacao)) {
-			oldDefectsInspectionReport = defectsInspectionReportService.readDefectsInspectionReport(idReport);
-			if (oldDefectsInspectionReport != null) {
+			oldPerformanceReportRepairElevator = performanceReportRepairElevatorService.readPerformanceReportRepairElevator(idReport);
+			if (oldPerformanceReportRepairElevator != null) {
 				try {
-					setDefectsInspectionReport( (DefectsInspectionReport) oldDefectsInspectionReport.clone() );
+					setPerformanceReportRepairElevator( (PerformanceReportRepairElevator) oldPerformanceReportRepairElevator.clone() );
 				} catch (CloneNotSupportedException e) {
 					e.printStackTrace();
 				}
-				getDefectsInspectionReport().setModifiedDate(LocalDateTime.now());
-				getDefectsInspectionReport().setLocked("true");
+				getPerformanceReportRepairElevator().setModifiedDate(LocalDateTime.now());
+				getPerformanceReportRepairElevator().setLocked("true");
 				historicReport = new HistoricReport();
 				historicReport.setTypeReport(1);
 				historicReport.setLocalDateTime(LocalDateTime.now());
 				historicReport.setNumAlterations(0);
-				String username = defectsInspectionReportService.getCurrentLoggedUser();
+				String username = performanceReportRepairElevatorService.getCurrentLoggedUser();
 				Optional<User> user = userService.findByUsername(username);
 				historicReport.setIdUser(user.get().getUsername());
 				historicReport.setUser(user.get().getUsername());
-				historicReport.setReport(getDefectsInspectionReport());
+				historicReport.setReport(getPerformanceReportRepairElevator());
 			}
 		} else if ("UPLOAD".equals(operacao)) {
-			setDefectsInspectionReport(new DefectsInspectionReport());;
+			setPerformanceReportRepairElevator(new PerformanceReportRepairElevator());;
 			final String uuid = UUID.randomUUID().toString().replace("-", "");
 			setUuidStr(uuid);
-			getDefectsInspectionReport().setUuid(uuid);
-			getDefectsInspectionReport().setTypeReport(typeReport);
-			getDefectsInspectionReport().setCreateDate(LocalDateTime.now());
-			getDefectsInspectionReport().setModifiedDate(LocalDateTime.now());
+			getPerformanceReportRepairElevator().setUuid(uuid);
+			getPerformanceReportRepairElevator().setTypeReport(typeReport);
+			getPerformanceReportRepairElevator().setCreateDate(LocalDateTime.now());
+			getPerformanceReportRepairElevator().setModifiedDate(LocalDateTime.now());
 			
 			Turbine turbine = turbineService.getTurbine(turbineId);
-			getDefectsInspectionReport().setTurbine(turbine);
-			getDefectsInspectionReport().setProjectoId(turbine.getProject().getIdProject());
-			getDefectsInspectionReport().setTurbinaId(turbine.getId());
-			turbine.getListReports().add(getDefectsInspectionReport());
+			getPerformanceReportRepairElevator().setTurbine(turbine);
+			getPerformanceReportRepairElevator().setProjectoId(turbine.getProject().getIdProject());
+			getPerformanceReportRepairElevator().setTurbinaId(turbine.getId());
+			turbine.getListReports().add(getPerformanceReportRepairElevator());
 		}
 
-		getDefectsInspectionReport().setLocked("true");
-		getDefectsInspectionReport().setPermission2Edit("false");
-		setDefectsInspectionReport(getDefectsInspectionReport());
+		getPerformanceReportRepairElevator().setLocked("true");
+		getPerformanceReportRepairElevator().setPermission2Edit("false");
+		setPerformanceReportRepairElevator(getPerformanceReportRepairElevator());
 		File convfile = null;
 		try {
 			convfile = multipartToFile(file, file.getOriginalFilename());
@@ -121,66 +123,108 @@ public class ExtractDefectsInspection {
 			populateAndCopy(document);
 		}
 		if ("UPDATE".equals(operacao)) {
-			List<Alteration> listaAlternation = alterationService.saveAlterationReport(oldDefectsInspectionReport, getDefectsInspectionReport(), historicReport);
+			List<Alteration> listaAlternation = alterationService.saveAlterationReport(oldPerformanceReportRepairElevator, getPerformanceReportRepairElevator(), historicReport);
 			historicReport.setListAlternation(listaAlternation);
-			getDefectsInspectionReport().getListHistoric().add(historicReport);
-			defectsInspectionReportReturned = defectsInspectionReportService.updateDefectsInspectionReport(getDefectsInspectionReport());
+			getPerformanceReportRepairElevator().getListHistoric().add(historicReport);
+			performanceReportRepairElevatorReturned = performanceReportRepairElevatorService.updatePerformanceReportRepairElevator(getPerformanceReportRepairElevator());
 		} else {
-			defectsInspectionReportReturned = defectsInspectionReportService.createDefectsInspectionReport(getDefectsInspectionReport());
+			performanceReportRepairElevatorReturned = performanceReportRepairElevatorService.createPerformanceReportRepairElevator(getPerformanceReportRepairElevator());
 		}
-		return defectsInspectionReportReturned;
+		return performanceReportRepairElevatorReturned;
 	}
 
 	void populateAndCopy(PDDocument document) throws IOException {
+
 		getListPhotoNames().clear();
+		
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
+
 		List<PDField> fields = acroForm.getFields();
+		
 		for (PDField field : fields) {
+
 			if (field instanceof PDTextField) {
+
 				String valueField = ((PDTextField) field).getValue();
 				String nameField = field.getFullyQualifiedName();
+
+				if (nameField.equals("reportNumber"))
+					getPerformanceReportRepairElevator().setReportNumber(valueField);
 				if (nameField.equals("site"))
-					getDefectsInspectionReport().setSite(valueField);
+					getPerformanceReportRepairElevator().setSite(valueField);
 				if (nameField.equals("wtgNumber"))
-					getDefectsInspectionReport().setWtgNumber(valueField);
+					getPerformanceReportRepairElevator().setWtgNumber(valueField);
 				if (nameField.equals("wtgType"))
-					getDefectsInspectionReport().setWtgType(valueField);
-				if (nameField.equals("yearConstruction"))
-					getDefectsInspectionReport().setYearConstruction(valueField);
-				if (nameField.contains("Description")) {
-					setNameField(nameField);
-					setDescription(valueField);
-				}
-			} else if (field instanceof PDPushButton) {
+					getPerformanceReportRepairElevator().setWtgType(valueField);
+				if (nameField.equals("performanceReport"))
+					getPerformanceReportRepairElevator().setPerformanceReport(valueField);
+				if (nameField.equals("inpectorsWorkers"))
+					getPerformanceReportRepairElevator().setInpectorsWorkers(valueField);
+				if (nameField.equals("statementOfwork"))
+					getPerformanceReportRepairElevator().setStatementOfwork(valueField);
+				if (nameField.equals("placeDate"))
+					getPerformanceReportRepairElevator().setPlaceDate(valueField);
+				if (nameField.equals("responsibleTechnician"))
+					getPerformanceReportRepairElevator().setResponsibleTechnician(valueField);
+				
+
+			} else if (field instanceof PDCheckBox) {
+
 				String nameField = field.getFullyQualifiedName();
+				String valueField = ((PDCheckBox) field).getValue();
+
+				if (nameField.equals("workCompletedYes"))
+					getPerformanceReportRepairElevator().setWorkCompletedYes(valueField =="Yes" ? true : false);
+				if (nameField.equals("workCompletedNo"))
+					getPerformanceReportRepairElevator().setWorkCompletedNo(valueField =="Yes" ? true : false);
+					
+				if (nameField.equals("turbineOperableYes"))
+					getPerformanceReportRepairElevator().setTurbineOperableYes(valueField =="Yes" ? true : false);
+				if (nameField.equals("turbineOperableNo"))
+					getPerformanceReportRepairElevator().setTurbineOperableNo(valueField =="Yes" ? true : false);
+				if (nameField.equals("turbineOperableLimited"))
+					getPerformanceReportRepairElevator().setTurbineOperableLimited(valueField =="Yes" ? true : false);
+				
+				
+			} else if (field instanceof PDPushButton) {
+
+				String nameField = field.getFullyQualifiedName();
+
 				for (final PDAnnotationWidget widget : field.getWidgets()) {
+
 					WidgetImageChecker checker = new WidgetImageChecker(widget);
 					try {
 						if (checker.hasImages()) {
 							PDImage pDimage = checker.getpDimage();
+
 							setPhoto(nameField);
 							FileData fileData = new FileData();
+
 							fileData.setImageChange(0);
 							fileData.setNameField(getNameField());
 							fileData.setDescription(getDescription());
-							getDefectsInspectionReport().addOneMorePicture();
+							performanceReportRepairElevator.addImgOnListImages(fileData);
+							performanceReportRepairElevator.addOneMorePicture();
 							extractAnnotationImages(pDimage, nameField, fileData);
+							
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
-					}
+					};
 				}
+
 			}
 		}
+		
 	}
 
 	public void extractAnnotationImages(PDImage image, String nameFile, FileData fileData) throws IOException {
-		List<FileData> listFileData = fileService.readFile(getDefectsInspectionReport().getUuid()).stream().filter(filex -> filex.getMimeType().equals("JPG")).collect(Collectors.toList());
+		List<FileData> listFileData = fileService.readFile(getPerformanceReportRepairElevator().getUuid()).stream().filter(filex -> filex.getMimeType().equals("JPG")).collect(Collectors.toList());
 		Optional<FileData> fileDataFiltered = listFileData.stream().filter(fileD -> nameFile.equals(fileD.getName())).findAny();
 		if (!fileDataFiltered.isPresent()) {
-			fileData.setUuid(getDefectsInspectionReport().getUuid());
-			fileData.setCreateDate(getDefectsInspectionReport().getCreateDate());
-			fileData.setModifiedDate(getDefectsInspectionReport().getModifiedDate());
+			fileData.setUuid(getPerformanceReportRepairElevator().getUuid());
+			fileData.setCreateDate(getPerformanceReportRepairElevator().getCreateDate());
+			fileData.setModifiedDate(getPerformanceReportRepairElevator().getModifiedDate());
 			fileData.setName(nameFile);
 			fileData.setMimeType("JPG");
 			try {
@@ -194,8 +238,8 @@ public class ExtractDefectsInspection {
 			boolean inserted = FTPUploadFile.uploadFile2FTPServer(file, fileData.getHash());
 			fileData.setInsertedOnFtpServer(inserted);
 			getListPhotoNames().add(nameFile);
-			fileData.setReport(getDefectsInspectionReport());
-			getDefectsInspectionReport().getListaFileData().add(fileData);
+			fileData.setReport(getPerformanceReportRepairElevator());
+			getPerformanceReportRepairElevator().getListaFileData().add(fileData);
 		} else {
 			uploadImage(image, fileDataFiltered.get().getHash(), String.valueOf(getIdHistoric()), fileDataFiltered.get().getName());
 		}
@@ -228,11 +272,11 @@ public class ExtractDefectsInspection {
 			FTPUploadFile.replaceFile2FTPServer(file, hash, fileData.getImageChange());
 		}
 	}
-
+	
 	static class WidgetImageChecker extends PDFGraphicsStreamEngine {
-
+		
 		private PDImage pDimage;
-
+		
 		WidgetImageChecker(PDAnnotationWidget widget) {
 			super(widget.getPage());
 			this.widget = widget;
@@ -306,9 +350,11 @@ public class ExtractDefectsInspection {
 		public PDImage getpDimage() {
 			return pDimage;
 		}
+
 		public void setpDimage(PDImage pDimage) {
 			this.pDimage = pDimage;
 		}
+		
 	}
 
 	public File multipartToFile(MultipartFile multipart, String fileName) throws IllegalStateException, IOException {
@@ -317,7 +363,54 @@ public class ExtractDefectsInspection {
 		multipart.transferTo(convFile);
 		return convFile;
 	}
-	
+
+	public PerformanceReportRepairElevator getPerformanceReportRepairElevator() {
+		return performanceReportRepairElevator;
+	}
+
+	public void setPerformanceReportRepairElevator(PerformanceReportRepairElevator performanceReportRepairElevator) {
+		this.performanceReportRepairElevator = performanceReportRepairElevator;
+	}
+
+	public String getUuidStr() {
+		return uuidStr;
+	}
+
+	public void setUuidStr(String uuidStr) {
+		this.uuidStr = uuidStr;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getNameField() {
+		return nameField;
+	}
+
+	public void setNameField(String nameField) {
+		this.nameField = nameField;
+	}
+
+	public String getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
+
+	public List<String> getListPhotoNames() {
+		return listPhotoNames;
+	}
+
+	public void setListPhotoNames(List<String> listPhotoNames) {
+		this.listPhotoNames = listPhotoNames;
+	}
 	public long fileSize(File file) {
 		long bytes = file.length();
 		long kilobytes = (bytes / 1024);

@@ -28,7 +28,6 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-//@MappedSuperclass
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Report {
 

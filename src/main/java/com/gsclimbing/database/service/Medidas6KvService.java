@@ -11,20 +11,23 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.gsclimbing.database.entity.Alteration;
-import com.gsclimbing.database.entity.Medidas690V400V;
+import com.gsclimbing.database.entity.Medidas6Kv;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.HistoricReport;
-import com.gsclimbing.database.entity.Medidas690V400V;
-import com.gsclimbing.database.repository.Medidas690V400VRepository;
-import com.gsclimbing.database.repository.Medidas690V400VRepository;
+import com.gsclimbing.database.entity.Medidas6Kv;
+import com.gsclimbing.database.entity.Medidas6Kv;
+import com.gsclimbing.database.repository.Medidas6KvRepository;
+import com.gsclimbing.database.repository.Medidas6KvRepository;
+import com.gsclimbing.database.repository.Medidas6KvRepository;
 import com.gsclimbing.database.repository.UserRepository;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 
 @Service
-public class Medidas690V400VService {
+public class Medidas6KvService {
 
 	Logger log = LoggerFactory.getLogger(getClass());
 
@@ -32,7 +35,7 @@ public class Medidas690V400VService {
 	private FileService fileService;
 
 	@Autowired
-	private Medidas690V400VService medidas690V400VService;
+	private Medidas6KvService medidas6KvService;
 
 	@Autowired
 	private HistoricReportService historicReportService;
@@ -44,42 +47,42 @@ public class Medidas690V400VService {
 	private UserRepository userService;
 
 	@Autowired
-	private Medidas690V400VRepository medidas690V400VRepository;
+	private Medidas6KvRepository medidas6KvRepository;
 
-	public Medidas690V400V createMedidas690V400V(Medidas690V400V medidas690V400V) {
-		return medidas690V400VRepository.save(medidas690V400V);
+	public Medidas6Kv createMedidas6Kv(Medidas6Kv medidas6Kv) {
+		return medidas6KvRepository.save(medidas6Kv);
 	}
 
-	public Medidas690V400V readMedidas690V400V(Integer id) {
-		return medidas690V400VRepository.findById(id).orElse(null);
+	public Medidas6Kv readMedidas6Kv(Integer id) {
+		return medidas6KvRepository.findById(id).orElse(null);
 	}
 
-	public List<Medidas690V400V> readMedidas690V400VByTurbineId(String turbineId) {
-		return medidas690V400VRepository.findByTurbineId(turbineId);
+	public List<Medidas6Kv> readMedidas6KvByTurbineId(String turbineId) {
+		return medidas6KvRepository.findByTurbineId(turbineId);
 	}
 
-	public List<Medidas690V400V> readAllMedidas690V400V() {
-		List<Medidas690V400V> reports = new ArrayList<Medidas690V400V>();
-		medidas690V400VRepository.findAll().forEach(reports::add);
+	public List<Medidas6Kv> readAllMedidas6Kv() {
+		List<Medidas6Kv> reports = new ArrayList<Medidas6Kv>();
+		medidas6KvRepository.findAll().forEach(reports::add);
 		return reports;
 	}
 
-	public Medidas690V400V updateMedidas690V400V(Medidas690V400V medidas690V400V) {
-		return medidas690V400VRepository.save(medidas690V400V);
+	public Medidas6Kv updateMedidas6Kv(Medidas6Kv medidas6Kv) {
+		return medidas6KvRepository.save(medidas6Kv);
 	}
 
-	public List<Medidas690V400V> searchMedidas690V400V(String site, String wtgNumber, String wtgType, String yearConstruction) {
-		return medidas690V400VRepository.findBySiteAndWtgNumberWtgTypeAndYearConstruction(site, wtgNumber, wtgType, yearConstruction);
+	public List<Medidas6Kv> searchMedidas6Kv(String site, String wtgNumber, String wtgType, String yearConstruction) {
+		return medidas6KvRepository.findBySiteAndWtgNumberAndWtgTypeAndYearConstruction(site, wtgNumber, wtgType, yearConstruction);
 	}
 
-	public void deleteMedidas690V400V(Integer id) {
+	public void deleteMedidas6Kv(Integer id) {
 		deleteHistoricAndFileData(id);
-		medidas690V400VRepository.deleteById(id);
+		medidas6KvRepository.deleteById(id);
 	}
 
-	public void deleteMedidas690V400VByTurbineId(String turbineId) {
-		List<Medidas690V400V> lista = medidas690V400VRepository.findByTurbineId(turbineId);
-		lista.stream().forEach(report -> deleteMedidas690V400V(report.getReportId()));
+	public void deleteMedidas6KvByTurbineId(String turbineId) {
+		List<Medidas6Kv> lista = medidas6KvRepository.findByTurbineId(turbineId);
+		lista.stream().forEach(report -> deleteMedidas6Kv(report.getReportId()));
 	}
 
 	public String getCurrentLoggedUser() {
@@ -94,9 +97,9 @@ public class Medidas690V400VService {
 	}
 
 	private void deleteHistoricAndFileData(Integer id) {
-		Medidas690V400V medidas690V400V = medidas690V400VService.readMedidas690V400V(id);
-		if (medidas690V400V != null) {
-			String uuid = medidas690V400V.getUuid();
+		Medidas6Kv medidas6Kv = medidas6KvService.readMedidas6Kv(id);
+		if (medidas6Kv != null) {
+			String uuid = medidas6Kv.getUuid();
 			List<FileData> listFileData = fileService.readFile(uuid);
 
 			listFileData.stream().forEach(fileData -> {
@@ -111,19 +114,19 @@ public class Medidas690V400VService {
 		}
 	}
 
-	public List<String> chkIfAllFieldsNull(Medidas690V400V medidas690V400V) {
+	public List<String> chkIfAllFieldsNull(Medidas6Kv medidas6Kv) {
 		List<String> lista = new ArrayList<String>();
 		try {
-			for (Field field : medidas690V400V.getClass().getSuperclass().getDeclaredFields()) {
+			for (Field field : medidas6Kv.getClass().getSuperclass().getDeclaredFields()) {
 				field.setAccessible(true);
-				Object object = field.get(medidas690V400V);
+				Object object = field.get(medidas6Kv);
 				if (object == null || ObjectUtils.isEmpty(object.toString())) {
 					lista.add(field.getName());
 				}
 			}
-			for (Field field : medidas690V400V.getClass().getDeclaredFields()) {
+			for (Field field : medidas6Kv.getClass().getDeclaredFields()) {
 				field.setAccessible(true);
-				Object object = field.get(medidas690V400V);
+				Object object = field.get(medidas6Kv);
 				if (object instanceof ArrayList<?>) {
 					if (((ArrayList) object).size() == 0) {
 						lista.add(field.getName());

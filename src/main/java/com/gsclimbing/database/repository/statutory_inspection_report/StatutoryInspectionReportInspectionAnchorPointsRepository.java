@@ -1,0 +1,11 @@
+package com.gsclimbing.database.repository.statutory_inspection_report;
+
+import org.springframework.data.repository.CrudRepository;
+
+import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspectionReportInspectionAnchorPoints;
+
+public interface StatutoryInspectionReportInspectionAnchorPointsRepository extends CrudRepository<StatutoryInspectionReportInspectionAnchorPoints, Integer>{
+
+	StatutoryInspectionReportInspectionAnchorPoints findByUuid( String uuid );
+	
+}
