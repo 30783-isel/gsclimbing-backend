@@ -11,7 +11,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class MeasurementsMwSwitchgear  extends Report implements Cloneable{
+public class MeasurementsMwSwitchgear extends Report implements Cloneable{
 
 	@Column(length = 100)
 	private String dateMeasurement;
