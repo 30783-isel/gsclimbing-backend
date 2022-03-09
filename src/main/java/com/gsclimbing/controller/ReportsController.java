@@ -26,6 +26,10 @@ import com.gsclimbing.database.entity.ExaminationTransformer;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.HistoricReport;
 import com.gsclimbing.database.entity.MeasurementsMwSwitchgear;
+import com.gsclimbing.database.entity.Medidas690V400V;
+import com.gsclimbing.database.entity.Medidas6Kv;
+import com.gsclimbing.database.entity.OnboardCraneInspectionReport;
+import com.gsclimbing.database.entity.PerformanceReportRepairElevator;
 import com.gsclimbing.database.entity.Project;
 import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.entity.Turbine;
@@ -42,10 +46,16 @@ import com.gsclimbing.ftp.FTPDownloadFiles;
 import com.gsclimbing.historic.Historic;
 import com.gsclimbing.reports.extract.ExtractDataExaminationTransformer;
 import com.gsclimbing.reports.extract.ExtractDataMeasurementsMwSwitchgear;
+import com.gsclimbing.reports.extract.ExtractDataOnboardCraneInspectionReport;
+import com.gsclimbing.reports.extract.ExtractDataPrre;
 import com.gsclimbing.reports.extract.ExtractDefectsInspection;
 import com.gsclimbing.reports.populater.DefectsInspectionPopulater;
 import com.gsclimbing.reports.populater.ExaminationTransformerPopulater;
 import com.gsclimbing.reports.populater.MeasurementsMwSwitchgearPopulater;
+import com.gsclimbing.reports.populater.Medidas690V400VPopulater;
+import com.gsclimbing.reports.populater.Medidas6KvPopulater;
+import com.gsclimbing.reports.populater.OnboardCraneInspectionReportElevatorPopulater;
+import com.gsclimbing.reports.populater.PerformanceReportRepairElevatorPopulater;
 
 import lombok.Data;
 
@@ -80,9 +90,22 @@ public class ReportsController {
 	@Autowired
 	private ExtractDataMeasurementsMwSwitchgear extractDataMeasurementsMwSwitchgear;
 	@Autowired
+	private ExtractDataOnboardCraneInspectionReport extractDataOnboardCraneInspectionReport;
+	
+	@Autowired
+	private Medidas6KvPopulater medidas6KvPopulater;
+	@Autowired
+	private Medidas690V400VPopulater medidas690V400VPopulater;
+	@Autowired
+	private OnboardCraneInspectionReportElevatorPopulater onboardCraneInspectionReportElevatorPopulater;
+	@Autowired
+	private PerformanceReportRepairElevatorPopulater performanceReportRepairElevatorPopulater;
+	@Autowired
+	private ExtractDataPrre extractDataPrre;
+	
+	@Autowired
 	private MeasurementsMwSwitchgearPopulater measurementsMwSwitchgearPopulater;
 
-	
 	private Report report;
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
@@ -137,6 +160,21 @@ public class ReportsController {
 		case MMSSC:
 			setReport(new MeasurementsMwSwitchgear());
 			break;
+		case M690V400V:
+			setReport(new Medidas690V400V());
+			break;
+		case M6KV:
+			setReport(new Medidas6Kv());
+			break;
+		case OCIR:
+			setReport(new OnboardCraneInspectionReport());
+			break;
+		case PRRE:
+			setReport(new PerformanceReportRepairElevator());
+			break;
+		case SIR:
+			setReport(new PerformanceReportRepairElevator());
+			break;
 		default:
 			break;
 		}
@@ -151,6 +189,15 @@ public class ReportsController {
 			return extractDataExaminationTransformer.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
 		case MMSSC:
 			return extractDataMeasurementsMwSwitchgear.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
+		case M690V400V:
+			return extractDataMeasurementsMwSwitchgear.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
+		case M6KV:
+			return extractDataMeasurementsMwSwitchgear.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
+		case OCIR:
+			return extractDataOnboardCraneInspectionReport.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
+		case PRRE:
+			return extractDataPrre.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
+
 		}
 		return null;
 	}
@@ -164,10 +211,18 @@ public class ReportsController {
 			return examinationTransformerPopulater.generatePDF(report);
 		case MMSSC:
 			return measurementsMwSwitchgearPopulater.generatePDF(report);
+		case M690V400V:
+			return medidas690V400VPopulater.generatePDF(report);
+		case M6KV:
+			return medidas6KvPopulater.generatePDF(report);
+		case OCIR:
+			return onboardCraneInspectionReportElevatorPopulater.generatePDF(report);
+		case PRRE:
+			return performanceReportRepairElevatorPopulater.generatePDF(report);
 		}
 		return null;
 	}
-
+	
 	@RequestMapping(method = RequestMethod.POST, value = "/update")
 	public ResponseEntity<?> updateFile(@RequestParam("file") MultipartFile file, @RequestParam("idReport") Integer idReport, @RequestParam("typeReport") Integer typeReport) {
 		String message = "";

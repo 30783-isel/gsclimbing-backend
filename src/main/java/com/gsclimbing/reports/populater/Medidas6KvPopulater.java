@@ -21,12 +21,6 @@ import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
-
-//import org.apache.pdfbox.pdmodel.graphics.xobject.PDPixelMap;
-//import org.apache.pdfbox.pdmodel.graphics.xobject.PDXObjectForm;
-//import org.apache.pdfbox.pdmodel.graphics.xobject.PDXObjectImage;
-//import org.apache.pdfbox.exceptions.COSVisitorException;
-
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
@@ -36,18 +30,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gsclimbing.database.entity.FileData;
-import com.gsclimbing.database.entity.Medidas690V400V;
+import com.gsclimbing.database.entity.Medidas6Kv;
 import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.repository.UserRepository;
 import com.gsclimbing.database.service.FileService;
-import com.gsclimbing.database.service.Medidas690V400VService;
+import com.gsclimbing.database.service.Medidas6KvService;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 
 @Service
-public class Medidas690V400VPopulater {
+public class Medidas6KvPopulater {
 
 	@Autowired
-	private Medidas690V400VService medidas690V400VService;
+	private Medidas6KvService medidas6KvService;
 
 	@Autowired
 	private UserRepository userService;
@@ -61,17 +55,17 @@ public class Medidas690V400VPopulater {
 
 		byte[] bytes = null;
 		try {
-			bytes = populateAndCopy((Medidas690V400V)report);
+			bytes = populateAndCopy((Medidas6Kv)report);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		
 		return bytes;
 	}
 
-	private byte[] populateAndCopy(Medidas690V400V report) throws IOException {
+	private byte[] populateAndCopy(Medidas6Kv report) throws IOException {
 
-		InputStream inputStream = FTPDownloadFiles.downloadPdfReportByTeamToTempFile("/medidas690V400V/", "Medidas 690V400V.pdf");
+		InputStream inputStream = FTPDownloadFiles.downloadPdfReportByTeamToTempFile("/medidas6Kv/", "Medidas 6Kv.pdf");
 
 		_pdfDocument = PDDocument.load(inputStream);
 
@@ -81,10 +75,18 @@ public class Medidas690V400VPopulater {
 		setField("site", report.getSite());
 		setField("wtgNumber", report.getWtgNumber());
 
-		setField("type1", report.getType1());
+		setField("chk1", report.isChk1() ? "Yes" : "Off");
+		setField("chk2", report.isChk2() ? "Yes" : "Off");
+		setField("chk3", report.isChk3() ? "Yes" : "Off");
+
 		setField("voltage1", report.getVoltage1());
 		setField("length1", report.getLength1());
-		setField("visual1", report.getVisual1());
+		setField("visualInspection1", report.getVisualInspection1());
+
+		setField("equipmentType1", report.getEquipmentType1());
+		setField("serialNumber1", report.getSerialNumber1());
+		setField("calibrationDate1", report.getCalibrationDate1());
+		setField("nextCalibrationDate1", report.getNextCalibrationDate1());
 
 		setField("box1_1", report.getBox1_1());
 		setField("box1_2", report.getBox1_2());
@@ -95,11 +97,20 @@ public class Medidas690V400VPopulater {
 		setField("box1_7", report.getBox1_7());
 		setField("box1_8", report.getBox1_8());
 		setField("box1_9", report.getBox1_9());
+		setField("box1_10", report.getBox1_10());
+		setField("box1_11", report.getBox1_11());
+		setField("box1_12", report.getBox1_12());
+		setField("box1_13", report.getBox1_13());
+		setField("box1_14", report.getBox1_14());
+		setField("box1_15", report.getBox1_15());
+		setField("box1_16", report.getBox1_16());
+		setField("box1_17", report.getBox1_17());
+		setField("box1_18", report.getBox1_18());
 
-		setField("type2", report.getType2());
-		setField("voltage2", report.getBox1_1());
-		setField("length2", report.getLength2());
-		setField("visual2", report.getVisual2());
+		setField("equipmentType2", report.getEquipmentType2());
+		setField("serialNumber2", report.getSerialNumber2());
+		setField("calibrationDate2", report.getCalibrationDate2());
+		setField("nextCalibrationDate2", report.getNextCalibrationDate2());
 
 		setField("box2_1", report.getBox2_1());
 		setField("box2_2", report.getBox2_2());
@@ -107,29 +118,19 @@ public class Medidas690V400VPopulater {
 		setField("box2_4", report.getBox2_4());
 		setField("box2_5", report.getBox2_5());
 		setField("box2_6", report.getBox2_6());
-		setField("box2_7", report.getBox2_7());
-		setField("box2_8", report.getBox2_8());
-		setField("box2_9", report.getBox2_9());
-
-		setField("type3", report.getType3());
-		setField("voltage3", report.getVoltage3());
-		setField("length3", report.getLength3());
-		setField("visual3", report.getVisual3());
 
 		setField("box3_1", report.getBox3_1());
 		setField("box3_2", report.getBox3_2());
-		setField("box3_3", report.getBox3_3());
-		setField("box3_4", report.getBox3_4());
-		setField("box3_5", report.getBox3_5());
-		setField("box3_6", report.getBox3_6());
-		setField("box3_7", report.getBox3_7());
-		setField("box3_8", report.getBox3_8());
-		setField("box3_9", report.getBox3_9());
 
-		setField("type4", report.getType4());
-		setField("voltage4", report.getVoltage4());
-		setField("length4", report.getLength4());
-		setField("visual4", report.getVisual4());
+		setField("type2", report.getType2());
+		setField("voltage2", report.getVoltage2());
+		setField("length2", report.getLength2());
+		setField("visualInspection2", report.getVisualInspection2());
+
+		setField("equipmentType3", report.getEquipmentType3());
+		setField("serialNumber3", report.getSerialNumber3());
+		setField("calibrationDate3", report.getCalibrationDate3());
+		setField("nextCalibrationDate3", report.getNextCalibrationDate3());
 
 		setField("box4_1", report.getBox4_1());
 		setField("box4_2", report.getBox4_2());
@@ -140,64 +141,50 @@ public class Medidas690V400VPopulater {
 		setField("box4_7", report.getBox4_7());
 		setField("box4_8", report.getBox4_8());
 		setField("box4_9", report.getBox4_9());
+		setField("box4_10", report.getBox4_10());
+		setField("box4_11", report.getBox4_11());
+		setField("box4_12", report.getBox4_12());
+		setField("box4_13", report.getBox4_13());
+		setField("box4_14", report.getBox4_14());
+		setField("box4_15", report.getBox4_15());
+		setField("box4_16", report.getBox4_16());
+		setField("box4_17", report.getBox4_17());
+		setField("box4_18", report.getBox4_18());
 
+		setField("equipmentType4", report.getEquipmentType4());
+		setField("serialNumber4", report.getSerialNumber4());
+		setField("calibrationDate4", report.getCalibrationDate4());
+		setField("nextCalibrationDate4", report.getNextCalibrationDate4());
 
-		setField("type5", report.getType5());
-		setField("voltage5", report.getVoltage5());
-		setField("length5", report.getLength5());
-		setField("visual5", report.getVisual5());
+		setField("box5_1", report.getBox5_1());
+		setField("box5_2", report.getBox5_2());
+		setField("box5_3", report.getBox5_3());
+		setField("box5_4", report.getBox5_4());
+		setField("box5_5", report.getBox5_5());
+		setField("box5_6", report.getBox5_6());
 
-		setField("box5_1",  report.getBox5_1());
-		setField("box5_2",  report.getBox5_2());
-		setField("box5_3",  report.getBox5_3());
-		setField("box5_4",  report.getBox5_4());
-		setField("box5_5",  report.getBox5_5());
-		setField("box5_6",  report.getBox5_6());
-		setField("box5_7",  report.getBox5_7());
-		setField("box5_8",  report.getBox5_8());
-		setField("box5_9",  report.getBox5_9());
-		setField("box5_10", report.getBox5_10());
-		setField("box5_11", report.getBox5_11());
-		setField("box5_12", report.getBox5_12());
+		setField("box6_1", report.getBox6_1());
+		setField("box6_2", report.getBox6_2());
 
-		setField("box6_1",  report.getBox6_1());
-		setField("box6_2",  report.getBox6_2());
-		setField("box6_3",  report.getBox6_3());
-		setField("box6_4",  report.getBox6_4());
-		setField("box6_5",  report.getBox6_5());
-		setField("box6_6",  report.getBox6_6());
-		setField("box6_7",  report.getBox6_7());
-		setField("box6_8",  report.getBox6_8());
-		setField("box6_9",  report.getBox6_9());
-		setField("box6_10", report.getBox6_10());
-		setField("box6_11", report.getBox6_11());
-		setField("box6_12", report.getBox6_12());
-		setField("box6_13", report.getBox6_13());
-		setField("box6_14", report.getBox6_14());
-		setField("box6_15", report.getBox6_15());
-		setField("box6_16", report.getBox6_16());
-		setField("box6_17", report.getBox6_17());
-		setField("box6_18", report.getBox6_18());
-		setField("box6_19", report.getBox6_19());
-		setField("box6_20", report.getBox6_20());
-		setField("box6_21", report.getBox6_21());
-		setField("box6_22", report.getBox6_22());
-		setField("box6_23", report.getBox6_23());
-		setField("box6_24", report.getBox6_24());
+		setField("type3", report.getType3());
+		setField("voltage3", report.getVoltage3());
+		setField("length3", report.getLength3());
+		setField("visualInspection3", report.getVisualInspection3());
 
-		setField("type6", report.getType6());
-		setField("voltage6", report.getVoltage6());
-		setField("visual6", report.getVisual6());
+		setField("equipmentType5", report.getEquipmentType5());
+		setField("serialNumber5", report.getSerialNumber5());
+		setField("calibrationDate5", report.getCalibrationDate5());
+		setField("nextCalibrationDate5", report.getNextCalibrationDate5());
 
-		setField("box7_1",  report.getBox7_1());
-		setField("box7_2",  report.getBox7_2());
-		setField("box7_3",  report.getBox7_3());
-		setField("box7_4",  report.getBox7_4());
-		setField("box7_5",  report.getBox7_5());
-		setField("box7_6",  report.getBox7_6());
-		setField("box7_7",  report.getBox7_7());
-		setField("box7_8",  report.getBox7_8());
-		setField("box7_9",  report.getBox7_9());
+		setField("box7_1", report.getBox7_1());
+		setField("box7_2", report.getBox7_2());
+		setField("box7_3", report.getBox7_3());
+		setField("box7_4", report.getBox7_4());
+		setField("box7_5", report.getBox7_5());
+		setField("box7_6", report.getBox7_6());
+		setField("box7_7", report.getBox7_7());
+		setField("box7_8", report.getBox7_8());
+		setField("box7_9", report.getBox7_9());
 		setField("box7_10", report.getBox7_10());
 		setField("box7_11", report.getBox7_11());
 		setField("box7_12", report.getBox7_12());
@@ -207,20 +194,21 @@ public class Medidas690V400VPopulater {
 		setField("box7_16", report.getBox7_16());
 		setField("box7_17", report.getBox7_17());
 		setField("box7_18", report.getBox7_18());
-		setField("box7_19", report.getBox7_19());
-		setField("box7_20", report.getBox7_20());
-		setField("box7_21", report.getBox7_21());
-		setField("box7_22", report.getBox7_22());
-		setField("box7_23", report.getBox7_23());
-		setField("box7_24", report.getBox7_24());
-		setField("box7_25", report.getBox7_25());
-		setField("box7_26", report.getBox7_26());
-		setField("box7_27", report.getBox7_27());
 
-		setField("equipmentType", report.getEquipmentType());
-		setField("serialNumber", report.getSerialNumber());
-		setField("calibrationType", report.getCalibrationDate());
-		setField("nextCalibrationType", report.getNextCalibrationDate());
+		setField("equipmentType6", report.getEquipmentType6());
+		setField("serialNumber6", report.getSerialNumber6());
+		setField("calibrationDate6", report.getCalibrationDate6());
+		setField("nextCalibrationDate6", report.getNextCalibrationDate6());
+
+		setField("box8_1", report.getBox8_1());
+		setField("box8_2", report.getBox8_2());
+		setField("box8_3", report.getBox8_3());
+		setField("box8_4", report.getBox8_4());
+		setField("box8_5", report.getBox8_5());
+		setField("box8_6", report.getBox8_6());
+
+		setField("box9_1", report.getBox9_1());
+		setField("box9_2", report.getBox9_2());
 
 		setField("conclusion", report.getConclusion());
 		setField("performedBy", report.getPerformedBy());
@@ -301,7 +289,7 @@ public class Medidas690V400VPopulater {
 			ImageIO.write(bImage, "jpg", baos);
 			byte[] bytes = baos.toByteArray();
 
-			PDImageXObject pdImageXObject = PDImageXObject.createFromByteArray(_pdfDocument, bytes, "Medidas 690V400V");
+			PDImageXObject pdImageXObject = PDImageXObject.createFromByteArray(_pdfDocument, bytes, "Measurements of MV Switchgear and Stator Cabinet");
 			float imageScaleRatio = (float) pdImageXObject.getHeight() / (float) pdImageXObject.getWidth();
 
 			PDRectangle buttonPosition = getFieldArea(pdPushButton);
