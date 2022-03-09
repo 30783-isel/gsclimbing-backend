@@ -32,6 +32,7 @@ import com.gsclimbing.database.entity.OnboardCraneInspectionReport;
 import com.gsclimbing.database.entity.PerformanceReportRepairElevator;
 import com.gsclimbing.database.entity.Project;
 import com.gsclimbing.database.entity.Report;
+import com.gsclimbing.database.entity.StatutoryInspectionReport;
 import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.service.AlterationService;
@@ -46,8 +47,11 @@ import com.gsclimbing.ftp.FTPDownloadFiles;
 import com.gsclimbing.historic.Historic;
 import com.gsclimbing.reports.extract.ExtractDataExaminationTransformer;
 import com.gsclimbing.reports.extract.ExtractDataMeasurementsMwSwitchgear;
+import com.gsclimbing.reports.extract.ExtractDataMedidas690V400V;
+import com.gsclimbing.reports.extract.ExtractDataMedidas6Kv;
 import com.gsclimbing.reports.extract.ExtractDataOnboardCraneInspectionReport;
 import com.gsclimbing.reports.extract.ExtractDataPrre;
+import com.gsclimbing.reports.extract.ExtractDataStatutoryInspectionReport;
 import com.gsclimbing.reports.extract.ExtractDefectsInspection;
 import com.gsclimbing.reports.populater.DefectsInspectionPopulater;
 import com.gsclimbing.reports.populater.ExaminationTransformerPopulater;
@@ -56,6 +60,7 @@ import com.gsclimbing.reports.populater.Medidas690V400VPopulater;
 import com.gsclimbing.reports.populater.Medidas6KvPopulater;
 import com.gsclimbing.reports.populater.OnboardCraneInspectionReportElevatorPopulater;
 import com.gsclimbing.reports.populater.PerformanceReportRepairElevatorPopulater;
+import com.gsclimbing.reports.populater.StatutoryInspectionReportElevatorPopulater;
 
 import lombok.Data;
 
@@ -82,29 +87,36 @@ public class ReportsController {
 	@Autowired
 	private ExtractDefectsInspection extractDefectsInspection;
 	@Autowired
-	private DefectsInspectionPopulater defectsInspectionPopulater;
-	@Autowired
 	private ExtractDataExaminationTransformer extractDataExaminationTransformer;
 	@Autowired
-	private ExaminationTransformerPopulater examinationTransformerPopulater;
+	private ExtractDataMedidas690V400V extractDataMedidas690V400V;
+	@Autowired
+	private ExtractDataMedidas6Kv extractDataMedidas6Kv;
 	@Autowired
 	private ExtractDataMeasurementsMwSwitchgear extractDataMeasurementsMwSwitchgear;
 	@Autowired
 	private ExtractDataOnboardCraneInspectionReport extractDataOnboardCraneInspectionReport;
+	@Autowired
+	private ExtractDataPrre extractDataPrre;
+	@Autowired
+	private ExtractDataStatutoryInspectionReport extractDataStatutoryInspectionReport;
 	
+	@Autowired
+	private DefectsInspectionPopulater defectsInspectionPopulater;
+	@Autowired
+	private ExaminationTransformerPopulater examinationTransformerPopulater;
 	@Autowired
 	private Medidas6KvPopulater medidas6KvPopulater;
 	@Autowired
 	private Medidas690V400VPopulater medidas690V400VPopulater;
 	@Autowired
+	private MeasurementsMwSwitchgearPopulater measurementsMwSwitchgearPopulater;
+	@Autowired
 	private OnboardCraneInspectionReportElevatorPopulater onboardCraneInspectionReportElevatorPopulater;
 	@Autowired
 	private PerformanceReportRepairElevatorPopulater performanceReportRepairElevatorPopulater;
 	@Autowired
-	private ExtractDataPrre extractDataPrre;
-	
-	@Autowired
-	private MeasurementsMwSwitchgearPopulater measurementsMwSwitchgearPopulater;
+	private StatutoryInspectionReportElevatorPopulater statutoryInspectionReportElevatorPopulater;
 
 	private Report report;
 	
@@ -125,7 +137,7 @@ public class ReportsController {
 				Project project = projectService.getProjectById(Integer.parseInt(projectId));
 				String subject = "User " + user.getUsername() + " inserted a new Defects Inspection Report on project " + project.getName();
 				byte[] bytes = null;
-				bytes = generatePDF(typeReport, getReport());
+				bytes = generatePDF(typeReport, report);
 				runnable = new SendEmail(subject, "Defects Inspection Report.pdf", bytes);
 				Thread t = new Thread(runnable);
 				t.start();
@@ -173,9 +185,7 @@ public class ReportsController {
 			setReport(new PerformanceReportRepairElevator());
 			break;
 		case SIR:
-			setReport(new PerformanceReportRepairElevator());
-			break;
-		default:
+			setReport(new StatutoryInspectionReport());
 			break;
 		}
 	}
@@ -190,14 +200,15 @@ public class ReportsController {
 		case MMSSC:
 			return extractDataMeasurementsMwSwitchgear.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
 		case M690V400V:
-			return extractDataMeasurementsMwSwitchgear.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
+			return extractDataMedidas690V400V.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
 		case M6KV:
-			return extractDataMeasurementsMwSwitchgear.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
+			return extractDataMedidas6Kv.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
 		case OCIR:
 			return extractDataOnboardCraneInspectionReport.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
 		case PRRE:
 			return extractDataPrre.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
-
+		case SIR:
+			return extractDataStatutoryInspectionReport.readPDF(file, projectId, turbineId, typeReport, idReport, operation);
 		}
 		return null;
 	}
@@ -219,6 +230,8 @@ public class ReportsController {
 			return onboardCraneInspectionReportElevatorPopulater.generatePDF(report);
 		case PRRE:
 			return performanceReportRepairElevatorPopulater.generatePDF(report);
+		case SIR:
+			return statutoryInspectionReportElevatorPopulater.generatePDF(report);
 		}
 		return null;
 	}
