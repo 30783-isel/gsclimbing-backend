@@ -31,16 +31,32 @@ import com.gsclimbing.commons.enums.ReportEnum;
 import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.ExaminationTransformer;
 import com.gsclimbing.database.entity.FileData;
+import com.gsclimbing.database.entity.MeasurementsMwSwitchgear;
+import com.gsclimbing.database.entity.Medidas690V400V;
+import com.gsclimbing.database.entity.Medidas6Kv;
+import com.gsclimbing.database.entity.OnboardCraneInspectionReport;
 import com.gsclimbing.database.entity.Project;
 import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.service.DefectsInspectionReportService;
 import com.gsclimbing.database.service.ExaminationTransformerService;
 import com.gsclimbing.database.service.FileService;
+import com.gsclimbing.database.service.MeasurementsMwSwitchgearService;
+import com.gsclimbing.database.service.Medidas690V400VService;
+import com.gsclimbing.database.service.Medidas6KvService;
+import com.gsclimbing.database.service.OnboardCraneInspectionReportService;
+import com.gsclimbing.database.service.PerformanceReportRepairElevatorService;
 import com.gsclimbing.database.service.ProjectService;
+import com.gsclimbing.database.service.StatutoryInspectionReportReportService;
 import com.gsclimbing.database.service.TurbineService;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 import com.gsclimbing.reports.populater.DefectsInspectionPopulater;
 import com.gsclimbing.reports.populater.ExaminationTransformerPopulater;
+import com.gsclimbing.reports.populater.MeasurementsMwSwitchgearPopulater;
+import com.gsclimbing.reports.populater.Medidas690V400VPopulater;
+import com.gsclimbing.reports.populater.Medidas6KvPopulater;
+import com.gsclimbing.reports.populater.OnboardCraneInspectionReportElevatorPopulater;
+import com.gsclimbing.reports.populater.PerformanceReportRepairElevatorPopulater;
+import com.gsclimbing.reports.populater.StatutoryInspectionReportElevatorPopulater;
 import com.gsclimbing.zip.ZipUtils;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
@@ -61,6 +77,30 @@ public class FileController {
 	private ExaminationTransformerService examinationTransformerService;
 	@Autowired
 	private ExaminationTransformerPopulater examinationTransformerPopulater;
+	@Autowired
+	private Medidas6KvService medidas6KvService;
+	@Autowired
+	private Medidas6KvPopulater medidas6KvPopulater;
+	@Autowired
+	private Medidas690V400VService medidas690V400VService;
+	@Autowired
+	private Medidas690V400VPopulater medidas690V400VPopulater;
+	@Autowired
+	private MeasurementsMwSwitchgearService measurementsMwSwitchgearService;
+	@Autowired
+	private MeasurementsMwSwitchgearPopulater measurementsMwSwitchgearPopulater;
+	@Autowired
+	private OnboardCraneInspectionReportService onboardCraneInspectionReportService;
+	@Autowired
+	private OnboardCraneInspectionReportElevatorPopulater onboardCraneInspectionReportElevatorPopulater;
+	@Autowired
+	private PerformanceReportRepairElevatorService performanceReportRepairElevatorService;
+	@Autowired
+	private PerformanceReportRepairElevatorPopulater performanceReportRepairElevatorPopulater;
+	@Autowired
+	private StatutoryInspectionReportReportService statutoryInspectionReportReportService;
+	@Autowired
+	private StatutoryInspectionReportElevatorPopulater statutoryInspectionReportElevatorPopulater;
 	
 	@Autowired
 	private FileService fileService;
@@ -80,13 +120,21 @@ public class FileController {
 		ReportEnum reportEnum = ReportEnum.values()[typeReport];
 		switch (reportEnum) {
 		case DIR:
-			fileName = "Defect Inspection Report.pdf";
-			DefectsInspectionReport defectsInspectionReport = defectsInspectionReportService.readDefectsInspectionReport(id);
-			return defectsInspectionPopulater.generatePDF(defectsInspectionReport);
+			return defectsInspectionPopulater.generatePDF(defectsInspectionReportService.readDefectsInspectionReport(id));
 		case ET:
-			fileName = "Examination Transformer.pdf";
-			ExaminationTransformer examinationTransformer = examinationTransformerService.readExaminationTransformer(id);
-			return examinationTransformerPopulater.generatePDF(examinationTransformer);
+			return examinationTransformerPopulater.generatePDF(examinationTransformerService.readExaminationTransformer(id));
+		case MMSSC:
+			return measurementsMwSwitchgearPopulater.generatePDF(measurementsMwSwitchgearService.readMeasurementsMwSwitchgear(id));
+		case M6KV:
+			return medidas6KvPopulater.generatePDF(medidas6KvService.readMedidas6Kv(id));
+		case M690V400V:
+			return medidas690V400VPopulater.generatePDF(medidas690V400VService.readMedidas690V400V(id));
+		case OCIR:
+			return onboardCraneInspectionReportElevatorPopulater.generatePDF(onboardCraneInspectionReportService.readOnboardCraneInspectionReport(id));
+		case PRRE:
+			return performanceReportRepairElevatorPopulater.generatePDF(performanceReportRepairElevatorService.readPerformanceReportRepairElevator(id));
+		case SIR:
+			return statutoryInspectionReportElevatorPopulater.generatePDF(statutoryInspectionReportReportService.readStatutoryInspectionReport(id));
 		}
 		return null;
 	}
