@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.gsclimbing.commons.enums.ReportEnum;
 import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.HistoricReport;
@@ -84,7 +85,7 @@ public class ExtractDataMeasurementsMwSwitchgear {
 				getMeasurementsMwSwitchgear().setModifiedDate(LocalDateTime.now());
 				getMeasurementsMwSwitchgear().setLocked("true");
 				historicReport = new HistoricReport();
-				historicReport.setTypeReport(1);
+				historicReport.setTypeReport(ReportEnum.MMSSC.ordinal());
 				historicReport.setLocalDateTime(LocalDateTime.now());
 				historicReport.setNumAlterations(0);
 				String username = measurementsMwSwitchgearService.getCurrentLoggedUser();
@@ -98,7 +99,6 @@ public class ExtractDataMeasurementsMwSwitchgear {
 			final String uuid = UUID.randomUUID().toString().replace("-", "");
 			setUuidStr(uuid);
 			getMeasurementsMwSwitchgear().setUuid(uuid);
-			getMeasurementsMwSwitchgear().setTypeReport(typeReport);
 			getMeasurementsMwSwitchgear().setCreateDate(LocalDateTime.now());
 			getMeasurementsMwSwitchgear().setModifiedDate(LocalDateTime.now());
 
@@ -119,7 +119,9 @@ public class ExtractDataMeasurementsMwSwitchgear {
 			e.printStackTrace();
 		}
 		try (PDDocument document = PDDocument.load(convfile)) {
-			populateAndCopy(document);
+			if(!populateAndCopy(document, typeReport)) {
+				return null;
+			}
 		}
 		if ("UPDATE".equals(operacao)) {
 			List<Alteration> listaAlternation = alterationService.saveAlterationReport(oldMeasurementsMwSwitchgear, getMeasurementsMwSwitchgear(), historicReport);
@@ -132,7 +134,7 @@ public class ExtractDataMeasurementsMwSwitchgear {
 		return measurementsMwSwitchgearReturned;
 	}
 
-	void populateAndCopy(PDDocument document) throws IOException {
+	private boolean populateAndCopy(PDDocument document, Integer typeReport) throws IOException {
 		getListPhotoNames().clear();
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
 		List<PDField> fields = acroForm.getFields();
@@ -140,6 +142,13 @@ public class ExtractDataMeasurementsMwSwitchgear {
 			if (field instanceof PDTextField) {
 				String valueField = ((PDTextField) field).getValue();
 				String nameField = field.getFullyQualifiedName();
+				if (nameField.equals("typeReport")) {
+					if(typeReport == Integer.valueOf(valueField)) {
+						getMeasurementsMwSwitchgear().setTypeReport(Integer.valueOf(valueField));
+					}else {
+						return false;
+					}
+				}
 				if (nameField.equals("manufacturerDate"))
 					getMeasurementsMwSwitchgear().setManufacturerDate(valueField);
 				if (nameField.equals("dateMeasurement"))
@@ -396,6 +405,7 @@ public class ExtractDataMeasurementsMwSwitchgear {
 				}
 			}
 		}
+		return true;
 	}
 
 	public void extractAnnotationImages(PDImage image, String nameFile, FileData fileData) throws IOException {

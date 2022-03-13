@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.gsclimbing.commons.enums.ReportEnum;
 import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.HistoricReport;
@@ -85,7 +86,7 @@ public class ExtractDataMedidas690V400V {
 				getMedidas690V400V().setModifiedDate(LocalDateTime.now());
 				getMedidas690V400V().setLocked("true");
 				historicReport = new HistoricReport();
-				historicReport.setTypeReport(1);
+				historicReport.setTypeReport(ReportEnum.M690V400V.ordinal());
 				historicReport.setLocalDateTime(LocalDateTime.now());
 				historicReport.setNumAlterations(0);
 				String username = medidas690V400VService.getCurrentLoggedUser();
@@ -99,7 +100,6 @@ public class ExtractDataMedidas690V400V {
 			final String uuid = UUID.randomUUID().toString().replace("-", "");
 			setUuidStr(uuid);
 			getMedidas690V400V().setUuid(uuid);
-			getMedidas690V400V().setTypeReport(typeReport);
 			getMedidas690V400V().setCreateDate(LocalDateTime.now());
 			getMedidas690V400V().setModifiedDate(LocalDateTime.now());
 			
@@ -120,7 +120,9 @@ public class ExtractDataMedidas690V400V {
 			e.printStackTrace();
 		}
 		try (PDDocument document = PDDocument.load(convfile)) {
-			populateAndCopy(document);
+			if(!populateAndCopy(document, typeReport)) {
+				return null;
+			}
 		}
 		if ("UPDATE".equals(operacao)) {
 			List<Alteration> listaAlternation = alterationService.saveAlterationReport(oldMedidas690V400, medidas690V400V, historicReport);
@@ -133,7 +135,7 @@ public class ExtractDataMedidas690V400V {
 		return medidas690V400Returned;
 	}
 
-	void populateAndCopy(PDDocument document) throws IOException {
+	private boolean populateAndCopy(PDDocument document, Integer typeReport) throws IOException {
 		getListPhotoNames().clear();
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
 		List<PDField> fields = acroForm.getFields();
@@ -141,6 +143,13 @@ public class ExtractDataMedidas690V400V {
 			if (field instanceof PDTextField) {
 				String valueField = ((PDTextField) field).getValue();
 				String nameField = field.getFullyQualifiedName();
+				if (nameField.equals("typeReport")) {
+					if(typeReport == Integer.valueOf(valueField)) {
+						getMedidas690V400V().setTypeReport(Integer.valueOf(valueField));
+					}else {
+						return false;
+					}
+				}
 				if (nameField.equals("dateOfMeasurement"))getMedidas690V400V().setDateOfMeasurement(valueField);;
 				if (nameField.equals("site"))getMedidas690V400V().setSite(valueField);
 				if (nameField.equals("wtgNumber"))getMedidas690V400V().setWtgNumber(valueField);
@@ -301,6 +310,7 @@ public class ExtractDataMedidas690V400V {
 				}
 			}
 		}
+		return true;
 	}
 
 	public void extractAnnotationImages(PDImage image, String nameFile, FileData fileData) throws IOException {

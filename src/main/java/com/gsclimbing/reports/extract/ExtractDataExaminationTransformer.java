@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.gsclimbing.commons.enums.ReportEnum;
 import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.ExaminationTransformer;
 import com.gsclimbing.database.entity.FileData;
@@ -84,7 +85,7 @@ public class ExtractDataExaminationTransformer {
 				getExaminationTransformer().setModifiedDate(LocalDateTime.now());
 				getExaminationTransformer().setLocked("true");
 				historicReport = new HistoricReport();
-				historicReport.setTypeReport(1);
+				historicReport.setTypeReport(ReportEnum.ET.ordinal());
 				historicReport.setLocalDateTime(LocalDateTime.now());
 				historicReport.setNumAlterations(0);
 				String username = examinationTransformerService.getCurrentLoggedUser();
@@ -98,7 +99,6 @@ public class ExtractDataExaminationTransformer {
 			final String uuid = UUID.randomUUID().toString().replace("-", "");
 			setUuidStr(uuid);
 			getExaminationTransformer().setUuid(uuid);
-			getExaminationTransformer().setTypeReport(typeReport);
 			getExaminationTransformer().setCreateDate(LocalDateTime.now());
 			getExaminationTransformer().setModifiedDate(LocalDateTime.now());
 			
@@ -119,7 +119,9 @@ public class ExtractDataExaminationTransformer {
 			e.printStackTrace();
 		}
 		try (PDDocument document = PDDocument.load(convfile)) {
-			populateAndCopy(document);
+			if(!populateAndCopy(document, typeReport)) {
+				return null;
+			}
 		}
 		if ("UPDATE".equals(operacao)) {
 			List<Alteration> listaAlternation = alterationService.saveAlterationReport(oldExaminationTransformer, examinationTransformer, historicReport);
@@ -132,7 +134,7 @@ public class ExtractDataExaminationTransformer {
 		return examinationTransformerReturned;
 	}
 	
-	void populateAndCopy(PDDocument document) throws IOException {
+	private boolean populateAndCopy(PDDocument document, Integer typeReport) throws IOException {
 		getListPhotoNames().clear();
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
 		List<PDField> fields = acroForm.getFields();
@@ -140,7 +142,13 @@ public class ExtractDataExaminationTransformer {
 			if (field instanceof PDTextField) {
 				String valueField = ((PDTextField) field).getValue();
 				String nameField = field.getFullyQualifiedName();
-
+				if (nameField.equals("typeReport")) {
+					if(typeReport == Integer.valueOf(valueField)) {
+						getExaminationTransformer().setTypeReport(Integer.valueOf(valueField));
+					}else {
+						return false;
+					}
+				}
 				if (nameField.equals("site"))
 					getExaminationTransformer().setSite(valueField);
 				if (nameField.equals("wtgNumber"))
@@ -312,6 +320,7 @@ public class ExtractDataExaminationTransformer {
 				}
 			}
 		}
+		return true;
 	}
 	
 	public void extractAnnotationImages(PDImage image, String nameFile, FileData fileData) throws IOException {

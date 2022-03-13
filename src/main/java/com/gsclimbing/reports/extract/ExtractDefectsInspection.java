@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.gsclimbing.commons.enums.ReportEnum;
 import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.FileData;
@@ -83,7 +84,7 @@ public class ExtractDefectsInspection {
 				getDefectsInspectionReport().setModifiedDate(LocalDateTime.now());
 				getDefectsInspectionReport().setLocked("true");
 				historicReport = new HistoricReport();
-				historicReport.setTypeReport(1);
+				historicReport.setTypeReport(ReportEnum.DIR.ordinal());
 				historicReport.setLocalDateTime(LocalDateTime.now());
 				historicReport.setNumAlterations(0);
 				String username = defectsInspectionReportService.getCurrentLoggedUser();
@@ -97,14 +98,13 @@ public class ExtractDefectsInspection {
 			final String uuid = UUID.randomUUID().toString().replace("-", "");
 			setUuidStr(uuid);
 			getDefectsInspectionReport().setUuid(uuid);
-			getDefectsInspectionReport().setTypeReport(typeReport);
 			getDefectsInspectionReport().setCreateDate(LocalDateTime.now());
 			getDefectsInspectionReport().setModifiedDate(LocalDateTime.now());
 			
 			Turbine turbine = turbineService.getTurbine(turbineId);
 			getDefectsInspectionReport().setTurbine(turbine);
 			getDefectsInspectionReport().setProjectoId(turbine.getProject().getIdProject());
-			getDefectsInspectionReport().setTurbinaId(turbine.getId());
+			//getDefectsInspectionReport().setTurbinaId(turbine.getId());
 			turbine.getListReports().add(getDefectsInspectionReport());
 		}
 
@@ -118,7 +118,9 @@ public class ExtractDefectsInspection {
 			e.printStackTrace();
 		}
 		try (PDDocument document = PDDocument.load(convfile)) {
-			populateAndCopy(document);
+			if(!populateAndCopy(document, typeReport)) {
+				return null;
+			}
 		}
 		if ("UPDATE".equals(operacao)) {
 			List<Alteration> listaAlternation = alterationService.saveAlterationReport(oldDefectsInspectionReport, getDefectsInspectionReport(), historicReport);
@@ -131,7 +133,7 @@ public class ExtractDefectsInspection {
 		return defectsInspectionReportReturned;
 	}
 
-	void populateAndCopy(PDDocument document) throws IOException {
+	private boolean populateAndCopy(PDDocument document, Integer typeReport) throws IOException {
 		getListPhotoNames().clear();
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
 		List<PDField> fields = acroForm.getFields();
@@ -139,6 +141,13 @@ public class ExtractDefectsInspection {
 			if (field instanceof PDTextField) {
 				String valueField = ((PDTextField) field).getValue();
 				String nameField = field.getFullyQualifiedName();
+				if (nameField.equals("typeReport")) {
+					if(typeReport == Integer.valueOf(valueField)) {
+						getDefectsInspectionReport().setTypeReport(Integer.valueOf(valueField));
+					}else {
+						return false;
+					}
+				}
 				if (nameField.equals("site"))
 					getDefectsInspectionReport().setSite(valueField);
 				if (nameField.equals("wtgNumber"))
@@ -172,6 +181,7 @@ public class ExtractDefectsInspection {
 				}
 			}
 		}
+		return true;
 	}
 
 	public void extractAnnotationImages(PDImage image, String nameFile, FileData fileData) throws IOException {

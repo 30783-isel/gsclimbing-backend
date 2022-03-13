@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.gsclimbing.commons.enums.ReportEnum;
 import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.HistoricReport;
@@ -91,7 +92,7 @@ public class ExtractDataStatutoryInspectionReport {
 				getStatutoryInspectionReport().setModifiedDate(LocalDateTime.now());
 				getStatutoryInspectionReport().setLocked("true");
 				historicReport = new HistoricReport();
-				historicReport.setTypeReport(1);
+				historicReport.setTypeReport(ReportEnum.SIR.ordinal());
 				historicReport.setLocalDateTime(LocalDateTime.now());
 				historicReport.setNumAlterations(0);
 				String username = statutoryInspectionReportService.getCurrentLoggedUser();
@@ -105,7 +106,6 @@ public class ExtractDataStatutoryInspectionReport {
 			final String uuid = UUID.randomUUID().toString().replace("-", "");
 			setUuidStr(uuid);
 			getStatutoryInspectionReport().setUuid(uuid);
-			getStatutoryInspectionReport().setTypeReport(typeReport);
 			getStatutoryInspectionReport().setCreateDate(LocalDateTime.now());
 			getStatutoryInspectionReport().setModifiedDate(LocalDateTime.now());
 			
@@ -126,7 +126,9 @@ public class ExtractDataStatutoryInspectionReport {
 			e.printStackTrace();
 		}
 		try (PDDocument document = PDDocument.load(convfile)) {
-			populateAndCopy(document);
+			if(!populateAndCopy(document, typeReport)) {
+				return null;
+			}
 		}
 		if ("UPDATE".equals(operacao)) {
 			List<Alteration> listaAlternation = alterationService.saveAlterationReport(oldStatutoryInspectionReport, getStatutoryInspectionReport(), historicReport);
@@ -139,27 +141,27 @@ public class ExtractDataStatutoryInspectionReport {
 		return statutoryInspectionReportReturned;
 	}
 
-	void populateAndCopy(PDDocument document) throws IOException {
-
+	private boolean populateAndCopy(PDDocument document, Integer typeReport) throws IOException {
 		StatutoryInspectionReportServiceCabin statutoryInspectionReportServiceCabin = new StatutoryInspectionReportServiceCabin();
 		StatutoryInspectionReportInternalCrane statutoryInspectionReportInternalCrane = new StatutoryInspectionReportInternalCrane();
 		StatutoryInspectionReportInspectionReportLadder statutoryInspectionReportInspectionReportLadder = new StatutoryInspectionReportInspectionReportLadder();
 		StatutoryInspectionReportInspectionAnchorPoints statutoryInspectionReportInspectionAnchorPoints = new StatutoryInspectionReportInspectionAnchorPoints();
-		StatutoryInspectionReportInspectionDescenderDevice statutoryInspectionReportInspectionDescenderDevice = new StatutoryInspectionReportInspectionDescenderDevice();
-		
+		StatutoryInspectionReportInspectionDescenderDevice statutoryInspectionReportInspectionDescenderDevice = new StatutoryInspectionReportInspectionDescenderDevice();		
 		getListPhotoNames().clear();
 
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
-
 		List<PDField> fields = acroForm.getFields();
-
 		for (PDField field : fields) {
-
 			if (field instanceof PDTextField) {
-
 				String valueField = ((PDTextField) field).getValue();
 				String nameField = field.getFullyQualifiedName();
-
+				if (nameField.equals("typeReport")) {
+					if(typeReport == Integer.valueOf(valueField)) {
+						getStatutoryInspectionReport().setTypeReport(Integer.valueOf(valueField));
+					}else {
+						return false;
+					}
+				}
 				if (nameField.equals("site"))
 					getStatutoryInspectionReport().setSite(valueField);
 				if (nameField.equals("wtgNumber"))
@@ -1129,7 +1131,6 @@ public class ExtractDataStatutoryInspectionReport {
 							statutoryInspectionReport.addImgOnListImages(fileData);
 							statutoryInspectionReport.addOneMorePicture();
 							extractAnnotationImages(pDimage, nameField, fileData);
-
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -1137,13 +1138,12 @@ public class ExtractDataStatutoryInspectionReport {
 				}
 			}
 		}
-
 		getStatutoryInspectionReport().setStatutoryInspectionReportServiceCabin(statutoryInspectionReportServiceCabin);
 		getStatutoryInspectionReport().setStatutoryInspectionReportInternalCrane(statutoryInspectionReportInternalCrane);
 		getStatutoryInspectionReport().setStatutoryInspectionReportInspectionReportLadder(statutoryInspectionReportInspectionReportLadder);
 		getStatutoryInspectionReport().setStatutoryInspectionReportInspectionAnchorPoints(statutoryInspectionReportInspectionAnchorPoints);
 		getStatutoryInspectionReport().setStatutoryInspectionReportInspectionDescenderDevice(statutoryInspectionReportInspectionDescenderDevice);
-
+		return true;
 	}
 
 	public void extractAnnotationImages(PDImage image, String nameFile, FileData fileData) throws IOException {

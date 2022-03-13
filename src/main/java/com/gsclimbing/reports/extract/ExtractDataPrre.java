@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.gsclimbing.commons.enums.ReportEnum;
 import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.HistoricReport;
@@ -36,7 +37,6 @@ import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.repository.UserRepository;
 import com.gsclimbing.database.service.AlterationService;
-import com.gsclimbing.database.service.ExaminationTransformerService;
 import com.gsclimbing.database.service.FileService;
 import com.gsclimbing.database.service.HistoricReportService;
 import com.gsclimbing.database.service.PerformanceReportRepairElevatorService;
@@ -57,7 +57,7 @@ public class ExtractDataPrre {
 	private HistoricReport historicReport = null;
 	private PerformanceReportRepairElevator performanceReportRepairElevator;
 	List<String> listPhotoNames = new ArrayList<String>();
-	
+
 	@Autowired
 	private PerformanceReportRepairElevatorService performanceReportRepairElevatorService;
 	@Autowired
@@ -78,14 +78,14 @@ public class ExtractDataPrre {
 			oldPerformanceReportRepairElevator = performanceReportRepairElevatorService.readPerformanceReportRepairElevator(idReport);
 			if (oldPerformanceReportRepairElevator != null) {
 				try {
-					setPerformanceReportRepairElevator( (PerformanceReportRepairElevator) oldPerformanceReportRepairElevator.clone() );
+					setPerformanceReportRepairElevator((PerformanceReportRepairElevator) oldPerformanceReportRepairElevator.clone());
 				} catch (CloneNotSupportedException e) {
 					e.printStackTrace();
 				}
 				getPerformanceReportRepairElevator().setModifiedDate(LocalDateTime.now());
 				getPerformanceReportRepairElevator().setLocked("true");
 				historicReport = new HistoricReport();
-				historicReport.setTypeReport(1);
+				historicReport.setTypeReport(ReportEnum.PRRE.ordinal());
 				historicReport.setLocalDateTime(LocalDateTime.now());
 				historicReport.setNumAlterations(0);
 				String username = performanceReportRepairElevatorService.getCurrentLoggedUser();
@@ -95,21 +95,18 @@ public class ExtractDataPrre {
 				historicReport.setReport(getPerformanceReportRepairElevator());
 			}
 		} else if ("UPLOAD".equals(operacao)) {
-			setPerformanceReportRepairElevator(new PerformanceReportRepairElevator());;
+			setPerformanceReportRepairElevator(new PerformanceReportRepairElevator());
 			final String uuid = UUID.randomUUID().toString().replace("-", "");
 			setUuidStr(uuid);
 			getPerformanceReportRepairElevator().setUuid(uuid);
-			getPerformanceReportRepairElevator().setTypeReport(typeReport);
 			getPerformanceReportRepairElevator().setCreateDate(LocalDateTime.now());
 			getPerformanceReportRepairElevator().setModifiedDate(LocalDateTime.now());
-			
 			Turbine turbine = turbineService.getTurbine(turbineId);
 			getPerformanceReportRepairElevator().setTurbine(turbine);
 			getPerformanceReportRepairElevator().setProjectoId(turbine.getProject().getIdProject());
 			getPerformanceReportRepairElevator().setTurbinaId(turbine.getId());
 			turbine.getListReports().add(getPerformanceReportRepairElevator());
 		}
-
 		getPerformanceReportRepairElevator().setLocked("true");
 		getPerformanceReportRepairElevator().setPermission2Edit("false");
 		setPerformanceReportRepairElevator(getPerformanceReportRepairElevator());
@@ -120,7 +117,9 @@ public class ExtractDataPrre {
 			e.printStackTrace();
 		}
 		try (PDDocument document = PDDocument.load(convfile)) {
-			populateAndCopy(document);
+			if (!populateAndCopy(document, typeReport)) {
+				return null;
+			}
 		}
 		if ("UPDATE".equals(operacao)) {
 			List<Alteration> listaAlternation = alterationService.saveAlterationReport(oldPerformanceReportRepairElevator, getPerformanceReportRepairElevator(), historicReport);
@@ -133,21 +132,21 @@ public class ExtractDataPrre {
 		return performanceReportRepairElevatorReturned;
 	}
 
-	void populateAndCopy(PDDocument document) throws IOException {
-
+	private boolean populateAndCopy(PDDocument document, Integer typeReport) throws IOException {
 		getListPhotoNames().clear();
-		
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
-
 		List<PDField> fields = acroForm.getFields();
-		
 		for (PDField field : fields) {
-
 			if (field instanceof PDTextField) {
-
 				String valueField = ((PDTextField) field).getValue();
 				String nameField = field.getFullyQualifiedName();
-
+				if (nameField.equals("typeReport")) {
+					if (typeReport == Integer.valueOf(valueField)) {
+						getPerformanceReportRepairElevator().setTypeReport(Integer.valueOf(valueField));
+					} else {
+						return false;
+					}
+				}
 				if (nameField.equals("reportNumber"))
 					getPerformanceReportRepairElevator().setReportNumber(valueField);
 				if (nameField.equals("site"))
@@ -166,56 +165,42 @@ public class ExtractDataPrre {
 					getPerformanceReportRepairElevator().setPlaceDate(valueField);
 				if (nameField.equals("responsibleTechnician"))
 					getPerformanceReportRepairElevator().setResponsibleTechnician(valueField);
-				
-
 			} else if (field instanceof PDCheckBox) {
-
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDCheckBox) field).getValue();
-
 				if (nameField.equals("workCompletedYes"))
-					getPerformanceReportRepairElevator().setWorkCompletedYes(valueField =="Yes" ? true : false);
+					getPerformanceReportRepairElevator().setWorkCompletedYes(valueField == "Yes" ? true : false);
 				if (nameField.equals("workCompletedNo"))
-					getPerformanceReportRepairElevator().setWorkCompletedNo(valueField =="Yes" ? true : false);
-					
+					getPerformanceReportRepairElevator().setWorkCompletedNo(valueField == "Yes" ? true : false);
 				if (nameField.equals("turbineOperableYes"))
-					getPerformanceReportRepairElevator().setTurbineOperableYes(valueField =="Yes" ? true : false);
+					getPerformanceReportRepairElevator().setTurbineOperableYes(valueField == "Yes" ? true : false);
 				if (nameField.equals("turbineOperableNo"))
-					getPerformanceReportRepairElevator().setTurbineOperableNo(valueField =="Yes" ? true : false);
+					getPerformanceReportRepairElevator().setTurbineOperableNo(valueField == "Yes" ? true : false);
 				if (nameField.equals("turbineOperableLimited"))
-					getPerformanceReportRepairElevator().setTurbineOperableLimited(valueField =="Yes" ? true : false);
-				
-				
+					getPerformanceReportRepairElevator().setTurbineOperableLimited(valueField == "Yes" ? true : false);
 			} else if (field instanceof PDPushButton) {
-
 				String nameField = field.getFullyQualifiedName();
-
 				for (final PDAnnotationWidget widget : field.getWidgets()) {
-
 					WidgetImageChecker checker = new WidgetImageChecker(widget);
 					try {
 						if (checker.hasImages()) {
 							PDImage pDimage = checker.getpDimage();
-
 							setPhoto(nameField);
 							FileData fileData = new FileData();
-
 							fileData.setImageChange(0);
 							fileData.setNameField(getNameField());
 							fileData.setDescription(getDescription());
 							performanceReportRepairElevator.addImgOnListImages(fileData);
 							performanceReportRepairElevator.addOneMorePicture();
 							extractAnnotationImages(pDimage, nameField, fileData);
-							
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
-					};
+					}
 				}
-
 			}
 		}
-		
+		return true;
 	}
 
 	public void extractAnnotationImages(PDImage image, String nameFile, FileData fileData) throws IOException {
@@ -272,11 +257,11 @@ public class ExtractDataPrre {
 			FTPUploadFile.replaceFile2FTPServer(file, hash, fileData.getImageChange());
 		}
 	}
-	
+
 	static class WidgetImageChecker extends PDFGraphicsStreamEngine {
-		
+
 		private PDImage pDimage;
-		
+
 		WidgetImageChecker(PDAnnotationWidget widget) {
 			super(widget.getPage());
 			this.widget = widget;
@@ -354,7 +339,7 @@ public class ExtractDataPrre {
 		public void setpDimage(PDImage pDimage) {
 			this.pDimage = pDimage;
 		}
-		
+
 	}
 
 	public File multipartToFile(MultipartFile multipart, String fileName) throws IllegalStateException, IOException {
@@ -411,6 +396,7 @@ public class ExtractDataPrre {
 	public void setListPhotoNames(List<String> listPhotoNames) {
 		this.listPhotoNames = listPhotoNames;
 	}
+
 	public long fileSize(File file) {
 		long bytes = file.length();
 		long kilobytes = (bytes / 1024);

@@ -129,9 +129,10 @@ public class ReportsController {
 		SendEmail runnable = null;
 		try {
 			report = readPdf(file, projectId, turbineId, typeReport, null, "UPLOAD");
-			Turbine turbine = turbineService.getTurbine(turbineId);
-			turbine.getListReports().add(report);
-			if (ObjectUtils.isEmpty(validateString)) {
+			if(report == null) {
+				throw new Exception("Exception message");
+			}
+			if (ObjectUtils.isEmpty(validateReport(report))) {
 				String username = reportService.getCurrentLoggedUser();
 				User user = userService.getUser(username);
 				Project project = projectService.getProjectById(Integer.parseInt(projectId));
@@ -144,7 +145,7 @@ public class ReportsController {
 			} else {
 				throw new Exception("Exception message");
 			}
-			return ResponseEntity.status(HttpStatus.OK).body(turbine);
+			return ResponseEntity.status(HttpStatus.OK).body(turbineService.getTurbine(turbineId));
 		} catch (Exception e) {
 			message = "Could not upload the file: " + file.getOriginalFilename() + "!!!\n" + validateString;
 			if (report != null) {
@@ -244,6 +245,9 @@ public class ReportsController {
 		instaceSelection(typeReport);
 		try {
 			report = readPdf(file, null, null, typeReport, idReport, "UPDATE");
+			if(report == null) {
+				throw new Exception("Exception message");
+			}
 			validateString = validateReport(report);
 			return null;
 		} catch (Exception e) {

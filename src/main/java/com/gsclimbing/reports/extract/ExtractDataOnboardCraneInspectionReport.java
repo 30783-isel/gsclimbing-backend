@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.gsclimbing.commons.enums.ReportEnum;
 import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.OnboardCraneInspectionReport;
 import com.gsclimbing.database.entity.FileData;
@@ -86,7 +87,7 @@ public class ExtractDataOnboardCraneInspectionReport {
 				getOnboardCraneInspectionReport().setModifiedDate(LocalDateTime.now());
 				getOnboardCraneInspectionReport().setLocked("true");
 				historicReport = new HistoricReport();
-				historicReport.setTypeReport(1);
+				historicReport.setTypeReport(ReportEnum.OCIR.ordinal());
 				historicReport.setLocalDateTime(LocalDateTime.now());
 				historicReport.setNumAlterations(0);
 				String username = onboardCraneInspectionReportService.getCurrentLoggedUser();
@@ -100,7 +101,6 @@ public class ExtractDataOnboardCraneInspectionReport {
 			final String uuid = UUID.randomUUID().toString().replace("-", "");
 			setUuidStr(uuid);
 			getOnboardCraneInspectionReport().setUuid(uuid);
-			getOnboardCraneInspectionReport().setTypeReport(typeReport);
 			getOnboardCraneInspectionReport().setCreateDate(LocalDateTime.now());
 			getOnboardCraneInspectionReport().setModifiedDate(LocalDateTime.now());
 			
@@ -121,7 +121,9 @@ public class ExtractDataOnboardCraneInspectionReport {
 			e.printStackTrace();
 		}
 		try (PDDocument document = PDDocument.load(convfile)) {
-			populateAndCopy(document);
+			if(!populateAndCopy(document, typeReport)) {
+				return null;
+			}
 		}
 		if ("UPDATE".equals(operacao)) {
 			List<Alteration> listaAlternation = alterationService.saveAlterationReport(oldOnboardCraneInspectionReport, getOnboardCraneInspectionReport(), historicReport);
@@ -134,28 +136,27 @@ public class ExtractDataOnboardCraneInspectionReport {
 		return onboardCraneInspectionReportReturned;
 	}
 
-	void populateAndCopy(PDDocument document) throws IOException {
-
+	private boolean populateAndCopy(PDDocument document, Integer typeReport) throws IOException {
 		getListPhotoNames().clear();
-		
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
-
 		List<PDField> fields = acroForm.getFields();
-		
 		for (PDField field : fields) {
-
 			if (field instanceof PDTextField) {
-
 				String valueField = ((PDTextField) field).getValue();
 				String nameField = field.getFullyQualifiedName();
-
+				if (nameField.equals("typeReport")) {
+					if(typeReport == Integer.valueOf(valueField)) {
+						getOnboardCraneInspectionReport().setTypeReport(Integer.valueOf(valueField));
+					}else {
+						return false;
+					}
+				}
 				if (nameField.equals("site"))
 					getOnboardCraneInspectionReport().setSite(valueField);
 				if (nameField.equals("wtgNumber"))
 					getOnboardCraneInspectionReport().setWtgNumber(valueField);
 				if (nameField.equals("wtgType"))
 					getOnboardCraneInspectionReport().setWtgType(valueField);
-				
 				if (nameField.equals("manufacturerOnboardCrane"))
 					getOnboardCraneInspectionReport().setManufacturerOnboardCrane(valueField);
 				if (nameField.equals("type"))
@@ -176,183 +177,118 @@ public class ExtractDataOnboardCraneInspectionReport {
 					getOnboardCraneInspectionReport().setRepairRequired(valueField);
 				if (nameField.equals("nextInspection"))
 					getOnboardCraneInspectionReport().setNextInspection(valueField);
-				
-
-				
 				if (nameField.equals("readingOperatingBusTxt"))
 					getOnboardCraneInspectionReport().setReadingOperatingBusTxt(valueField);
-				
 				if (nameField.equals("InterruptVoltageSupplyTXt"))
 					getOnboardCraneInspectionReport().setInterruptVoltageSupplyTXt(valueField);
-
 				if (nameField.equals("circuitDiagramPositionTxt"))
 					getOnboardCraneInspectionReport().setCircuitDiagramPositionTxt(valueField);
-
 				if (nameField.equals("warningSignsTxt"))
 					getOnboardCraneInspectionReport().setWarningSignsTxt(valueField);
-
 				if (nameField.equals("cablesSignsTxt"))
 					getOnboardCraneInspectionReport().setCablesSignsTxt(valueField);
-
 				if (nameField.equals("screwedCableGlandsTXt"))
 					getOnboardCraneInspectionReport().setScrewedCableGlandsTXt(valueField);
-
 				if (nameField.equals("openSwitchCabinetCoverTxt"))
 					getOnboardCraneInspectionReport().setOpenSwitchCabinetCoverTxt(valueField);
-
 				if (nameField.equals("checkOperatingUnitTxt"))
 					getOnboardCraneInspectionReport().setCheckOperatingUnitTxt(valueField);
-
 				if (nameField.equals("checkLimitSwitchesTxt"))
 					getOnboardCraneInspectionReport().setCheckLimitSwitchesTxt(valueField);
-
 				if (nameField.equals("setVoltageSupplyTxt"))
 					getOnboardCraneInspectionReport().setSetVoltageSupplyTxt(valueField);
-
 				if (nameField.equals("checkMotorBrakeTXt"))
 					getOnboardCraneInspectionReport().setCheckMotorBrakeTXt(valueField);
-
 				if (nameField.equals("checkRopeMechanicalDamageTxt"))
 					getOnboardCraneInspectionReport().setCheckRopeMechanicalDamageTxt(valueField);
-
 				if (nameField.equals("checkLoadHookMechanicalTxt"))
 					getOnboardCraneInspectionReport().setCheckLoadHookMechanicalTxt(valueField);
-
 				if (nameField.equals("carryVisualInspectionTXt"))
 					getOnboardCraneInspectionReport().setCarryVisualInspectionTXt(valueField);
-
 				if (nameField.equals("usefeelerGaugeTxt"))
 					getOnboardCraneInspectionReport().setUsefeelerGaugeTxt(valueField);
-
 				if (nameField.equals("checkLimitSwitchRockersTXt"))
 					getOnboardCraneInspectionReport().setCheckLimitSwitchRockersTXt(valueField);
-
 				if (nameField.equals("checkCraneBridgeTxt"))
 					getOnboardCraneInspectionReport().setCheckCraneBridgeTxt(valueField);
-
 				if (nameField.equals("checkCrabTxt"))
 					getOnboardCraneInspectionReport().setCheckCrabTxt(valueField);
-
 				if (nameField.equals("checkDeflectionRollersTxt"))
 					getOnboardCraneInspectionReport().setCheckDeflectionRollersTxt(valueField);
-
 				if (nameField.equals("checkScrewJointsTxt"))
 					getOnboardCraneInspectionReport().setCheckScrewJointsTxt(valueField);
-
 				if (nameField.equals("checkAllRollersBridgeTxt"))
 					getOnboardCraneInspectionReport().setCheckAllRollersBridgeTxt(valueField);
-				
 				if (nameField.equals("checkAllStopBuffersTxt"))
 					getOnboardCraneInspectionReport().setCheckAllStopBuffersTxt(valueField);
-
 				if (nameField.equals("checkAllComponentsTxt"))
 					getOnboardCraneInspectionReport().setCheckAllComponentsTxt(valueField);
-
 				if (nameField.equals("ancorPointSafetyEquipmentTxt"))
 					getOnboardCraneInspectionReport().setAncorPointSafetyEquipmentTxt(valueField);
-
 				if (nameField.equals("loadTestTxt"))
 					getOnboardCraneInspectionReport().setLoadTestTxt(valueField);
-					
-		
-
 				if (nameField.equals("notes"))
 					getOnboardCraneInspectionReport().setNotes(valueField);
-
-				
 			} else if (field instanceof PDCheckBox) {
-
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDCheckBox) field).getValue();
-
 				if (nameField.equals("readingOperatingBusChk"))
 					getOnboardCraneInspectionReport().setReadingOperatingBusChk(valueField == "Yes" ? true : false);
-				
 				if (nameField.equals("InterruptVoltageSupplyChk"))
 					getOnboardCraneInspectionReport().setInterruptVoltageSupplyChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("circuitDiagramPositionChk"))
 					getOnboardCraneInspectionReport().setCircuitDiagramPositionChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("warningSignsChk"))
 					getOnboardCraneInspectionReport().setWarningSignsChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("cablesSignsChk"))
 					getOnboardCraneInspectionReport().setCablesSignsChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("screwedCableGlandsChk"))
 					getOnboardCraneInspectionReport().setScrewedCableGlandsChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("openSwitchCabinetCoverChk"))
 					getOnboardCraneInspectionReport().setOpenSwitchCabinetCoverChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("checkOperatingUnitChk"))
 					getOnboardCraneInspectionReport().setCheckOperatingUnitChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("checkLimitSwitchesChk"))
 					getOnboardCraneInspectionReport().setCheckLimitSwitchesChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("setVoltageSupplyChk"))
 					getOnboardCraneInspectionReport().setSetVoltageSupplyChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("checkMotorBrakeChk"))
 					getOnboardCraneInspectionReport().setCheckMotorBrakeChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("checkRopeMechanicalDamageChk"))
 					getOnboardCraneInspectionReport().setCheckRopeMechanicalDamageChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("checkLoadHookMechanicalChk"))
 					getOnboardCraneInspectionReport().setCheckLoadHookMechanicalChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("carryVisualInspectionChk"))
 					getOnboardCraneInspectionReport().setCarryVisualInspectionChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("usefeelerGaugeChk"))
 					getOnboardCraneInspectionReport().setUsefeelerGaugeChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("checkLimitSwitchRockersChk"))
 					getOnboardCraneInspectionReport().setCheckLimitSwitchRockersChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("checkCraneBridgeChk"))
 					getOnboardCraneInspectionReport().setCheckCraneBridgeChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("checkCrabChk"))
 					getOnboardCraneInspectionReport().setCheckCrabChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("checkDeflectionRollersChk"))
 					getOnboardCraneInspectionReport().setCheckDeflectionRollersChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("checkScrewJointsChk"))
 					getOnboardCraneInspectionReport().setCheckScrewJointsChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("checkAllRollersBridgeChk"))
 					getOnboardCraneInspectionReport().setCheckAllRollersBridgeChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("checkAllStopBuffersChk"))
 					getOnboardCraneInspectionReport().setCheckAllStopBuffersChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("checkAllComponentsChk"))
 					getOnboardCraneInspectionReport().setCheckAllComponentsChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("ancorPointSafetyEquipmentChk"))
 					getOnboardCraneInspectionReport().setAncorPointSafetyEquipmentChk(valueField == "Yes" ? true : false);
-
 				if (nameField.equals("loadTestChk"))
 					getOnboardCraneInspectionReport().setLoadTestChk(valueField == "Yes" ? true : false);
-
-
 			} else if (field instanceof PDPushButton) {
-
 				String nameField = field.getFullyQualifiedName();
-
-
 				for (final PDAnnotationWidget widget : field.getWidgets()) {
-
 					WidgetImageChecker checker = new WidgetImageChecker(widget);
 					try {
 						if (checker.hasImages()) {
 							PDImage pDimage = checker.getpDimage();
-			
 							setPhoto(nameField);
 							FileData fileData = new FileData();
 							fileData.setImageChange(0);
@@ -360,17 +296,15 @@ public class ExtractDataOnboardCraneInspectionReport {
 							fileData.setDescription(getDescription());
 							onboardCraneInspectionReport.addImgOnListImages(fileData);
 							onboardCraneInspectionReport.addOneMorePicture();
-							extractAnnotationImages(pDimage, nameField, fileData);
-							
+							extractAnnotationImages(pDimage, nameField, fileData);		
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
-					};
+					}
 				}
-
 			}
 		}
-		
+		return true;
 	}
 
 	public void extractAnnotationImages(PDImage image, String nameFile, FileData fileData) throws IOException {
