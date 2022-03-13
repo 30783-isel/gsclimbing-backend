@@ -1129,7 +1129,6 @@ public class ExtractDataStatutoryInspectionReport {
 							fileData.setNameField(getNameField());
 							fileData.setDescription(getDescription());
 							statutoryInspectionReport.addImgOnListImages(fileData);
-							statutoryInspectionReport.addOneMorePicture();
 							extractAnnotationImages(pDimage, nameField, fileData);
 						}
 					} catch (IOException e) {

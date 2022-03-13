@@ -191,7 +191,6 @@ public class ExtractDataPrre {
 							fileData.setNameField(getNameField());
 							fileData.setDescription(getDescription());
 							performanceReportRepairElevator.addImgOnListImages(fileData);
-							performanceReportRepairElevator.addOneMorePicture();
 							extractAnnotationImages(pDimage, nameField, fileData);
 						}
 					} catch (IOException e) {

@@ -213,8 +213,7 @@ public class ReportsController {
 			List<FileData> list = fileService.readFile(report.getUuid());
 			list.stream().filter(filex -> filex.getMimeType().equals("application/pdf")).findAny();
 			bytes = defectsInspectionPopulater.generatePDF(report);
-			//TODO
-			//bytes = generatePDF(typeReport, getReport());
+			bytes = generatePDF(report.getTypeReport(), getReport());
 			runnable = new SendEmail(subject, "Defects Inspection Report.pdf", bytes);
 			Thread t = new Thread(runnable);
 			t.start();
@@ -359,21 +358,15 @@ public class ReportsController {
 		}
 		if (report.getWtgNumber() == null || report.getWtgNumber().isEmpty()) {
 			string.append(System.lineSeparator() + "Field WTG Number empty");
-		}
-		if (report.getWtgType() == null || report.getWtgType().isEmpty()) {
-			string.append(System.lineSeparator() + "Field WTG Type empty");
-		}
-		if (report.getYearConstruction() == null || report.getYearConstruction().isEmpty()) {
-			string.append(System.lineSeparator() + "Field Year of Construction empty");
-		}
-		for (FileData fileData : report.getListaFileData()) {
-			if (fileData.getDescription() == null || fileData.getDescription().isEmpty()) {
-				string.append(System.lineSeparator() + "Field " + fileData.getNameField() + " empty");
-			}
-			if (!fileData.isInsertedOnFtpServer()) {
-				string.append(System.lineSeparator() + "Image from " + fileData.getNameField() + " empty");
-			}
-		}
+		}			
+//		for (FileData fileData : report.getListaFileData()) {
+//			if (fileData.getDescription() == null || fileData.getDescription().isEmpty()) {
+//				string.append(System.lineSeparator() + "Field " + fileData.getNameField() + " empty");
+//			}
+//			if (!fileData.isInsertedOnFtpServer()) {
+//				string.append(System.lineSeparator() + "Image from " + fileData.getNameField() + " empty");
+//			}
+//		}
 		return string.toString();
 	}
 	

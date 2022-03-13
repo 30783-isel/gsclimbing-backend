@@ -396,7 +396,6 @@ public class ExtractDataMeasurementsMwSwitchgear {
 							fileData.setNameField(getNameField());
 							fileData.setDescription(getDescription());
 							getMeasurementsMwSwitchgear().addImgOnListImages(fileData);
-							getMeasurementsMwSwitchgear().addOneMorePicture();
 							extractAnnotationImages(pDimage, nameField, fileData);
 						}
 					} catch (IOException e) {

@@ -295,7 +295,6 @@ public class ExtractDataOnboardCraneInspectionReport {
 							fileData.setNameField(getNameField());
 							fileData.setDescription(getDescription());
 							onboardCraneInspectionReport.addImgOnListImages(fileData);
-							onboardCraneInspectionReport.addOneMorePicture();
 							extractAnnotationImages(pDimage, nameField, fileData);		
 						}
 					} catch (IOException e) {

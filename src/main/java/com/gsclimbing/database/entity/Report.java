@@ -43,19 +43,12 @@ public class Report {
 	private String wtgNumber;
 	private String wtgType;
 	private String yearConstruction;
-	@Column(columnDefinition = "integer default 25")
-	private Integer numberPictures = 0;
 	private Integer typeReport;
     private Integer projectoId;
     private Integer turbinaId;
 	
-	
-	public void addOneMorePicture() {
-		this.numberPictures = this.numberPictures + 1;
-	}
-	
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "turbine_id", nullable=true)
+    @JoinColumn(name = "turbineId", nullable=true)
     @JsonIgnore
 	private Turbine turbine;
 	
@@ -87,7 +80,6 @@ public class Report {
 			.wtgNumber(wtgNumber)
 			.wtgType(wtgType)
 			.yearConstruction(yearConstruction)
-			.numberPictures(numberPictures)
 			.typeReport(typeReport)
 			.projectoId(projectoId)
 			.turbinaId(turbinaId)

@@ -104,7 +104,7 @@ public class ExtractDefectsInspection {
 			Turbine turbine = turbineService.getTurbine(turbineId);
 			getDefectsInspectionReport().setTurbine(turbine);
 			getDefectsInspectionReport().setProjectoId(turbine.getProject().getIdProject());
-			//getDefectsInspectionReport().setTurbinaId(turbine.getId());
+			getDefectsInspectionReport().setTurbinaId(turbine.getId());
 			turbine.getListReports().add(getDefectsInspectionReport());
 		}
 
@@ -172,7 +172,6 @@ public class ExtractDefectsInspection {
 							fileData.setImageChange(0);
 							fileData.setNameField(getNameField());
 							fileData.setDescription(getDescription());
-							getDefectsInspectionReport().addOneMorePicture();
 							extractAnnotationImages(pDimage, nameField, fileData);
 						}
 					} catch (IOException e) {

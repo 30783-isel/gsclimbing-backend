@@ -9,6 +9,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.gsclimbing.database.entity.StatutoryInspectionReport;
+import com.gsclimbing.database.entity.StatutoryInspectionReportInt;
 
 import lombok.Data;
 import lombok.Getter;
@@ -18,7 +19,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "statutory_inspection_report_service_cabin")
-public class StatutoryInspectionReportServiceCabin {
+public class StatutoryInspectionReportServiceCabin implements StatutoryInspectionReportInt {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)

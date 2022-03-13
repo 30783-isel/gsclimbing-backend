@@ -450,7 +450,6 @@ public class ExtractDataMedidas6Kv {
 							fileData.setNameField(getNameField());
 							fileData.setDescription(getDescription());
 							medidas6Kv.addImgOnListImages(fileData);
-							medidas6Kv.addOneMorePicture();
 							extractAnnotationImages(pDimage, nameField, fileData);
 
 						}

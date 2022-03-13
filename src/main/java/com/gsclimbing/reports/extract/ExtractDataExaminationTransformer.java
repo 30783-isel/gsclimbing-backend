@@ -311,7 +311,6 @@ public class ExtractDataExaminationTransformer {
 							fileData.setNameField(getNameField());
 							fileData.setDescription(getDescription());
 							examinationTransformer.addImgOnListImages(fileData);
-							examinationTransformer.addOneMorePicture();
 							extractAnnotationImages(pDimage, nameField, fileData);
 						}
 					} catch (IOException e) {

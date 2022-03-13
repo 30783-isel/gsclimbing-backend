@@ -301,7 +301,6 @@ public class ExtractDataMedidas690V400V {
 							fileData.setNameField(getNameField());
 							fileData.setDescription(getDescription());
 							medidas690V400V.addImgOnListImages(fileData);
-							medidas690V400V.addOneMorePicture();
 							extractAnnotationImages(pDimage, nameField, fileData);
 						}
 					} catch (IOException e) {
