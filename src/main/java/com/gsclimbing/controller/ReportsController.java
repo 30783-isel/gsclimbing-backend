@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -129,7 +130,7 @@ public class ReportsController {
 		SendEmail runnable = null;
 		try {
 			report = readPdf(file, projectId, turbineId, typeReport, null, "UPLOAD");
-			if(report == null) {
+			if(report.equals(null)) {
 				throw new Exception("Exception message");
 			}
 			if (ObjectUtils.isEmpty(validateReport(report))) {
@@ -159,6 +160,94 @@ public class ReportsController {
 			}
 			return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
 		}
+	}
+	
+	@PostMapping(value = "/update")
+	public ResponseEntity<?> updateFile(@RequestParam("file") MultipartFile file, @RequestParam("idReport") Integer idReport, @RequestParam("typeReport") Integer typeReport) {
+		String message = "";
+		String validateString = null;
+		Report report = null;
+		instaceSelection(typeReport);
+		try {
+			report = readPdf(file, null, null, typeReport, idReport, "UPDATE");
+			if(report.equals(null)) {
+				throw new Exception("Exception message");
+			}
+			return new ResponseEntity<>(message, HttpStatus.OK);
+		} catch (Exception e) {
+			message = "Could not update the file: " + file.getOriginalFilename() + "!!!\n" + validateString;
+			return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
+		}
+	}
+	
+	@RequestMapping(method = RequestMethod.DELETE, value = "/delete-report/{id}")
+	public Integer deleteReport(@PathVariable Integer id) {
+		Integer turbineId = reportService.readReport(id).getTurbinaId();
+		reportService.deleteReport(id);
+		return turbineId;
+	}
+
+	@RequestMapping("/turbine-report/{turbineId}")
+	public Report readReportByTurbine(final @PathVariable Integer turbineId) {
+		Turbine turbine = turbineService.getTurbine(turbineId);
+		return turbine.getListReports().isEmpty() ? null : turbine.getListReports().get(0);
+	}
+
+	@RequestMapping("/report/{id}")
+	public ReportDto readReport(@PathVariable Integer id) {
+		return reportService.readReport(id).mapper();
+	}
+
+	@RequestMapping("/permission2edit/{id}")
+	public Report permission2edit(@PathVariable Integer id) {
+		Report report = reportService.readReport(id);
+		if (report != null) {
+			report.setPermission2Edit("true");
+			reportService.updateReport(report);
+			SendEmail runnable = null;
+			String username = reportService.getCurrentLoggedUser();
+			User user = userService.getUser(username);
+			Project project = projectService.getProjectById(report.getProjectoId());
+			String subject = "User " + user.getUsername() + " asked permission to edit a Defects Inspection Report on project " + project.getName();
+			byte[] bytes = null;
+			List<FileData> list = fileService.readFile(report.getUuid());
+			list.stream().filter(filex -> filex.getMimeType().equals("application/pdf")).findAny();
+			bytes = defectsInspectionPopulater.generatePDF(report);
+			//TODO
+			//bytes = generatePDF(typeReport, getReport());
+			runnable = new SendEmail(subject, "Defects Inspection Report.pdf", bytes);
+			Thread t = new Thread(runnable);
+			t.start();
+		}
+		return report;
+	}
+	
+	@RequestMapping("/permission2edit_granted/{id}")
+	public Report permission2edit_granted(@PathVariable Integer id) {
+		Report report = reportService.readReport(id);
+		if (report != null) {
+			report.setLocked("false");
+			report.setPermission2Edit("false");
+			reportService.updateReport(report);
+		}
+		return report;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/historic/{id}")
+	public List<Historic> getHistoricReport(@PathVariable Integer id) {
+		List<Historic> listHistoric = new ArrayList<Historic>();
+		List<HistoricReport> listHistoricRecord = reportService.readReport(id).getListHistoric();
+		for (HistoricReport historicReport : listHistoricRecord) {
+			List<Alteration> listAlterations = new ArrayList<Alteration>();
+			listAlterations = alterationService.getListAlterationsByIdHistoricReport(historicReport.getIdHistoricReport());
+			List<Alteration> listAlterations_ = addImages2Alterations(listAlterations);
+			Historic historic = new Historic();
+			historic.setHistoricRecord(historicReport);
+			historic.setListAlterations(listAlterations_);
+			listHistoric.add(historic);
+		}
+		Collections.sort(listHistoric, Collections.reverseOrder());
+		return listHistoric;
 	}
 	
 	public void instaceSelection(Integer typeReport) {
@@ -237,104 +326,6 @@ public class ReportsController {
 		return null;
 	}
 	
-	@RequestMapping(method = RequestMethod.POST, value = "/update")
-	public ResponseEntity<?> updateFile(@RequestParam("file") MultipartFile file, @RequestParam("idReport") Integer idReport, @RequestParam("typeReport") Integer typeReport) {
-		String message = "";
-		String validateString = null;
-		Report report = null;
-		instaceSelection(typeReport);
-		try {
-			report = readPdf(file, null, null, typeReport, idReport, "UPDATE");
-			if(report == null) {
-				throw new Exception("Exception message");
-			}
-			validateString = validateReport(report);
-			return null;
-		} catch (Exception e) {
-			message = "Could not upload the file: " + file.getOriginalFilename() + "!!!\n" + validateString;
-			if (report != null) {
-				String uuid = report.getUuid();
-				List<FileData> listFileData = fileService.readFile(uuid);
-				listFileData.stream().forEach(fileData -> {
-					fileService.deleteFile(fileData.getFileId());
-					FTPDownloadFiles.deleteFile2FTPServer(fileData.getHash());
-				});
-				reportService.deleteReport(report.getReportId());
-			}
-			return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
-		}
-	}
-	
-	@RequestMapping(method = RequestMethod.DELETE, value = "/delete-report/{id}")
-	public Integer deleteReport(@PathVariable Integer id) {
-		Integer turbineId = reportService.readReport(id).getTurbinaId();
-		reportService.deleteReport(id);
-		return turbineId;
-	}
-
-	@RequestMapping("/turbine-report/{turbineId}")
-	public Report readReportByTurbine(final @PathVariable Integer turbineId) {
-		Turbine turbine = turbineService.getTurbine(turbineId);
-		return turbine.getListReports().isEmpty() ? null : turbine.getListReports().get(0);
-	}
-
-	@RequestMapping("/report/{id}")
-	public ReportDto readReport(@PathVariable Integer id) {
-		return reportService.readReport(id).mapper();
-	}
-
-	@RequestMapping("/permission2edit/{id}")
-	public Report permission2edit(@PathVariable Integer id) {
-		Report report = reportService.readReport(id);
-		if (report != null) {
-			report.setPermission2Edit("true");
-			reportService.updateReport(report);
-			SendEmail runnable = null;
-			String username = reportService.getCurrentLoggedUser();
-			User user = userService.getUser(username);
-			Project project = projectService.getProjectById(report.getProjectoId());
-			String subject = "User " + user.getUsername() + " asked permission to edit a Defects Inspection Report on project " + project.getName();
-			byte[] bytes = null;
-			List<FileData> list = fileService.readFile(report.getUuid());
-			list.stream().filter(filex -> filex.getMimeType().equals("application/pdf")).findAny();
-			bytes = defectsInspectionPopulater.generatePDF(report);
-			//TODO
-			//bytes = generatePDF(typeReport, getReport());
-			runnable = new SendEmail(subject, "Defects Inspection Report.pdf", bytes);
-			Thread t = new Thread(runnable);
-			t.start();
-		}
-		return report;
-	}
-
-	@RequestMapping("/permission2edit_granted/{id}")
-	public Report permission2edit_granted(@PathVariable Integer id) {
-		Report report = reportService.readReport(id);
-		if (report != null) {
-			report.setLocked("false");
-			report.setPermission2Edit("false");
-			reportService.updateReport(report);
-		}
-		return report;
-	}
-	
-	@RequestMapping(method = RequestMethod.GET, value = "/historic/{id}")
-	public List<Historic> getHistoricReport(@PathVariable Integer id) {
-		List<Historic> listHistoric = new ArrayList<Historic>();
-		List<HistoricReport> listHistoricRecord = reportService.readReport(id).getListHistoric();
-		for (HistoricReport historicReport : listHistoricRecord) {
-			List<Alteration> listAlterations = new ArrayList<Alteration>();
-			listAlterations = alterationService.getListAlterationsByIdHistoricReport(historicReport.getIdHistoricReport());
-			List<Alteration> listAlterations_ = addImages2Alterations(listAlterations);
-			Historic historic = new Historic();
-			historic.setHistoricRecord(historicReport);
-			historic.setListAlterations(listAlterations_);
-			listHistoric.add(historic);
-		}
-		Collections.sort(listHistoric, Collections.reverseOrder());
-		return listHistoric;
-	}
-
 	private List<Alteration> addImages2Alterations(List<Alteration> listAlterations) {
 		List<Alteration> listAlterationsWithImages = new ArrayList<Alteration>();
 		for (int i = 0; i < listAlterations.size(); i++) {
@@ -385,5 +376,5 @@ public class ReportsController {
 		}
 		return string.toString();
 	}
-
+	
 }
