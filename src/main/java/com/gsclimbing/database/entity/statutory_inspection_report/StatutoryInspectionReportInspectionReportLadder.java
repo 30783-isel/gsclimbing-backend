@@ -24,16 +24,6 @@ public class StatutoryInspectionReportInspectionReportLadder implements Statutor
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "id")
 	private Long id;
-	
-	private String uuid;
-	
-	public StatutoryInspectionReportInspectionReportLadder(String uuid) {
-		this.uuid = uuid;
-	}
-	
-    public StatutoryInspectionReportInspectionReportLadder() {
-		super();
-	}
     
     @OneToOne(mappedBy = "statutoryInspectionReportInspectionReportLadder")
     private StatutoryInspectionReport statutoryInspectionReport;

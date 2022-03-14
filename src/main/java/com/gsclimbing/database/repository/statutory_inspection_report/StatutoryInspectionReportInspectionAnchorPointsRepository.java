@@ -4,8 +4,4 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspectionReportInspectionAnchorPoints;
 
-public interface StatutoryInspectionReportInspectionAnchorPointsRepository extends CrudRepository<StatutoryInspectionReportInspectionAnchorPoints, Integer>{
-
-	StatutoryInspectionReportInspectionAnchorPoints findByUuid( String uuid );
-	
-}
+public interface StatutoryInspectionReportInspectionAnchorPointsRepository extends CrudRepository<StatutoryInspectionReportInspectionAnchorPoints, Integer>{}

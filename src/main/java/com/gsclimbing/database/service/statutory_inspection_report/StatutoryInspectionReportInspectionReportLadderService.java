@@ -20,10 +20,6 @@ public class StatutoryInspectionReportInspectionReportLadderService {
 		statutoryInspectionReportInspectionReportLadderRepository.delete(reportLadder );
 	}
 	
-	public StatutoryInspectionReportInspectionReportLadder getByUuid( String uuid ) {
-		return statutoryInspectionReportInspectionReportLadderRepository.findByUuid( uuid );
-	}
-	
 	public StatutoryInspectionReportInspectionReportLadder update( StatutoryInspectionReportInspectionReportLadder reportLadder) {
 		return statutoryInspectionReportInspectionReportLadderRepository.save(reportLadder );
 	}

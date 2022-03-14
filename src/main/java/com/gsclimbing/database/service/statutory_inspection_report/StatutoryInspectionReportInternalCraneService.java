@@ -20,10 +20,6 @@ public class StatutoryInspectionReportInternalCraneService {
 		statutoryInspectionReportInternalCraneRepository.delete( internalCrane );
 	}
 	
-	public StatutoryInspectionReportInternalCrane getByUuid( String uuid ) {
-		return  statutoryInspectionReportInternalCraneRepository.findByUuid( uuid );
-	}
-	
 	public StatutoryInspectionReportInternalCrane updateInternalCrane( StatutoryInspectionReportInternalCrane statutoryInspectionReportInternalCrane ) {
 		return statutoryInspectionReportInternalCraneRepository.save(statutoryInspectionReportInternalCrane);
 	}

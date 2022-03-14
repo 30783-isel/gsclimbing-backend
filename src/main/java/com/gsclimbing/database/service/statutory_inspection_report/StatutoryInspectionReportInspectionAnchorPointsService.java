@@ -20,10 +20,6 @@ public class StatutoryInspectionReportInspectionAnchorPointsService {
 	public void apagar( StatutoryInspectionReportInspectionAnchorPoints anchorPoints) {
 		statutoryInspectionReportInspectionAnchorPointsRepository.delete(anchorPoints );
 	}
-	
-	public StatutoryInspectionReportInspectionAnchorPoints getByUuid( String uuid ) {
-		return statutoryInspectionReportInspectionAnchorPointsRepository.findByUuid( uuid );
-	}
 
 	public StatutoryInspectionReportInspectionAnchorPoints update(StatutoryInspectionReportInspectionAnchorPoints anchorPoints) {
 		return statutoryInspectionReportInspectionAnchorPointsRepository.save(anchorPoints );

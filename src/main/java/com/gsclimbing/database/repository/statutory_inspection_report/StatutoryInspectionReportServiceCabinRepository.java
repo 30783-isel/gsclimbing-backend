@@ -4,8 +4,4 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspectionReportServiceCabin;
 
-public interface StatutoryInspectionReportServiceCabinRepository extends CrudRepository<StatutoryInspectionReportServiceCabin, Integer>{
-
-	StatutoryInspectionReportServiceCabin findByUuid( String uuid );
-	
-}
+public interface StatutoryInspectionReportServiceCabinRepository extends CrudRepository<StatutoryInspectionReportServiceCabin, Integer>{}

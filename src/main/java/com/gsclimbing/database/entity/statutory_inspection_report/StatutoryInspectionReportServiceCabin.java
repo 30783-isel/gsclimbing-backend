@@ -26,16 +26,6 @@ public class StatutoryInspectionReportServiceCabin implements StatutoryInspectio
 	@Column(name = "id")
 	private Long id;
 	
-	private String uuid;
-	
-	public StatutoryInspectionReportServiceCabin(String uuid) {
-		this.uuid = uuid;
-	}
-	
-	public StatutoryInspectionReportServiceCabin() {
-		super();
-	}
-	
     @OneToOne(mappedBy = "statutoryInspectionReportServiceCabin")
     private StatutoryInspectionReport statutoryInspectionReport;
 

@@ -11,40 +11,34 @@ import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspe
 import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspectionReportInternalCrane;
 import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspectionReportServiceCabin;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class StatutoryInspectionReport  extends Report implements Cloneable{
 	
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "inspectionDescenderDeviceId", referencedColumnName = "id", nullable=true)
+    @JoinColumn(name = "inspection_descender_device_id", referencedColumnName = "id", nullable=true)
 	private StatutoryInspectionReportInspectionDescenderDevice statutoryInspectionReportInspectionDescenderDevice;
     
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "inspectionReportLadderId", referencedColumnName = "id", nullable=true)
+    @JoinColumn(name = "inspection_report_ladder_id", referencedColumnName = "id", nullable=true)
 	private StatutoryInspectionReportInspectionReportLadder statutoryInspectionReportInspectionReportLadder;
     
     
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "internalCraneId", referencedColumnName = "id", nullable=true)
+    @JoinColumn(name = "internal_crane_id", referencedColumnName = "id", nullable=true)
 	private StatutoryInspectionReportInternalCrane statutoryInspectionReportInternalCrane;
     
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "inspectionReportServiceCabinId", referencedColumnName = "id", nullable=true)
+    @JoinColumn(name = "inspection_report_service_cabin_id", referencedColumnName = "id", nullable=true)
 	private StatutoryInspectionReportServiceCabin statutoryInspectionReportServiceCabin;
     
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "inspectionAnchorPointsId", referencedColumnName = "id", nullable=true)
+    @JoinColumn(name = "inspection_anchor_points_id", referencedColumnName = "id", nullable=true)
 	private StatutoryInspectionReportInspectionAnchorPoints statutoryInspectionReportInspectionAnchorPoints;
-    
-
-//    private int inspectionAnchorPointsId;
-//    private int inspectionDescenderDeviceId;
-//    private int inspectionReportLadderId;
-//    private int internalCraneId;
-//    private int inspectionReportServiceCabinId;
-    
 
 	private String reportNumber;
 	private String client;

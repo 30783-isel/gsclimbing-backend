@@ -25,16 +25,6 @@ public class StatutoryInspectionReportInspectionAnchorPoints implements Statutor
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
 	private Long id;
-
-	private String uuid;
-	
-	public StatutoryInspectionReportInspectionAnchorPoints(String uuid) {
-		this.uuid = uuid;
-	}
-	
-	public StatutoryInspectionReportInspectionAnchorPoints() {
-		super();
-	}
 	
     @OneToOne(mappedBy = "statutoryInspectionReportInspectionAnchorPoints")
     private StatutoryInspectionReport statutoryInspectionReport;

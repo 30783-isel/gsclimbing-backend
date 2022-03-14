@@ -20,10 +20,6 @@ public class StatutoryInspectionReportServiceCabinService {
 		statutoryInspectionReportServiceCabinRepository.delete( serviceCabin );
 	}
 	
-	public StatutoryInspectionReportServiceCabin getByUuid( String uuid ) {
-		return statutoryInspectionReportServiceCabinRepository.findByUuid( uuid );
-	}
-
 	public StatutoryInspectionReportServiceCabin updateServiceCabin(StatutoryInspectionReportServiceCabin serviceCabin) {
 		return statutoryInspectionReportServiceCabinRepository.save( serviceCabin );
 	}

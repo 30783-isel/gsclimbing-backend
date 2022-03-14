@@ -142,11 +142,13 @@ public class ExtractDataStatutoryInspectionReport {
 	}
 
 	private boolean populateAndCopy(PDDocument document, Integer typeReport) throws IOException {
-		StatutoryInspectionReportServiceCabin statutoryInspectionReportServiceCabin = new StatutoryInspectionReportServiceCabin();
-		StatutoryInspectionReportInternalCrane statutoryInspectionReportInternalCrane = new StatutoryInspectionReportInternalCrane();
-		StatutoryInspectionReportInspectionReportLadder statutoryInspectionReportInspectionReportLadder = new StatutoryInspectionReportInspectionReportLadder();
-		StatutoryInspectionReportInspectionAnchorPoints statutoryInspectionReportInspectionAnchorPoints = new StatutoryInspectionReportInspectionAnchorPoints();
-		StatutoryInspectionReportInspectionDescenderDevice statutoryInspectionReportInspectionDescenderDevice = new StatutoryInspectionReportInspectionDescenderDevice();		
+		
+		StatutoryInspectionReportServiceCabin statutoryInspectionReportServiceCabin = getStatutoryInspectionReport().getStatutoryInspectionReportServiceCabin() == null ? new StatutoryInspectionReportServiceCabin() : getStatutoryInspectionReport().getStatutoryInspectionReportServiceCabin();
+		StatutoryInspectionReportInternalCrane statutoryInspectionReportInternalCrane = getStatutoryInspectionReport().getStatutoryInspectionReportInternalCrane() == null ? new StatutoryInspectionReportInternalCrane() : getStatutoryInspectionReport().getStatutoryInspectionReportInternalCrane();
+		StatutoryInspectionReportInspectionReportLadder statutoryInspectionReportInspectionReportLadder = getStatutoryInspectionReport().getStatutoryInspectionReportInspectionReportLadder() == null ? new StatutoryInspectionReportInspectionReportLadder() : getStatutoryInspectionReport().getStatutoryInspectionReportInspectionReportLadder();
+		StatutoryInspectionReportInspectionAnchorPoints statutoryInspectionReportInspectionAnchorPoints = getStatutoryInspectionReport().getStatutoryInspectionReportInspectionAnchorPoints() == null ? new StatutoryInspectionReportInspectionAnchorPoints() : getStatutoryInspectionReport().getStatutoryInspectionReportInspectionAnchorPoints();
+		StatutoryInspectionReportInspectionDescenderDevice statutoryInspectionReportInspectionDescenderDevice = getStatutoryInspectionReport().getStatutoryInspectionReportInspectionDescenderDevice() == null ? new StatutoryInspectionReportInspectionDescenderDevice() : getStatutoryInspectionReport().getStatutoryInspectionReportInspectionDescenderDevice();
+		
 		getListPhotoNames().clear();
 
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
@@ -1142,6 +1144,13 @@ public class ExtractDataStatutoryInspectionReport {
 		getStatutoryInspectionReport().setStatutoryInspectionReportInspectionReportLadder(statutoryInspectionReportInspectionReportLadder);
 		getStatutoryInspectionReport().setStatutoryInspectionReportInspectionAnchorPoints(statutoryInspectionReportInspectionAnchorPoints);
 		getStatutoryInspectionReport().setStatutoryInspectionReportInspectionDescenderDevice(statutoryInspectionReportInspectionDescenderDevice);
+		
+		statutoryInspectionReportServiceCabin.setStatutoryInspectionReport(getStatutoryInspectionReport());
+		statutoryInspectionReportInternalCrane.setStatutoryInspectionReport(getStatutoryInspectionReport());
+		statutoryInspectionReportInspectionReportLadder.setStatutoryInspectionReport(getStatutoryInspectionReport());
+		statutoryInspectionReportInspectionAnchorPoints.setStatutoryInspectionReport(getStatutoryInspectionReport());
+		statutoryInspectionReportInspectionDescenderDevice.setStatutoryInspectionReport(getStatutoryInspectionReport());
+		
 		return true;
 	}
 

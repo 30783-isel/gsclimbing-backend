@@ -19,10 +19,6 @@ public class StatutoryInspectionReportInspectionDescenderDeviceService {
 	public void apagar( StatutoryInspectionReportInspectionDescenderDevice descenderDevice) {
 		statutoryInspectionReportInspectionDescenderDeviceRepository.delete(descenderDevice );
 	}
-	
-	public StatutoryInspectionReportInspectionDescenderDevice getByUuid( String uuid ) {
-		return statutoryInspectionReportInspectionDescenderDeviceRepository.findByUuid( uuid );
-	}
 
 	public StatutoryInspectionReportInspectionDescenderDevice update(StatutoryInspectionReportInspectionDescenderDevice report) {
 		return statutoryInspectionReportInspectionDescenderDeviceRepository.save(report );

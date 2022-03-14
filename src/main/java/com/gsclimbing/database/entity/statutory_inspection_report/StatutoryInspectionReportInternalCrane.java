@@ -26,15 +26,6 @@ public class StatutoryInspectionReportInternalCrane  implements StatutoryInspect
 	@Column(name = "id")
 	private Long id;
 	
-	private String uuid;
-	
-	public StatutoryInspectionReportInternalCrane(String uuid) {
-		this.uuid = uuid;
-	}
-
-	public StatutoryInspectionReportInternalCrane() {
-	}
-	
     @OneToOne(mappedBy = "statutoryInspectionReportInternalCrane")
     private StatutoryInspectionReport statutoryInspectionReport;
 

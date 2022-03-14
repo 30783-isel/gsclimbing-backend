@@ -26,16 +26,6 @@ public class StatutoryInspectionReportInspectionDescenderDevice  implements Stat
 	@Column(name = "id")
 	private Long id;
 	
-	private String uuid;
-	
-	public StatutoryInspectionReportInspectionDescenderDevice(String uuid) {
-		this.uuid = uuid;
-	}
-
-	public StatutoryInspectionReportInspectionDescenderDevice() {
-		super();
-	}
-	
     @OneToOne(mappedBy = "statutoryInspectionReportInspectionDescenderDevice")
     private StatutoryInspectionReport statutoryInspectionReport;
 
