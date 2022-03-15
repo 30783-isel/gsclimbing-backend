@@ -1,5 +1,7 @@
 package com.gsclimbing.database.entity.statutory_inspection_report;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,7 +21,9 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "statutory_inspection_report_inspection_descender_device")
-public class StatutoryInspectionReportInspectionDescenderDevice  implements StatutoryInspectionReportInt{
+public class StatutoryInspectionReportInspectionDescenderDevice  implements StatutoryInspectionReportInt, Cloneable, Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -55,5 +59,9 @@ public class StatutoryInspectionReportInspectionDescenderDevice  implements Stat
 	private String inspectionDescenderDevice6Txt;
 	
 	private String inspectionDescenderDeviceNotes;
+	
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
 	
 }

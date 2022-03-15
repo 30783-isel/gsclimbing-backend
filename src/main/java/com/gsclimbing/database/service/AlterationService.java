@@ -41,7 +41,7 @@ public class AlterationService {
 					oldField.setAccessible(true);
 					for (Field newField : newReport.getClass().getDeclaredFields()) {
 						newField.setAccessible(true);
-						if (oldField.getName().equals(newField.getName()) && (oldField.get(oldReport) instanceof StatutoryInspectionReportInt)) {
+						if (oldField.getName().equals(newField.getName()) && (oldField.get(oldReport) instanceof StatutoryInspectionReportInt)  && (newField.get(newReport) instanceof StatutoryInspectionReportInt)) {
 							System.out.println(oldField.getName());
 							System.out.println(newField.getName());
 							

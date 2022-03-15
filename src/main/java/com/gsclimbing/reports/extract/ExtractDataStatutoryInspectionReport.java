@@ -84,11 +84,9 @@ public class ExtractDataStatutoryInspectionReport {
 		if ("UPDATE".equals(operacao)) {
 			oldStatutoryInspectionReport = statutoryInspectionReportService.readStatutoryInspectionReport(idReport);
 			if (oldStatutoryInspectionReport != null) {
-				try {
-					setStatutoryInspectionReport( (StatutoryInspectionReport) oldStatutoryInspectionReport.clone() );
-				} catch (CloneNotSupportedException e) {
-					e.printStackTrace();
-				}
+				
+				setStatutoryInspectionReport( (StatutoryInspectionReport) oldStatutoryInspectionReport.clone() );
+				
 				getStatutoryInspectionReport().setModifiedDate(LocalDateTime.now());
 				getStatutoryInspectionReport().setLocked("true");
 				historicReport = new HistoricReport();
