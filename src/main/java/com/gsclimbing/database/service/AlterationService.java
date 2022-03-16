@@ -42,22 +42,12 @@ public class AlterationService {
 					for (Field newField : newReport.getClass().getDeclaredFields()) {
 						newField.setAccessible(true);
 						if (oldField.getName().equals(newField.getName()) && (oldField.get(oldReport) instanceof StatutoryInspectionReportInt)  && (newField.get(newReport) instanceof StatutoryInspectionReportInt)) {
-							System.out.println(oldField.getName());
-							System.out.println(newField.getName());
-							
 							for (Field oldStatutoryInspectionReportField : oldField.get(oldReport).getClass().getDeclaredFields()) {
 								oldStatutoryInspectionReportField.setAccessible(true);
 								for (Field newStaturoryInspectionReportField : newField.get(newReport).getClass().getDeclaredFields()) {
 									newStaturoryInspectionReportField.setAccessible(true);
-									
-									if (oldStatutoryInspectionReportField.getName().equals(newStaturoryInspectionReportField.getName())) {
-										
-										System.out.println(oldStatutoryInspectionReportField.getName());
-										System.out.println(newStaturoryInspectionReportField.getName());
-										
-										if (oldStatutoryInspectionReportField.get(oldField.get(oldReport)) != null && newStaturoryInspectionReportField.get(newField.get(newReport)) != null && !oldStatutoryInspectionReportField.get(oldField.get(oldReport)).equals(newStaturoryInspectionReportField.get(newField.get(newReport)))) {
-											System.out.println(oldStatutoryInspectionReportField.getName());
-											System.out.println(newStaturoryInspectionReportField.getName());
+									if (oldStatutoryInspectionReportField.getName().equals(newStaturoryInspectionReportField.getName()) && !(oldStatutoryInspectionReportField.get(oldField.get(oldReport)) instanceof StatutoryInspectionReport) && !(newStaturoryInspectionReportField.get(newField.get(newReport)) instanceof StatutoryInspectionReport)) {
+										if (oldStatutoryInspectionReportField.get(oldField.get(oldReport)) != null && newStaturoryInspectionReportField.get(newField.get(newReport)) != null && !oldStatutoryInspectionReportField.get(oldField.get(oldReport)).equals(newStaturoryInspectionReportField.get(newField.get(newReport)))) {											
 											Alteration alteration = new Alteration();
 											alteration.setField(newStaturoryInspectionReportField.getName());
 											alteration.setFieldOld(String.valueOf(oldStatutoryInspectionReportField.get(oldField.get(oldReport))));
