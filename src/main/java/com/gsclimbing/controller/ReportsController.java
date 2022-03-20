@@ -212,7 +212,6 @@ public class ReportsController {
 			byte[] bytes = null;
 			List<FileData> list = fileService.readFile(report.getUuid());
 			list.stream().filter(filex -> filex.getMimeType().equals("application/pdf")).findAny();
-			bytes = defectsInspectionPopulater.generatePDF(report);
 			bytes = generatePDF(report.getTypeReport(), getReport());
 			runnable = new SendEmail(subject, "Defects Inspection Report.pdf", bytes);
 			Thread t = new Thread(runnable);
