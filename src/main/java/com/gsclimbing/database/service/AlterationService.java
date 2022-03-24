@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gsclimbing.commons.mappings.ReportMap;
 import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.HistoricReport;
@@ -77,7 +78,7 @@ public class AlterationService {
 						System.out.println(newField.getName());
 						if (oldField.get(oldReport) != null && newField.get(newReport) != null && !oldField.get(oldReport).equals(newField.get(newReport)) && !"locked".equals(newField.getName())) {
 							Alteration alteration = new Alteration();
-							alteration.setField(newField.getName());
+							alteration.setField( ReportMap.mapeamento().get(newField.getName()) );
 							alteration.setFieldOld(String.valueOf(oldField.get(oldReport)));
 							alteration.setFieldNew(String.valueOf(newField.get(newReport)));
 							alteration.setImage(false);
