@@ -5,13 +5,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +36,7 @@ import com.gsclimbing.database.entity.Medidas6Kv;
 import com.gsclimbing.database.entity.OnboardCraneInspectionReport;
 import com.gsclimbing.database.entity.PerformanceReportRepairElevator;
 import com.gsclimbing.database.entity.Project;
+import com.gsclimbing.database.entity.QReport;
 import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.entity.StatutoryInspectionReport;
 import com.gsclimbing.database.entity.Turbine;
@@ -42,6 +47,7 @@ import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.ReportService;
 import com.gsclimbing.database.service.TurbineService;
 import com.gsclimbing.database.service.UserService;
+import com.gsclimbing.dto.FilterDTO;
 import com.gsclimbing.dto.ReportDto;
 import com.gsclimbing.email.SendEmail;
 import com.gsclimbing.ftp.FTPDownloadFiles;
@@ -62,6 +68,9 @@ import com.gsclimbing.reports.populater.Medidas6KvPopulater;
 import com.gsclimbing.reports.populater.OnboardCraneInspectionReportElevatorPopulater;
 import com.gsclimbing.reports.populater.PerformanceReportRepairElevatorPopulater;
 import com.gsclimbing.reports.populater.StatutoryInspectionReportElevatorPopulater;
+import com.querydsl.jpa.impl.JPAQuery;
+
+
 
 import lombok.Data;
 
@@ -101,7 +110,7 @@ public class ReportsController {
 	private ExtractDataPrre extractDataPrre;
 	@Autowired
 	private ExtractDataStatutoryInspectionReport extractDataStatutoryInspectionReport;
-	
+
 	@Autowired
 	private DefectsInspectionPopulater defectsInspectionPopulater;
 	@Autowired
@@ -121,6 +130,20 @@ public class ReportsController {
 
 	private Report report;
 	
+    @Autowired
+    private EntityManager entityManager;
+
+	@GetMapping(value = "/search")
+	public ResponseEntity<Report> searchReport(FilterDTO filter) {
+
+		QReport report = QReport.report;
+    	JPAQuery<QReport> queryGetByTypeReport = new JPAQuery<>(entityManager);
+    	queryGetByTypeReport.from(report).where(report.typeReport.eq(filter.getTypeReport()));
+    	List<QReport> lista = queryGetByTypeReport.fetch();
+    	
+		return new ResponseEntity<Report>(new Report(), HttpStatus.CREATED);
+	}
+
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
 	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("project") String projectId, @RequestParam("turbineId") Integer turbineId, @RequestParam("typeReport") Integer typeReport) {
 		String message = "";
@@ -130,7 +153,7 @@ public class ReportsController {
 		SendEmail runnable = null;
 		try {
 			report = readPdf(file, projectId, turbineId, typeReport, null, "UPLOAD");
-			if(report.equals(null)) {
+			if (report.equals(null)) {
 				throw new Exception("Exception message");
 			}
 			if (ObjectUtils.isEmpty(validateReport(report))) {
@@ -161,7 +184,7 @@ public class ReportsController {
 			return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
 		}
 	}
-	
+
 	@PostMapping(value = "/update")
 	public ResponseEntity<?> updateFile(@RequestParam("file") MultipartFile file, @RequestParam("idReport") Integer idReport, @RequestParam("typeReport") Integer typeReport) {
 		String message = "";
@@ -170,7 +193,7 @@ public class ReportsController {
 		instaceSelection(typeReport);
 		try {
 			report = readPdf(file, null, null, typeReport, idReport, "UPDATE");
-			if(report.equals(null)) {
+			if (report.equals(null)) {
 				throw new Exception("Exception message");
 			}
 			return new ResponseEntity<>(message, HttpStatus.OK);
@@ -179,7 +202,7 @@ public class ReportsController {
 			return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
 		}
 	}
-	
+
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete-report/{id}")
 	public Integer deleteReport(@PathVariable Integer id) {
 		Integer turbineId = reportService.readReport(id).getTurbinaId();
@@ -219,7 +242,7 @@ public class ReportsController {
 		}
 		return report;
 	}
-	
+
 	@RequestMapping("/permission2edit_granted/{id}")
 	public Report permission2edit_granted(@PathVariable Integer id) {
 		Report report = reportService.readReport(id);
@@ -230,7 +253,7 @@ public class ReportsController {
 		}
 		return report;
 	}
-	
+
 	@RequestMapping(method = RequestMethod.GET, value = "/historic/{id}")
 	public List<Historic> getHistoricReport(@PathVariable Integer id) {
 		List<Historic> listHistoric = new ArrayList<Historic>();
@@ -247,7 +270,7 @@ public class ReportsController {
 		Collections.sort(listHistoric, Collections.reverseOrder());
 		return listHistoric;
 	}
-	
+
 	public void instaceSelection(Integer typeReport) {
 		ReportEnum reportEnum = ReportEnum.values()[typeReport];
 		switch (reportEnum) {
@@ -277,7 +300,7 @@ public class ReportsController {
 			break;
 		}
 	}
-	
+
 	public Report readPdf(MultipartFile file, String projectId, Integer turbineId, Integer typeReport, Integer idReport, String operation) throws IOException {
 		ReportEnum reportEnum = ReportEnum.values()[typeReport];
 		switch (reportEnum) {
@@ -300,8 +323,8 @@ public class ReportsController {
 		}
 		return null;
 	}
-	
-	public byte[] generatePDF(Integer typeReport, Report report)  {
+
+	public byte[] generatePDF(Integer typeReport, Report report) {
 		ReportEnum reportEnum = ReportEnum.values()[typeReport];
 		switch (reportEnum) {
 		case DIR:
@@ -323,7 +346,7 @@ public class ReportsController {
 		}
 		return null;
 	}
-	
+
 	private List<Alteration> addImages2Alterations(List<Alteration> listAlterations) {
 		List<Alteration> listAlterationsWithImages = new ArrayList<Alteration>();
 		for (int i = 0; i < listAlterations.size(); i++) {
@@ -357,7 +380,7 @@ public class ReportsController {
 		}
 		if (report.getWtgNumber() == null || report.getWtgNumber().isEmpty()) {
 			string.append(System.lineSeparator() + "Field WTG Number empty");
-		}			
+		}
 //		for (FileData fileData : report.getListaFileData()) {
 //			if (fileData.getDescription() == null || fileData.getDescription().isEmpty()) {
 //				string.append(System.lineSeparator() + "Field " + fileData.getNameField() + " empty");
@@ -368,5 +391,5 @@ public class ReportsController {
 //		}
 		return string.toString();
 	}
-	
+
 }
