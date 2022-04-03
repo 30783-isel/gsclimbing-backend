@@ -1,19 +1,19 @@
 package com.gsclimbing.database.entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
-public class OnboardCraneInspectionReport extends Report implements Cloneable{
+public class OnboardCraneInspectionReport extends Report implements Cloneable {
 
 	private String manufacturerOnboardCrane;
 	private String type;
@@ -25,7 +25,7 @@ public class OnboardCraneInspectionReport extends Report implements Cloneable{
 	private String resultInspection;
 	private String repairRequired;
 	private String nextInspection;
-	
+
 	private boolean readingOperatingBusChk;
 	private String readingOperatingBusTxt;
 	private boolean InterruptVoltageSupplyChk;
@@ -84,6 +84,21 @@ public class OnboardCraneInspectionReport extends Report implements Cloneable{
 	public void addImgOnListImages(FileData fileData) {
 		this.listImages.add(fileData);
 	}
+
+	public HashMap<String, String> mapeamento() {
+		HashMap<String, String> mapa = new HashMap<String, String>();
+		mapa.put("manufacturerOnboardCrane", "Manufacturer onboard crane");
+		mapa.put("type", "Type");
+		mapa.put("yearBuild", "Year Build");
+		mapa.put("serialNumber", "Serial Number");
+		mapa.put("typePlateTestBadge", "Type Plate Test Badge");
+		mapa.put("inspectors", "Inspectors");
+		mapa.put("date", "Date");
+		mapa.put("resultInspection", "Result Inspection");
+		mapa.put("repairRequired", "Repair Required");
+		mapa.put("nextInspection", "Next Inspection");
+		mapa.put("notes", "Notes");
+		return mapa;
+	}
+
 }
-
-

@@ -100,7 +100,7 @@ public class ReportService {
 				field.setAccessible(true);
 				Object object = field.get(report);
 				if (object == null || ObjectUtils.isEmpty(object.toString())) {
-					lista.add(field.getName());
+					lista.add(report.mapeamento().get(field.getName()));
 				}
 			}
 			for (Field field : report.getClass().getDeclaredFields()) {
@@ -112,7 +112,7 @@ public class ReportService {
 					}
 				} else {
 					if (object == null || ObjectUtils.isEmpty(object.toString())) {
-						lista.add(field.getName());
+						lista.add(report.mapeamento().get(field.getName()));
 					}
 				}
 			}

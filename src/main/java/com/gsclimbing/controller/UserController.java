@@ -11,7 +11,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,7 +64,7 @@ public class UserController {
 			message = "Fill all fields";
 			return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		if (userService.getUser(user.getUsername()) != null) {
+		if (userService.getUser(user.getUsername()) == null) {
 			user.setActive("true");
 			userService.createUser(user);
 			return null;

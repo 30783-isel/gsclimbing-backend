@@ -11,7 +11,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -70,8 +69,6 @@ import com.gsclimbing.reports.populater.PerformanceReportRepairElevatorPopulater
 import com.gsclimbing.reports.populater.StatutoryInspectionReportElevatorPopulater;
 import com.querydsl.jpa.impl.JPAQuery;
 
-
-
 import lombok.Data;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
@@ -129,25 +126,25 @@ public class ReportsController {
 	private StatutoryInspectionReportElevatorPopulater statutoryInspectionReportElevatorPopulater;
 
 	private Report report;
-	
-    @Autowired
-    private EntityManager entityManager;
+
+	@Autowired
+	private EntityManager entityManager;
 
 	@GetMapping(value = "/search")
 	public ResponseEntity<Report> searchReport(FilterDTO filter) {
 
 		QReport report = QReport.report;
-    	JPAQuery<QReport> queryGetByTypeReport = new JPAQuery<>(entityManager);
-    	queryGetByTypeReport.from(report).where(report.typeReport.eq(filter.getTypeReport()));
-    	List<QReport> lista = queryGetByTypeReport.fetch();
-    	
+		JPAQuery<QReport> queryGetByTypeReport = new JPAQuery<>(entityManager);
+		queryGetByTypeReport.from(report).where(report.typeReport.eq(filter.getTypeReport()));
+		List<QReport> lista = queryGetByTypeReport.fetch();
+
 		return new ResponseEntity<Report>(new Report(), HttpStatus.CREATED);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
 	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("project") String projectId, @RequestParam("turbineId") Integer turbineId, @RequestParam("typeReport") Integer typeReport) {
 		String message = "";
-		String validateString = null;
+		List<String> lista = null;
 		Report report = null;
 		instaceSelection(typeReport);
 		SendEmail runnable = null;
@@ -156,7 +153,8 @@ public class ReportsController {
 			if (report.equals(null)) {
 				throw new Exception("Exception message");
 			}
-			if (ObjectUtils.isEmpty(validateReport(report))) {
+			lista = validateReport(report);
+			if (ObjectUtils.isEmpty(lista)) {
 				String username = reportService.getCurrentLoggedUser();
 				User user = userService.getUser(username);
 				Project project = projectService.getProjectById(Integer.parseInt(projectId));
@@ -171,7 +169,7 @@ public class ReportsController {
 			}
 			return ResponseEntity.status(HttpStatus.OK).body(turbineService.getTurbine(turbineId));
 		} catch (Exception e) {
-			message = "Could not upload the file: " + file.getOriginalFilename() + "!!!\n" + validateString;
+			message = "Could not upload the file: " + file.getOriginalFilename() + "!!!\n" + "Empty fields:\n" + convertEmptyListToString(lista);
 			if (report != null) {
 				String uuid = report.getUuid();
 				List<FileData> listFileData = fileService.readFile(uuid);
@@ -183,6 +181,17 @@ public class ReportsController {
 			}
 			return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
 		}
+	}
+	
+	
+	private String convertEmptyListToString(List<String> lista) {
+		StringBuilder strBuilder = new StringBuilder();
+		lista.stream().forEach(str -> {
+			strBuilder.append(str);
+			strBuilder.append(System.lineSeparator());
+		});
+		
+		return strBuilder.toString();
 	}
 
 	@PostMapping(value = "/update")
@@ -372,24 +381,21 @@ public class ReportsController {
 		return listAlterationsWithImages;
 	}
 
-	private String validateReport(Report report) {
+	private List<String> validateReport(Report report) {
 		List<String> lista = reportService.chkIfAllFieldsNull(report);
-		StringBuilder string = new StringBuilder();
-		if (report.getSite() == null || report.getSite().isEmpty()) {
-			string.append(System.lineSeparator() + "Field Site empty");
+		if (report.getListaFileData() != null && report.getListaFileData().size() > 0) {
+			for (FileData fileData : report.getListaFileData()) {
+				if (fileData.getDescription() == null || fileData.getDescription().isEmpty()) {
+					lista.add(System.lineSeparator() + "Description from " + fileData.getNameField() + " empty");
+				}
+				if (!fileData.isInsertedOnFtpServer()) {
+					lista.add(System.lineSeparator() + "Image from " + fileData.getNameField() + " empty");
+				}
+			}
+		}else {
+			lista.add(System.lineSeparator() + "You add to insert images");
 		}
-		if (report.getWtgNumber() == null || report.getWtgNumber().isEmpty()) {
-			string.append(System.lineSeparator() + "Field WTG Number empty");
-		}
-//		for (FileData fileData : report.getListaFileData()) {
-//			if (fileData.getDescription() == null || fileData.getDescription().isEmpty()) {
-//				string.append(System.lineSeparator() + "Field " + fileData.getNameField() + " empty");
-//			}
-//			if (!fileData.isInsertedOnFtpServer()) {
-//				string.append(System.lineSeparator() + "Image from " + fileData.getNameField() + " empty");
-//			}
-//		}
-		return string.toString();
+		return lista;
 	}
 
 }

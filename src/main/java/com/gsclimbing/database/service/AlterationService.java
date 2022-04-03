@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.gsclimbing.commons.mappings.ReportMap;
 import com.gsclimbing.database.entity.Alteration;
-import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.HistoricReport;
 import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.entity.StatutoryInspectionReport;
@@ -50,7 +48,7 @@ public class AlterationService {
 									if (oldStatutoryInspectionReportField.getName().equals(newStaturoryInspectionReportField.getName()) && !(oldStatutoryInspectionReportField.get(oldField.get(oldReport)) instanceof StatutoryInspectionReport) && !(newStaturoryInspectionReportField.get(newField.get(newReport)) instanceof StatutoryInspectionReport)) {
 										if (oldStatutoryInspectionReportField.get(oldField.get(oldReport)) != null && newStaturoryInspectionReportField.get(newField.get(newReport)) != null && !oldStatutoryInspectionReportField.get(oldField.get(oldReport)).equals(newStaturoryInspectionReportField.get(newField.get(newReport)))) {											
 											Alteration alteration = new Alteration();
-											alteration.setField(newStaturoryInspectionReportField.getName());
+											alteration.setField(oldReport.mapeamento().get(newField.getName()));
 											alteration.setFieldOld(String.valueOf(oldStatutoryInspectionReportField.get(oldField.get(oldReport))));
 											alteration.setFieldNew(String.valueOf(newStaturoryInspectionReportField.get(newField.get(newReport))));
 											alteration.setImage(false);
@@ -74,11 +72,9 @@ public class AlterationService {
 				for (Field newField : newReport.getClass().getSuperclass().getDeclaredFields()) {
 					newField.setAccessible(true);
 					if (oldField.getName().equals(newField.getName()) && newField.getName() != "modifiedDate") {
-						System.out.println(oldField.getName());
-						System.out.println(newField.getName());
 						if (oldField.get(oldReport) != null && newField.get(newReport) != null && !oldField.get(oldReport).equals(newField.get(newReport)) && !"locked".equals(newField.getName())) {
 							Alteration alteration = new Alteration();
-							alteration.setField( ReportMap.mapeamento().get(newField.getName()) );
+							alteration.setField( oldReport.mapeamento().get(newField.getName()) );
 							alteration.setFieldOld(String.valueOf(oldField.get(oldReport)));
 							alteration.setFieldNew(String.valueOf(newField.get(newReport)));
 							alteration.setImage(false);
@@ -97,11 +93,9 @@ public class AlterationService {
 				for (Field newField : newReport.getClass().getDeclaredFields()) {
 					newField.setAccessible(true);
 					if (oldField.getName().equals(newField.getName())) {
-						System.out.println(oldField.getName());
-						System.out.println(newField.getName());
 						if (oldField.get(oldReport) != null && newField.get(newReport) != null && !oldField.get(oldReport).equals(newField.get(newReport)) && !"locked".equals(newField.getName()) && !(oldField.get(oldReport) instanceof StatutoryInspectionReportInt)) {
 							Alteration alteration = new Alteration();
-							alteration.setField(newField.getName());
+							alteration.setField(oldReport.mapeamento().get(newField.getName()));
 							alteration.setFieldOld(String.valueOf(oldField.get(oldReport)));
 							alteration.setFieldNew(String.valueOf(newField.get(newReport)));
 							alteration.setImage(false);

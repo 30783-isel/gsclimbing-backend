@@ -1,6 +1,7 @@
 package com.gsclimbing.database.entity.statutory_inspection_report;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +14,6 @@ import javax.persistence.Table;
 import com.gsclimbing.database.entity.StatutoryInspectionReport;
 import com.gsclimbing.database.entity.StatutoryInspectionReportInt;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,17 +21,17 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "statutory_inspection_report_inspection_descender_device")
-public class StatutoryInspectionReportInspectionDescenderDevice  implements StatutoryInspectionReportInt, Cloneable, Serializable{
+public class StatutoryInspectionReportInspectionDescenderDevice implements StatutoryInspectionReportInt, Cloneable, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
 	private Long id;
-	
-    @OneToOne(mappedBy = "statutoryInspectionReportInspectionDescenderDevice")
-    private StatutoryInspectionReport statutoryInspectionReport;
+
+	@OneToOne(mappedBy = "statutoryInspectionReportInspectionDescenderDevice")
+	private StatutoryInspectionReport statutoryInspectionReport;
 
 	private String inspectionDescenderDeviceManufacturer;
 	private String inspectionDescenderDeviceType;
@@ -57,11 +57,46 @@ public class StatutoryInspectionReportInspectionDescenderDevice  implements Stat
 	private String inspectionDescenderDevice5Txt;
 	private boolean inspectionDescenderDevice6Chk;
 	private String inspectionDescenderDevice6Txt;
-	
+
 	private String inspectionDescenderDeviceNotes;
-	
+
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
-	
+
+	@Override
+	public HashMap<String, String> mapeamento() {
+		HashMap<String, String> mapa = new HashMap<String, String>();
+		mapa.put("reportNumber", "");
+
+		mapa.put("inspectionDescenderDeviceManufacturer", "Manufacturer descender device");
+		mapa.put("inspectionDescenderDeviceType", "Type");
+		mapa.put("inspectionDescenderDeviceYearBuild", "Year build");
+		mapa.put("inspectionDescenderDeviceSerialNumber", "Serial number");
+		mapa.put("inspectionDescenderDeviceTypePlateTestBadge", "Type plate and test badge");
+
+		mapa.put("inspectionDescenderDeviceInspectors", "Inspectors");
+		mapa.put("inspectionDescenderDeviceDate", "Date");
+		mapa.put("inspectionDescenderDeviceResultOfInspection", "Result of inspection");
+		mapa.put("inspectionDescenderDeviceRepairRequired", "Repair required");
+		mapa.put("inspectionDescenderDeviceNextInspection", "Next inspection");
+
+		mapa.put("inspectionDescenderDevice1Chk", "Visual check of descender device");
+		mapa.put("inspectionDescenderDevice1Txt", "Visual check of descender device / refer notes,N°");
+		mapa.put("inspectionDescenderDevice2Chk", "Visual check rope");
+		mapa.put("inspectionDescenderDevice2Txt", "Visual check rope / refer notes,N");
+		mapa.put("inspectionDescenderDevice3Chk", "Visual check sling and carabiner");
+		mapa.put("inspectionDescenderDevice3Txt", "Visual check sling and carabiner / refer notes,N");
+		mapa.put("inspectionDescenderDevice4Chk", "Do function test");
+		mapa.put("inspectionDescenderDevice4Txt", "Do function test / refer notes,N");
+		mapa.put("inspectionDescenderDevice5Chk", "Fill document");
+		mapa.put("inspectionDescenderDevice5Txt", "Fill document / refer notes,N");
+		mapa.put("inspectionDescenderDevice6Chk", "Seal back and put sticker on");
+		mapa.put("inspectionDescenderDevice6Txt", "Seal back and put sticker on / refer notes,N");
+
+		mapa.put("inspectionDescenderDeviceNotes", "Notes");
+
+		return mapa;
+	}
+
 }

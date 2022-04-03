@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -28,13 +27,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gsclimbing.commons.enums.ReportEnum;
-import com.gsclimbing.database.entity.DefectsInspectionReport;
-import com.gsclimbing.database.entity.ExaminationTransformer;
-import com.gsclimbing.database.entity.FileData;
-import com.gsclimbing.database.entity.MeasurementsMwSwitchgear;
-import com.gsclimbing.database.entity.Medidas690V400V;
-import com.gsclimbing.database.entity.Medidas6Kv;
-import com.gsclimbing.database.entity.OnboardCraneInspectionReport;
 import com.gsclimbing.database.entity.Project;
 import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.service.DefectsInspectionReportService;

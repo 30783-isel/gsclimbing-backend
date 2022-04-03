@@ -1,6 +1,7 @@
 package com.gsclimbing.database.entity.statutory_inspection_report;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +14,6 @@ import javax.persistence.Table;
 import com.gsclimbing.database.entity.StatutoryInspectionReport;
 import com.gsclimbing.database.entity.StatutoryInspectionReportInt;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -108,6 +108,12 @@ public class StatutoryInspectionReportInspectionAnchorPoints implements Statutor
 	
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
+	}
+
+	@Override
+	public HashMap<String, String> mapeamento() {
+		HashMap<String, String> mapa = new HashMap<String, String>();
+		return null;
 	}
 	
 }

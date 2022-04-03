@@ -1,6 +1,7 @@
 package com.gsclimbing.database.entity.statutory_inspection_report;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -149,6 +150,12 @@ public class StatutoryInspectionReportInspectionReportLadder implements Statutor
 	
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
+	}
+	
+	@Override
+	public HashMap<String, String> mapeamento() {
+		HashMap<String, String> mapa = new HashMap<String, String>();
+		return null;
 	}
     
 }

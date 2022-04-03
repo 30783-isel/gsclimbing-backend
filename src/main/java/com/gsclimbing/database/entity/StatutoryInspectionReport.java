@@ -1,6 +1,7 @@
 package com.gsclimbing.database.entity;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -13,7 +14,6 @@ import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspe
 import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspectionReportInternalCrane;
 import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspectionReportServiceCabin;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -117,4 +117,67 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		return statutoryInspectionReport;
 	}
 
+	public HashMap<String, String> mapeamento() {
+		HashMap<String, String> mapa = new HashMap<String, String>();
+		mapa.put("reportNumber", "");
+
+		mapa.put("reportNumber", "Report number");
+		mapa.put("client", "Client");
+		mapa.put("clientContact", "Client contact");
+		mapa.put("windPark", "Wind Park");
+		mapa.put("siteAddress", "Site Address");
+
+		mapa.put("serviceCabinManufacturer", "Service cabin / Manufacturer");
+		mapa.put("serviceCabinType", "Service cabin / Type");
+		mapa.put("serviceCabinSerialNumber", "Service cabin / Serial number");
+		mapa.put("serviceCabinInspectionPassedWithoutDefects", "Service cabin / Inspection passed without defects");
+		mapa.put("serviceCabinInspectionPassedWithSmallDefects", "Service cabin / Inspection passed with small defects");
+		mapa.put("serviceCabinInspectionNotPassed", "Service cabin / Inspection not passed");
+
+		mapa.put("ladderTowerManufacturer", "Ladder Tower / Manufacturer");
+		mapa.put("ladderTowerType", "Ladder Tower / Type");
+		mapa.put("ladderTowerSerialNumber", "Ladder Tower / Serial number");
+		mapa.put("ladderTowerInspectionPassedWithoutDefects", "Ladder Tower / Inspection passed without defects");
+		mapa.put("ladderTowerInspectionPassedWithSmallDefects", "Ladder Tower / Inspection passed with small defects");
+		mapa.put("ladderTowerInspectionNotPassed", "Ladder Tower / Inspection not passed");
+
+		mapa.put("failArrestSystemTowerManufacturer", "Fail arrest system tower / Manufacturer");
+		mapa.put("failArrestSystemTowerType", "Fail arrest system tower / Type");
+		mapa.put("failArrestSystemTowerSerialNumber", "Fail arrest system tower / Serial number");
+		mapa.put("failArrestSystemTowerInspectionPassedWithoutDefects", "Fail arrest system tower / Inspection passed without defects");
+		mapa.put("failArrestSystemTowerInspectionPassedWithSmallDefects", "Fail arrest system tower / Inspection passed with small defects");
+		mapa.put("failArrestSystemTowerInspectionNotPassed", "Fail arrest system tower / Inspection not passed");
+
+		mapa.put("internalCraneManufacturer", "Internal crane / Manufacturer");
+		mapa.put("internalCraneType", "Internal crane / Type");
+		mapa.put("internalCraneSerialNumber", "Internal crane / Serial number");
+		mapa.put("internalCraneInspectionPassedWithoutDefects", "Internal crane / Inspection passed without defects");
+		mapa.put("internalCraneInspectionPassedWithSmallDefects", "Internal crane / Inspection passed with small defects");
+		mapa.put("internalCraneInspectionNotPassed", "Internal crane / Inspection not passed");
+
+		mapa.put("descenderDeviceManufacturer", "Descender device / Manufacturer");
+		mapa.put("descenderDeviceType", "Descender device / Type");
+		mapa.put("descenderDeviceSerialNumber", "Descender device / Serial number");
+		mapa.put("descenderDeviceInspectionPassedWithoutDefects", "Descender device / Inspection passed without defects");
+		mapa.put("descenderDeviceInspectionPassedWithSmallDefects", "Descender device / Inspection passed with small defects");
+		mapa.put("descenderDeviceInspectionNotPassed", "Descender device / Inspection not passed");
+
+		mapa.put("anchorPointsManufacturer", "Anchor points / Manufacturer");
+		mapa.put("anchorPointsType", "Anchor points / Type");
+		mapa.put("anchorPointsSerialNumber", "Anchor points / Serial number");
+		mapa.put("anchorPointsInspectionPassedWithoutDefects", "Anchor points / Inspection passed without defects");
+		mapa.put("anchorPointsInspectionPassedWithSmallDefects", "Anchor points / Inspection passed with small defects");
+		mapa.put("anchorPointsInspectionNotPassed", "Anchor points / Inspection not passed");
+
+		mapa.put("inspectors", "Inspectors");
+		mapa.put("date", "Date");
+		mapa.put("resultOfInspection", "Result of inspection");
+		mapa.put("repairRequired", "Repair required");
+		mapa.put("nextInspection", "Next inspection");
+
+		mapa.put("siteDate", "");
+		mapa.put("responsibleTechnician", "");
+
+		return mapa;
+	}
 }

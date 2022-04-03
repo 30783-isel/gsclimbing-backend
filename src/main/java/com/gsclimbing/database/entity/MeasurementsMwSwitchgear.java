@@ -1,15 +1,18 @@
 package com.gsclimbing.database.entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class MeasurementsMwSwitchgear extends Report implements Cloneable{
 
@@ -360,6 +363,125 @@ public class MeasurementsMwSwitchgear extends Report implements Cloneable{
 	public void addImgOnListImages(FileData fileData) {
 		this.listImages.add(fileData);
 	}	
+	
+	public HashMap<String, String> mapeamento() {
+		HashMap<String, String> mapa = new HashMap<String, String>();
+		mapa.put("dateMeasurement", "Date of measurement");
+		mapa.put("manufacturerDate", "Manufacturer/Date");
+		mapa.put("type", "Type");
+		mapa.put("serialNumber", "Serial number");
+		mapa.put("mvsgCorrect", "MVSG - Correct");
+		mapa.put("mvsgNotCorrect", "MVSG - Not correct");
+		mapa.put("sf6Correct", "SF6 - Correct");
+		mapa.put("sf6NotCorrect", "SF6 - Not correct");
+		mapa.put("equipamentType1", "Test of the relay protection system - Equipment type");
+		mapa.put("serialNumber1", "Test of the relay protection system - Serial number");
+		mapa.put("calibrationDate1", "Test of the relay protection system - Calibration date");
+		mapa.put("nextCalibrationDate1", "Test of the relay protection system - Next calibration date");
+		mapa.put("equipamentType2", "Measurement of the insulation of MV switch gear - Equipment type");
+		mapa.put("serialNumber2", "Measurement of the insulation of MV switch gear - Serial number");
+		mapa.put("calibrationDate2", "Measurement of the insulation of MV switch gear - Calibration date");
+		mapa.put("nextCalibrationDate2", "Measurement of the insulation of MV switch gear - Next calibration date");
+		mapa.put("equipamentType3", "Measurement of the insulation of Stator Switch Cabinet - Equipment type");
+		mapa.put("serialNumber3", "Measurement of the insulation of Stator Switch Cabinet - Serial number");
+		mapa.put("calibrationDate3", "Measurement of the insulation of Stator Switch Cabinet - Calibration date");
+		mapa.put("nextCalibrationDate3", "Measurement of the insulation of Stator Switch Cabinet - Next calibration date");
+		mapa.put("equipamentType4", "Measurement of the continuity of the grounding system - Equipment type");
+		mapa.put("serialNumber4", "Measurement of the continuity of the grounding system - Serial number");
+		mapa.put("calibrationDate4", "Measurement of the continuity of the grounding system - Calibration date");
+		mapa.put("nextCalibrationDate4", "Measurement of the continuity of the grounding system - Next calibration date");
+		mapa.put("pongo1", "Fase[L1]>| / Pongo[UN]"); 
+		mapa.put("pongo2", "Fase[L2]>| / Pongo[UN]");
+		mapa.put("pongo3", "Fase[L3]>| / Pongo[UN]");
+		mapa.put("pongo4", "Fase[L1]>>| / Pongo[UN]");
+		mapa.put("pongo5", "Fase[L2]>>| / Pongo[UN]");
+		mapa.put("pongo6", "Fase[L3]>>| / Pongo[UN]");
+		mapa.put("pongo7", "Fase >|o / Pongo[UN]");
+		mapa.put("pruebo1", "Fase[L1]>| / Pruebo[UN]"); 
+		mapa.put("pruebo2", "Fase[L2]>| / Pruebo[UN]");
+		mapa.put("pruebo3", "Fase[L3]>| / Pruebo[UN]");
+		mapa.put("pruebo4", "Fase[L1]>>| / Pruebo[UN]");
+		mapa.put("pruebo5", "Fase[L2]>>| / Pruebo[UN]");
+		mapa.put("pruebo6", "Fase[L3]>>| / Pruebo[UN]");
+		mapa.put("pruebo7", "Fase >|o / Pruebo[UN]");
+		mapa.put("conjuno1", "Fase[L1]>| / T Conjuno[s]");  
+		mapa.put("conjuno2", "Fase[L2]>| / T Conjuno[s]");
+		mapa.put("conjuno3", "Fase[L3]>| / T Conjuno[s]");
+		mapa.put("conjuno4", "Fase[L1]>>| / T Conjuno[s]");
+		mapa.put("conjuno5", "Fase[L2]>>| / T Conjuno[s]");
+		mapa.put("conjuno6", "Fase[L3]>>| / T Conjuno[s]");
+		mapa.put("conjuno7", "Fase >|o / T Conjuno[s]");  
+		mapa.put("prueba1", "Fase[L1]>| / T Prueba[s]");  
+		mapa.put("prueba2", "Fase[L2]>| / T Prueba[s]");
+		mapa.put("prueba3", "Fase[L3]>| / T Prueba[s]");
+		mapa.put("prueba4", "Fase[L1]>>| / T Prueba[s]");
+		mapa.put("prueba5", "Fase[L2]>>| / T Prueba[s]");
+		mapa.put("prueba6", "Fase[L3]>>| / T Prueba[s]");
+		mapa.put("prueba7", "Fase >|o / T Prueba[s]");
+		mapa.put("resultado1", "Fase[L1]>| / Result[Positivo/Negativo]"); 
+		mapa.put("resultado2", "Fase[L2]>| / Result[Positivo/Negativo]");
+		mapa.put("resultado3", "Fase[L3]>| / Result[Positivo/Negativo]");
+		mapa.put("resultado4", "Fase[L1]>>| / Result[Positivo/Negativo]");
+		mapa.put("resultado5", "Fase[L2]>>| / Result[Positivo/Negativo]");
+		mapa.put("resultado6", "Fase[L3]>>| / Result[Positivo/Negativo]");
+		mapa.put("resultado7", "Fase >|o / Result[Positivo/Negativo]");
+		mapa.put("voltage1",  "Measurement of the insulation of MV switch gear - Fase[P1-PE] / Voltaje[KV]");
+		mapa.put("voltage2",  "Measurement of the insulation of MV switch gear - Fase[P2-PE] / Voltaje[KV]");
+		mapa.put("voltage3",  "Measurement of the insulation of MV switch gear - Fase[P3-PE] / Voltaje[KV]");
+		mapa.put("voltage4",  "Measurement of the insulation of MV switch gear - Fase[P1-P2] / Voltaje[KV]");
+		mapa.put("voltage5",  "Measurement of the insulation of MV switch gear - Fase[P1-P3] / Voltaje[KV]");
+		mapa.put("voltage6",  "Measurement of the insulation of MV switch gear - Fase[P2-P3] / Voltaje[KV]");
+		mapa.put("voltage7",  "Measurement of the insulation of Stator Switch Cabinet - Fase[P1-PE] / Voltaje[KV]");
+		mapa.put("voltage8",  "Measurement of the insulation of Stator Switch Cabinet - Fase[P2-PE] / Voltaje[KV]");
+		mapa.put("voltage9",  "Measurement of the insulation of Stator Switch Cabinet - Fase[P3-PE] / Voltaje[KV]");
+		mapa.put("voltage10", "Measurement of the insulation of Stator Switch Cabinet - Fase[P1-P2] / Voltaje[KV]");
+		mapa.put("voltage11", "Measurement of the insulation of Stator Switch Cabinet - Fase[P1-P3] / Voltaje[KV]");
+		mapa.put("voltage12", "Measurement of the insulation of Stator Switch Cabinet - Fase[P2-P3] / Voltaje[KV]");
+		
+		mapa.put("resistencia1",  "Measurement of the insulation of MV switch gear - Fase[P1-PE] / Insulation Resistance[MΩ] after 60[s]");
+		mapa.put("resistencia2",  "Measurement of the insulation of MV switch gear - Fase[P2-PE] / Insulation Resistance[MΩ] after 60[s]");
+		mapa.put("resistencia3",  "Measurement of the insulation of MV switch gear - Fase[P3-PE] / Insulation Resistance[MΩ] after 60[s]");
+		mapa.put("resistencia4",  "Measurement of the insulation of MV switch gear - Fase[P1-P2] / Insulation Resistance[MΩ] after 60[s]");
+		mapa.put("resistencia5",  "Measurement of the insulation of MV switch gear - Fase[P1-P3] / Insulation Resistance[MΩ] after 60[s]");
+		mapa.put("resistencia6",  "Measurement of the insulation of MV switch gear - Fase[P2-P3] / Insulation Resistance[MΩ] after 60[s]");
+		mapa.put("resistencia7",  "Measurement of the insulation of Stator Switch Cabinet - Fase[P1-PE] / Insulation Resistance[MΩ] after 60[s]");
+		mapa.put("resistencia8",  "Measurement of the insulation of Stator Switch Cabinet - Fase[P2-PE] / Insulation Resistance[MΩ] after 60[s]");
+		mapa.put("resistencia9",  "Measurement of the insulation of Stator Switch Cabinet - Fase[P3-PE] / Insulation Resistance[MΩ] after 60[s]");
+		mapa.put("resistencia10", "Measurement of the insulation of Stator Switch Cabinet - Fase[P1-P2] / Insulation Resistance[MΩ] after 60[s]");
+		mapa.put("resistencia11", "Measurement of the insulation of Stator Switch Cabinet - Fase[P1-P3] / Insulation Resistance[MΩ] after 60[s]");
+		mapa.put("resistencia12", "Measurement of the insulation of Stator Switch Cabinet - Fase[P2-P3] / Insulation Resistance[MΩ] after 60[s]");
+		mapa.put("resistenciaPermisible1",  "Measurement of the insulation of MV switch gear - Fase[P1-PE] / Allowable Resistance[MΩ]");
+		mapa.put("resistenciaPermisible2",  "Measurement of the insulation of MV switch gear - Fase[P2-PE] / Allowable Resistance[MΩ]");
+		mapa.put("resistenciaPermisible3",  "Measurement of the insulation of MV switch gear - Fase[P3-PE] / Allowable Resistance[MΩ]");
+		mapa.put("resistenciaPermisible4",  "Measurement of the insulation of MV switch gear - Fase[P1-P2] / Allowable Resistance[MΩ]");
+		mapa.put("resistenciaPermisible5",  "Measurement of the insulation of MV switch gear - Fase[P1-P3] / Allowable Resistance[MΩ]");
+		mapa.put("resistenciaPermisible6",  "Measurement of the insulation of MV switch gear - Fase[P2-P3] / Allowable Resistance[MΩ]");
+		mapa.put("resistenciaPermisible7",  "Measurement of the insulation of Stator Switch Cabinet - Fase[P1-PE] / Allowable Resistance[MΩ]");
+		mapa.put("resistenciaPermisible8",  "Measurement of the insulation of Stator Switch Cabinet - Fase[P2-PE] / Allowable Resistance[MΩ]");
+		mapa.put("resistenciaPermisible9",  "Measurement of the insulation of Stator Switch Cabinet - Fase[P3-PE] / Allowable Resistance[MΩ]");
+		mapa.put("resistenciaPermisible10", "Measurement of the insulation of Stator Switch Cabinet - Fase[P1-P2] / Allowable Resistance[MΩ]");
+		mapa.put("resistenciaPermisible11", "Measurement of the insulation of Stator Switch Cabinet - Fase[P1-P3] / Allowable Resistance[MΩ]");
+		mapa.put("resistenciaPermisible12", "Measurement of the insulation of Stator Switch Cabinet - Fase[P2-P3] / Allowable Resistance[MΩ]");
+		mapa.put("resultadoMili1", "MV SG armario / Result[mΩ]");
+		mapa.put("resultadoMili2", "SSC Armario / Result[mΩ]");
+		mapa.put("resultadoMili3", "Trafo 30kV / Result[mΩ]");
+		mapa.put("resultadoMili4", "Trafo 0,6kV / Result[mΩ]");
+		mapa.put("resultadoMili5", "Director de cable / Result[mΩ]");
+		mapa.put("valorPermisibleMili1", "MV SG armario / Allowable value[mΩ]");
+		mapa.put("valorPermisibleMili2", "SSC Armario / Allowable value[mΩ]");
+		mapa.put("valorPermisibleMili3", "Trafo 30kV / Allowable value[mΩ]");
+		mapa.put("valorPermisibleMili4", "Trafo 0,6kV / Allowable value[mΩ]");
+		mapa.put("valorPermisibleMili5", "Director de cable / Allowable value[mΩ]");
+		mapa.put("resultadoPosNeg1", "MV SG armario / Result[Positive/Negative]");
+		mapa.put("resultadoPosNeg2", "SSC Armario / Result[Positive/Negative]");
+		mapa.put("resultadoPosNeg3", "Trafo 30kV / Result[Positive/Negative]");
+		mapa.put("resultadoPosNeg4", "Trafo 0,6kV / Result[Positive/Negative]");
+		mapa.put("resultadoPosNeg5", "Director de cable / Result[Positive/Negative]");
+		mapa.put("testPerformedBy", "/Test performed by");
+		mapa.put("closedDate", "Date");
+		return mapa;
+		
+	}
 }
 
 
