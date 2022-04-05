@@ -99,8 +99,12 @@ public class ReportService {
 			for (Field field : report.getClass().getSuperclass().getDeclaredFields()) {
 				field.setAccessible(true);
 				Object object = field.get(report);
+				System.out.println(field.getName() + " - " + object);
 				if (object == null || ObjectUtils.isEmpty(object.toString())) {
-					lista.add(report.mapeamento().get(field.getName()));
+					String fieldName = report.mapeamento().get(field.getName());
+					if (fieldName != null) {
+						lista.add(report.mapeamento().get(field.getName()));
+					}
 				}
 			}
 			for (Field field : report.getClass().getDeclaredFields()) {
@@ -112,7 +116,11 @@ public class ReportService {
 					}
 				} else {
 					if (object == null || ObjectUtils.isEmpty(object.toString())) {
-						lista.add(report.mapeamento().get(field.getName()));
+						System.out.println(field.getName() + " - " + object);
+						String fieldName = report.mapeamento().get(field.getName());
+						if (fieldName != null) {
+							lista.add(fieldName);
+						}
 					}
 				}
 			}
