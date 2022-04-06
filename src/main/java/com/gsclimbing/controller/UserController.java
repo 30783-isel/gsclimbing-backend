@@ -22,10 +22,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gsclimbing.commons.PasswordGenerator;
 import com.gsclimbing.database.entity.Project;
 import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.UserService;
+import com.gsclimbing.email.SendEmail;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
@@ -60,12 +62,22 @@ public class UserController {
 	@PostMapping(value = "/create")
 	public ResponseEntity<?> createUsers(@RequestBody User user) {
 		String message = null;
-		if (ObjectUtils.isEmpty(user.getUsername()) || ObjectUtils.isEmpty(user.getPassword()) || ObjectUtils.isEmpty(user.getRoles())) {
+		if (ObjectUtils.isEmpty(user.getUsername()) || ObjectUtils.isEmpty(user.getEmail()) || ObjectUtils.isEmpty(user.getRoles())) {
 			message = "Fill all fields";
 			return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		if (userService.getUser(user.getUsername()) == null) {
 			user.setActive("true");
+			String password = PasswordGenerator.generateCommonLangPassword();
+			
+			String subject = "Welcome " + user.getUsername();
+			message = "Your password is: " + password;
+			byte[] bytes = null;
+			SendEmail runnable = new SendEmail(user.getEmail(), subject, message, "Defects Inspection Report.pdf", bytes);
+			Thread t = new Thread(runnable);
+			t.start();
+			
+			user.setPassword(password);
 			userService.createUser(user);
 			return null;
 		} else {

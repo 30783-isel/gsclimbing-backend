@@ -33,6 +33,7 @@ public class User {
 	private Integer idUser;
 	private String username;
 	private String password;
+	private String email;
 	private String active;
 	private String roles;
 	
@@ -45,12 +46,12 @@ public class User {
     @JsonIgnoreProperties({"users", "projects"})
     Set<Project> projects = new HashSet<>();
     
-    
     public UserDto mapper() {
     	return UserDto.builder()
     		.idUser(idUser)
     		.username(username)
     		.password(password)
+    		.email(email)
     		.active(active)
     		.roles(roles)
     		.build();

@@ -69,6 +69,7 @@ import com.gsclimbing.reports.populater.PerformanceReportRepairElevatorPopulater
 import com.gsclimbing.reports.populater.StatutoryInspectionReportElevatorPopulater;
 import com.querydsl.jpa.impl.JPAQuery;
 
+import antlr.StringUtils;
 import lombok.Data;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
@@ -161,7 +162,7 @@ public class ReportsController {
 				String subject = "User " + user.getUsername() + " inserted a new Defects Inspection Report on project " + project.getName();
 				byte[] bytes = null;
 				bytes = generatePDF(typeReport, report);
-				runnable = new SendEmail(subject, "Defects Inspection Report.pdf", bytes);
+				runnable = new SendEmail("reports@gsclimbing.com", subject, org.apache.commons.lang3.StringUtils.EMPTY,  "Defects Inspection Report.pdf", bytes);
 				Thread t = new Thread(runnable);
 				t.start();
 			} else {
@@ -245,7 +246,7 @@ public class ReportsController {
 			List<FileData> list = fileService.readFile(report.getUuid());
 			list.stream().filter(filex -> filex.getMimeType().equals("application/pdf")).findAny();
 			bytes = generatePDF(report.getTypeReport(), report);
-			runnable = new SendEmail(subject, "Defects Inspection Report.pdf", bytes);
+			runnable = new SendEmail("reports@gsclimbing.com", subject, org.apache.commons.lang3.StringUtils.EMPTY, "Defects Inspection Report.pdf", bytes);
 			Thread t = new Thread(runnable);
 			t.start();
 		}

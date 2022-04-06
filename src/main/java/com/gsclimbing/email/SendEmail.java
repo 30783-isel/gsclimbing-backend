@@ -29,14 +29,17 @@ public class SendEmail implements Runnable {
 
 	Logger log = LoggerFactory.getLogger(SendEmail.class);
 
+	String to = null;
 	String filename = null;
 	String subject = null;
+	String message = null;
 	byte[] bytes = null;
 
-
-	public SendEmail(String subject, String filename, byte[] bytes) {
+	public SendEmail(String to, String subject, String message, String filename, byte[] bytes) {
+		this.to = to;
 		this.subject = subject;
 		this.filename = filename;
+		this.message = message;
 		this.bytes = bytes;
 	}
 
@@ -44,7 +47,6 @@ public class SendEmail implements Runnable {
 
 		final String username = "reports@gsclimbing.com";
 		final String password = "gs.climbing.5rh&4P8a";
-		String to = "reports@gsclimbing.com";
 		
 		String host = "smtp.gmail.com";
 		Properties props = new Properties();
@@ -59,23 +61,27 @@ public class SendEmail implements Runnable {
 			}
 		});
 		try {
-			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(username));
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-			message.setSubject(subject);
-			BodyPart messageBodyPart1 = new MimeBodyPart();
-			messageBodyPart1.setText(StringUtils.EMPTY);
-			MimeBodyPart messageBodyPart2 = new MimeBodyPart();
-			File report = null;
-			report = createPDFFile(filename, this.bytes);
-			DataSource source = new FileDataSource(report);
-			messageBodyPart2.setDataHandler(new DataHandler(source));
-			messageBodyPart2.setFileName(filename);
+			MimeMessage mail = new MimeMessage(session);
+			mail.setFrom(new InternetAddress(username));
+			mail.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+			mail.setSubject(this.subject);
+
 			Multipart multipart = new MimeMultipart();
+			BodyPart messageBodyPart1 = new MimeBodyPart();
+			messageBodyPart1.setText(this.message);
 			multipart.addBodyPart(messageBodyPart1);
-			multipart.addBodyPart(messageBodyPart2);
-			message.setContent(multipart);
-			Transport.send(message);
+
+			if (this.bytes != null) {
+				MimeBodyPart messageBodyPart2 = new MimeBodyPart();
+				File report = null;
+				report = createPDFFile(filename, this.bytes);
+				DataSource source = new FileDataSource(report);
+				messageBodyPart2.setDataHandler(new DataHandler(source));
+				messageBodyPart2.setFileName(filename);
+				multipart.addBodyPart(messageBodyPart2);
+			}
+			mail.setContent(multipart);
+			Transport.send(mail);
 		} catch (MessagingException ex) {
 			ex.printStackTrace();
 		}
@@ -86,7 +92,7 @@ public class SendEmail implements Runnable {
 		sendEmailTLS();
 	}
 
-	public File createPDFFile(String filename, byte[] bytes){
+	public File createPDFFile(String filename, byte[] bytes) {
 
 		File pdf = null;
 
