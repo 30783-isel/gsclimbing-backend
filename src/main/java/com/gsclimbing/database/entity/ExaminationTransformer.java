@@ -209,12 +209,14 @@ public class ExaminationTransformer extends Report implements Cloneable {
 
 	public HashMap<String, String> mapeamento() {
 		HashMap<String, String> mapa = new HashMap<String, String>();
-		mapa.put("dateOfMeasurement", "Date of measurement:");
+		mapa.put("dateOfMeasurement", "Date of measurement");
+		mapa.put("site", "Site");
+		mapa.put("wtgNumber", "WTG Number");
 		mapa.put("manufacturer", "Manufacturer");
 		mapa.put("type", "Type");
 		mapa.put("equipamentSerialNumber", "Serial number");
-		mapa.put("correct1", "Correct");
-		mapa.put("notCorrect1", "Not correct");
+//		mapa.put("correct1", "Correct");
+//		mapa.put("notCorrect1", "Not correct");
 		mapa.put("equipamentType1", "Equipment type");
 		mapa.put("serialNumber1", "Seral number:");
 		mapa.put("calibrationDate1", "Calibration date");
@@ -238,7 +240,6 @@ public class ExaminationTransformer extends Report implements Cloneable {
 		mapa.put("serialNumber2", "Serial number number");
 		mapa.put("calibrationDate2", "Calibration date:");
 		mapa.put("nextCalibrationDate2", "Next calibration date");
-
 		mapa.put("voltage1", "Transformer 20 KV 5000 VDC to Ground U-V-W to Ground / Voltage[V]");
 		mapa.put("voltage2", "Transformer 6KV 5000VDC to Ground U-V-W to Ground / Voltage[V]");
 		mapa.put("voltage3", "Transformer 690V 1000VDC to ground U-V-W to ground / Voltage[V]");
@@ -270,8 +271,8 @@ public class ExaminationTransformer extends Report implements Cloneable {
 		mapa.put("nextCalibrationDate4", "Next calibration date:");
 		mapa.put("insulationResistance", "Insulation resistance test");
 		mapa.put("ratioTest", "Radio test");
-		mapa.put("correct2", "Correct");
-		mapa.put("notCorrect2", "Not correct");
+//		mapa.put("correct2", "Correct");
+//		mapa.put("notCorrect2", "Not correct");
 		mapa.put("conclusion", "Conclusion");
 		mapa.put("performedBy", "Test performed by");
 		mapa.put("date", "Date");

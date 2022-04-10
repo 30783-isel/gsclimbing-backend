@@ -219,8 +219,8 @@ public class Medidas690V400VPopulater {
 
 		setField("equipmentType", report.getEquipmentType());
 		setField("serialNumber", report.getSerialNumber());
-		setField("calibrationType", report.getCalibrationDate());
-		setField("nextCalibrationType", report.getNextCalibrationDate());
+		setField("calibrationDate", report.getCalibrationDate());
+		setField("nextCalibrationDate", report.getNextCalibrationDate());
 
 		setField("conclusion", report.getConclusion());
 		setField("performedBy", report.getPerformedBy());

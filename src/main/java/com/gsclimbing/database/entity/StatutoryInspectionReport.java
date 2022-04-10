@@ -175,8 +175,8 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		mapa.put("repairRequired", "Repair required");
 		mapa.put("nextInspection", "Next inspection");
 
-		mapa.put("siteDate", "");
-		mapa.put("responsibleTechnician", "");
+		mapa.put("siteDate", "Site, date");
+		mapa.put("responsibleTechnician", "Responsible technician");
 
 		return mapa;
 	}

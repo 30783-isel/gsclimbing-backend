@@ -20,12 +20,6 @@ public class MeasurementsMwSwitchgear extends Report implements Cloneable{
 	private String dateMeasurement;
 	
 	@Column(length = 100)
-	private String site;
-	
-	@Column(length = 100)
-	private String wtgNumber;
-	
-	@Column(length = 100)
 	private String manufacturerDate;
 	
 	@Column(length = 100)
@@ -357,13 +351,6 @@ public class MeasurementsMwSwitchgear extends Report implements Cloneable{
 	@Column(length = 100)
 	private String closedDate;
 
-	@Transient
-	private List<FileData> listImages = new ArrayList<FileData>();
-
-	public void addImgOnListImages(FileData fileData) {
-		this.listImages.add(fileData);
-	}	
-	
 	public HashMap<String, String> mapeamento() {
 		HashMap<String, String> mapa = new HashMap<String, String>();
 		mapa.put("dateMeasurement", "Date of measurement");

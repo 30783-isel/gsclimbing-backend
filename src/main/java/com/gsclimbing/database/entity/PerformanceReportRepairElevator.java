@@ -18,11 +18,8 @@ public class PerformanceReportRepairElevator extends Report implements Cloneable
 	private String reportNumber;
 	private String inpectorsWorkers;
 	private String statementOfwork;
-	private boolean workCompletedYes;
-	private boolean workCompletedNo;
-	private boolean turbineOperableYes;
-	private boolean turbineOperableNo;
-	private boolean turbineOperableLimited;
+	private String workCompleted;
+	private String turbineOperable;
 	private String placeDate;
 	private String responsibleTechnician;
 	private String performanceReport;

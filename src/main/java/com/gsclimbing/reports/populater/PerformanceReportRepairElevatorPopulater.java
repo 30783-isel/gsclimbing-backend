@@ -80,11 +80,8 @@ public class PerformanceReportRepairElevatorPopulater {
 
 		setField("inpectorsWorkers", report.getInpectorsWorkers());
 		setField("statementOfwork", report.getStatementOfwork());
-		setField("workCompletedYes", report.isWorkCompletedYes() ? "Yes" : "Off");
-		setField("workCompletedNo", report.isWorkCompletedNo() ? "Yes" : "Off");
-		setField("turbineOperableYes", report.isTurbineOperableYes() ? "Yes" : "Off");
-		setField("turbineOperableNo", report.isTurbineOperableYes() ? "Yes" : "Off");
-		setField("turbineOperableLimited", report.isTurbineOperableYes() ? "Yes" : "Off");
+		setField("workCompleted", report.getWorkCompleted());
+		setField("turbineOperable",  report.getTurbineOperable());
 		setField("placeDate", report.getPlaceDate());
 		setField("responsibleTechnician", report.getResponsibleTechnician());
 		setField("performanceReport", report.getPerformanceReport());

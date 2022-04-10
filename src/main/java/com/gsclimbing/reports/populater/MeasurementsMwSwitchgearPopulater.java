@@ -178,10 +178,10 @@ public class MeasurementsMwSwitchgearPopulater {
 		setField("testPerformedBy", report.getTestPerformedBy());
 		setField("closedDate", report.getClosedDate());
 		//TODO
-//		setField("mvsgCorrect", report.getMvsgCorrect());
-//		setField("mvsgNotCorrect", report.getMvsgNotCorrect());
-//		setField("sf6Correct", report.getSf6Correct());
-//		setField("sf6NotCorrect", report.getSf6NotCorrect());
+		setField("mvsgCorrect", report.getMvsgCorrect());
+		setField("mvsgNotCorrect", report.getMvsgNotCorrect());
+		setField("sf6Correct", report.getSf6Correct());
+		setField("sf6NotCorrect", report.getSf6NotCorrect());
 		List<FileData> listFileData = null;
 		byte[] bytes = null;
 		if (report != null) {

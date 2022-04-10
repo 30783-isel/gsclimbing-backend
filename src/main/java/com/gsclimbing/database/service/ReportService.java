@@ -106,6 +106,15 @@ public class ReportService {
 						lista.add(report.mapeamento().get(field.getName()));
 					}
 				}
+//				Method method = report.getClass().getSuperclass().getDeclaredMethod("mapeamento", null);
+//				method.toString();
+//				report.getClass().getSuperclass().getMethod("mapeamento", new Class[] {}).getReturnType();
+//				Object objMapa = report.getClass().getSuperclass().getMethod("mapeamento", new Class[] {}).invoke(report.getClass().getSuperclass().newInstance(), new Object[] {});
+//				HashMap<String, String> mapa = (HashMap<String, String>) objMapa;
+//				fieldName = mapa.get(field.getName());
+//				if (fieldName != null) {
+//					lista.add(fieldName);
+//				}	
 			}
 			for (Field field : report.getClass().getDeclaredFields()) {
 				field.setAccessible(true);

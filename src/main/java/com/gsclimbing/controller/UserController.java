@@ -70,7 +70,7 @@ public class UserController {
 			user.setActive("true");
 			String password = PasswordGenerator.generateCommonLangPassword();
 			
-			String subject = "Welcome " + user.getUsername();
+			String subject = "Welcome " + user.getName();
 			message = "Your password is: " + password;
 			byte[] bytes = null;
 			SendEmail runnable = new SendEmail(user.getEmail(), subject, message, "Defects Inspection Report.pdf", bytes);

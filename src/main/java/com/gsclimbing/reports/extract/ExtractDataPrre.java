@@ -23,6 +23,7 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDPushButton;
+import org.apache.pdfbox.pdmodel.interactive.form.PDRadioButton;
 import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -165,19 +166,13 @@ public class ExtractDataPrre {
 					getPerformanceReportRepairElevator().setPlaceDate(valueField);
 				if (nameField.equals("responsibleTechnician"))
 					getPerformanceReportRepairElevator().setResponsibleTechnician(valueField);
-			} else if (field instanceof PDCheckBox) {
+			} else if (field instanceof PDRadioButton) {
 				String nameField = field.getFullyQualifiedName();
-				String valueField = ((PDCheckBox) field).getValue();
-				if (nameField.equals("workCompletedYes"))
-					getPerformanceReportRepairElevator().setWorkCompletedYes(valueField == "Yes" ? true : false);
-				if (nameField.equals("workCompletedNo"))
-					getPerformanceReportRepairElevator().setWorkCompletedNo(valueField == "Yes" ? true : false);
-				if (nameField.equals("turbineOperableYes"))
-					getPerformanceReportRepairElevator().setTurbineOperableYes(valueField == "Yes" ? true : false);
-				if (nameField.equals("turbineOperableNo"))
-					getPerformanceReportRepairElevator().setTurbineOperableNo(valueField == "Yes" ? true : false);
-				if (nameField.equals("turbineOperableLimited"))
-					getPerformanceReportRepairElevator().setTurbineOperableLimited(valueField == "Yes" ? true : false);
+				String valueField = ((PDRadioButton) field).getValue();
+				if (nameField.equals("workCompleted"))
+					getPerformanceReportRepairElevator().setWorkCompleted(valueField);
+				if (nameField.equals("turbineOperable"))
+					getPerformanceReportRepairElevator().setTurbineOperable(valueField);
 			} else if (field instanceof PDPushButton) {
 				String nameField = field.getFullyQualifiedName();
 				for (final PDAnnotationWidget widget : field.getWidgets()) {

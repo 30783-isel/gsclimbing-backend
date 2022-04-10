@@ -356,18 +356,11 @@ public class Medidas6Kv extends Report implements Cloneable{
 	
 	@Column(length = 100)
 	private String closedDate;
-	
-	@Transient
-	private List<FileData> listImages = new ArrayList<FileData>();
-
-	public void addImgOnListImages(FileData fileData) {
-		this.listImages.add(fileData);
-	}
 
 	public HashMap<String, String> mapeamento() {
 		HashMap<String, String> mapa = new HashMap<String, String>();
 		mapa.put("dateOfMeasurement", "Date of measurement");
-		mapa.put("chk1", "Visual inspectionn");
+		mapa.put("chk1", "Visual inspection");
 		mapa.put("chk2", "Measurement the resistance of the line insulation from the switchgear to the transformer in the ground fault system");
 		mapa.put("chk3", "Voltage test with the VLF device");
 		mapa.put("voltage1", "Volts");
@@ -448,7 +441,6 @@ public class Medidas6Kv extends Report implements Cloneable{
 		mapa.put("type3", "Type");
 		mapa.put("voltage3", "Voltage");
 		mapa.put("length3", "Length");
-		mapa.put("visualInspection3", "Visual Inspection");
 		mapa.put("equipmentType5", "Equipment Type");
 		mapa.put("serialNumber5", "Serial Number");
 		mapa.put("calibrationDate5", "Calibration Date");
