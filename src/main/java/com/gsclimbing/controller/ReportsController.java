@@ -258,6 +258,7 @@ public class ReportsController {
 		Report report = reportService.readReport(id);
 		if (report != null) {
 			report.setLocked("false");
+			report.setPermission2Edit("false");
 			reportService.updateReport(report);
 		}
 		return report;
