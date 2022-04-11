@@ -42,7 +42,7 @@ public class UserController {
 
 	@DeleteMapping(value = "/delete/{username}")
 	public void deleteUser(@PathVariable String username) {
-		User user = userService.getUser(username);
+		User user = userService.getUserByUsername(username);
 		if (user != null) {
 			user.setProjects(null);
 			userService.deleteUser(username);
@@ -56,7 +56,7 @@ public class UserController {
 
 	@GetMapping(value = "/user/{username}")
 	public User getUser(@PathVariable String username) {
-		return userService.getUser(username);
+		return userService.getUserByUsername(username);
 	}
 
 	@PostMapping(value = "/create")
@@ -66,20 +66,25 @@ public class UserController {
 			message = "Fill all fields";
 			return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		if (userService.getUser(user.getUsername()) == null) {
-			user.setActive("true");
-			String password = PasswordGenerator.generateCommonLangPassword();
-			
-			String subject = "Welcome " + user.getName();
-			message = "Your password is: " + password;
-			byte[] bytes = null;
-			SendEmail runnable = new SendEmail(user.getEmail(), subject, message, "Defects Inspection Report.pdf", bytes);
-			Thread t = new Thread(runnable);
-			t.start();
-			
-			user.setPassword(password);
-			userService.createUser(user);
-			return null;
+		if (userService.getUserByUsername(user.getUsername()) == null) {
+			if (userService.getUserByEmail(user.getEmail()) == null) {
+				user.setActive("true");
+				String password = PasswordGenerator.generateCommonLangPassword();
+
+				String subject = "Welcome " + user.getName();
+				message = "Credentials \n Username - " + user.getUsername() + "\nPassword - " + password;
+				byte[] bytes = null;
+				SendEmail runnable = new SendEmail(user.getEmail(), subject, message, "Defects Inspection Report.pdf", bytes);
+				Thread t = new Thread(runnable);
+				t.start();
+
+				user.setPassword(password);
+				userService.createUser(user);
+				return null;
+			} else {
+				message = "There is already a user with this email";
+				return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
 		} else {
 			message = "There is already a user with this username";
 			return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);

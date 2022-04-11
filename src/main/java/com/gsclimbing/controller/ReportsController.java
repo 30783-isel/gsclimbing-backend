@@ -157,7 +157,7 @@ public class ReportsController {
 			lista = validateReport(report);
 			if (ObjectUtils.isEmpty(lista)) {
 				String username = reportService.getCurrentLoggedUser();
-				User user = userService.getUser(username);
+				User user = userService.getUserByUsername(username);
 				Project project = projectService.getProjectById(Integer.parseInt(projectId));
 				String subject = "User " + user.getUsername() + " inserted a new Defects Inspection Report on project " + project.getName();
 				byte[] bytes = null;
@@ -239,7 +239,7 @@ public class ReportsController {
 			reportService.updateReport(report);
 			SendEmail runnable = null;
 			String username = reportService.getCurrentLoggedUser();
-			User user = userService.getUser(username);
+			User user = userService.getUserByUsername(username);
 			Project project = projectService.getProjectById(report.getProjectoId());
 			String subject = "User " + user.getUsername() + " asked permission to edit a Defects Inspection Report on project " + project.getName();
 			byte[] bytes = null;

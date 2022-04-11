@@ -72,7 +72,7 @@ public class ProjectController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/projects-by-user/{username}")
 	public List<ProjectDto> getProjectsByUserId(final @PathVariable String username) {
-		User user = userService.getUser(username);
+		User user = userService.getUserByUsername(username);
 		List<Project> filteredList = null;
 		if (user != null && user.getRoles().equals("ADMIN")) {
 			filteredList = projectService.getAllProjects();
