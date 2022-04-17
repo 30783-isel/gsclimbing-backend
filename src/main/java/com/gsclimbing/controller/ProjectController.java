@@ -5,11 +5,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,14 +21,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gsclimbing.database.entity.Project;
+import com.gsclimbing.database.entity.QProject;
+import com.gsclimbing.database.entity.QReport;
+import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.service.DefectsInspectionReportService;
 import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.TurbineService;
 import com.gsclimbing.database.service.UserService;
+import com.gsclimbing.dto.FilterProjectDTO;
 import com.gsclimbing.dto.ProjectDto;
 import com.gsclimbing.dto.TurbineDto;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.impl.JPAQuery;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
@@ -43,6 +53,32 @@ public class ProjectController {
 	@Autowired
 	private DefectsInspectionReportService defectsInspectionReportService;
 
+	@Autowired
+	private EntityManager entityManager;
+	
+	
+	@PostMapping(value = "/search")
+	public List<QProject> searchProjects(@RequestBody FilterProjectDTO filter) {
+		QProject project = QProject.project;
+		JPAQuery<QProject> queryGetByCountry = new JPAQuery<>(entityManager);
+		if(filter.getName() != null) {
+			queryGetByCountry.from(project).where(project.name.eq(filter.getName()));
+		}
+		if(filter.getCountry() != null) {
+			queryGetByCountry.from(project).where(project.country.eq(filter.getCountry()));
+		}
+		if(filter.getLocation() != null) {
+			queryGetByCountry.from(project).where(project.location.eq(filter.getLocation()));
+		}
+		if(filter.getSite() != null) {
+			queryGetByCountry.from(project).where(project.site.eq(filter.getSite()));
+		}
+		List<QProject> lista = queryGetByCountry.fetch();
+		
+		return lista;
+	}
+	
+	
 	@RequestMapping(method = RequestMethod.POST, value = "/create")
 	public ResponseEntity<?> createProject(@RequestBody Project project) {
 		if (projectService.getProjectByName(project.getName()) == null) {
