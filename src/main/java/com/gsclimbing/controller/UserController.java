@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,10 +26,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.gsclimbing.commons.PasswordGenerator;
 import com.gsclimbing.database.entity.Project;
+import com.gsclimbing.database.entity.QProject;
+import com.gsclimbing.database.entity.QUser;
 import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.UserService;
+import com.gsclimbing.dto.FilterProjectDTO;
+import com.gsclimbing.dto.FilterUserDTO;
 import com.gsclimbing.email.SendEmail;
+import com.querydsl.jpa.impl.JPAQuery;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
@@ -39,6 +46,9 @@ public class UserController {
 
 	@Autowired
 	private ProjectService projectService;
+	
+	@Autowired
+	private EntityManager entityManager;
 
 	@DeleteMapping(value = "/delete/{username}")
 	public void deleteUser(@PathVariable String username) {
@@ -114,6 +124,27 @@ public class UserController {
 			}
 			userService.updateUser(user.get());
 		}
+	}
+	
+	@PostMapping(value = "/search")
+	public List<QProject> searchUsers(@RequestBody FilterUserDTO filter) {
+		QUser user = QUser.user;
+		JPAQuery<QProject> query = new JPAQuery<>(entityManager);
+		if(filter.getName() != null) {
+			query.from(user).where(user.name.eq(filter.getName()));
+		}
+		if(filter.getUsername() != null) {
+			query.from(user).where(user.username.eq(filter.getUsername()));
+		}
+		if(filter.getEmail() != null) {
+			query.from(user).where(user.email.eq(filter.getEmail()));
+		}
+		if(filter.getRoles() != null) {
+			query.from(user).where(user.roles.eq(filter.getRoles()));
+		}
+		List<QProject> lista = query.fetch();
+		
+		return lista;
 	}
 
 }
