@@ -27,7 +27,7 @@ public class ProjectDto implements Serializable{
 	private String number;
 	private String type;
 	@Default
-	private Set<User> usersDto = new HashSet<>();
+	private Set<UserDto> users = new HashSet<>();
 	@Default
 	private List<TurbineDto> turbines = new ArrayList<>();
 

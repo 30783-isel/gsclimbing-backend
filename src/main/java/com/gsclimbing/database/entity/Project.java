@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -62,6 +63,7 @@ public class Project {
     				.number(this.number)
     				.type(this.type)
     				//.turbines(this.turbines.stream().map(turbine -> turbine.mapper()).collect(Collectors.toList()))
+    				.users(this.users.stream().map(user -> user.mapper()).collect(Collectors.toSet()))
     				.build();
     }
 }

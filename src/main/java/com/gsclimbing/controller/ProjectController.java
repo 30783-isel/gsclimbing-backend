@@ -1,12 +1,17 @@
 package com.gsclimbing.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.persistence.EntityManager;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -196,4 +201,19 @@ public class ProjectController {
 		projectService.updateProject(project);
 		return null;
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/update-users-project/{projectId}/{users}")
+	public void updateUserData(@PathVariable("projectId") final String projectId, @PathVariable("users") final String users) {
+		Project project = projectService.getProjectById(Integer.valueOf(projectId));
+		if (project != null) {
+			if (!ObjectUtils.isEmpty(users)) {
+				Set<User> listaUsers = Arrays.asList(users.split("-")).stream().map( id -> userService.getUserById(Integer.valueOf(id)) .orElse(null)).collect(Collectors.toSet());
+				project.setUsers(new HashSet<>(listaUsers));
+			} else {
+				project.setUsers(null);
+			}
+			projectService.updateProject(project);
+		}
+	}
+	
 }
