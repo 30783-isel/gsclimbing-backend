@@ -118,12 +118,14 @@ public class UserController {
 		if (user.isPresent()) {
 			if (!ObjectUtils.isEmpty(listProjects)) {
 				List<Project> listaProjectos = Arrays.asList(listProjects.split("-")).stream().map(id -> projectService.getProjectById(Integer.valueOf(id))).collect(Collectors.toList());
-				user.get().setProjects(new HashSet<>(listaProjectos));
-			} else {
-				user.get().setProjects(null);
+				listaProjectos.stream().forEach( project -> updateProjectUser( user.get(),  project));
 			}
-			userService.updateUser(user.get());
 		}
+	}
+	
+	private Project updateProjectUser(User user, Project project) {
+		project.getUsers().add(user);
+		return projectService.updateProject(project);
 	}
 	
 	@PostMapping(value = "/search")

@@ -38,14 +38,9 @@ public class User {
 	private String active;
 	private String roles;
 	
-    @ManyToMany()
-    @JoinTable(
-        name = "UserProject", 
-        joinColumns = { @JoinColumn(name = "idUser") }, 
-        inverseJoinColumns = { @JoinColumn(name = "idProject") }
-    )
-    @JsonIgnoreProperties({"users", "projects"})
-    Set<Project> projects = new HashSet<>();
+    @ManyToMany(mappedBy = "users")
+    @JsonIgnoreProperties({"projects", "users"})
+    private Set<Project> projects = new HashSet<>();
     
     public UserDto mapper() {
     	return UserDto.builder()

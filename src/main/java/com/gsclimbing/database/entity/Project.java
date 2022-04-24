@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
@@ -42,10 +44,15 @@ public class Project {
 	private String site;
 	private String number;
 	private String type;
-	
-    @ManyToMany(mappedBy = "projects")
-    @JsonIgnoreProperties({"users", "projects"})
-    private Set<User> users = new HashSet<>();
+    
+    @ManyToMany()
+    @JoinTable(
+        name = "ProjectUser", 
+        joinColumns = { @JoinColumn(name = "idProject") }, 
+        inverseJoinColumns = { @JoinColumn(name = "idUser") }
+    )
+    @JsonIgnoreProperties({"projects", "users"})
+    Set<User> users = new HashSet<>();
     
     @OneToMany(mappedBy = "project", cascade = { CascadeType.ALL } )
     @JsonIgnore

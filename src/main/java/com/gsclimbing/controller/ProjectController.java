@@ -204,11 +204,13 @@ public class ProjectController {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/update-users-project/{projectId}/{users}")
 	public void updateUserData(@PathVariable("projectId") final String projectId, @PathVariable("users") final String users) {
+		
 		Project project = projectService.getProjectById(Integer.valueOf(projectId));
 		if (project != null) {
+			Set<User> listaUsers = null;
 			if (!ObjectUtils.isEmpty(users)) {
-				Set<User> listaUsers = Arrays.asList(users.split("-")).stream().map( id -> userService.getUserById(Integer.valueOf(id)) .orElse(null)).collect(Collectors.toSet());
-				project.setUsers(new HashSet<>(listaUsers));
+				listaUsers = Arrays.asList(users.split("-")).stream().map( id -> userService.getUserById(Integer.valueOf(id)) .orElse(null)).collect(Collectors.toSet());
+				project.setUsers(listaUsers);
 			} else {
 				project.setUsers(null);
 			}

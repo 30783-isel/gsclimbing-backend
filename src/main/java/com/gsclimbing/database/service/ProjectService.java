@@ -55,8 +55,8 @@ public class ProjectService {
 		projectRepository.deleteById(project.getIdProject());
 	}
 	
-	public void updateProject(Project project) {
-		projectRepository.save(project);
+	public Project updateProject(Project project) {
+		return projectRepository.save(project);
 	}
 
 }
