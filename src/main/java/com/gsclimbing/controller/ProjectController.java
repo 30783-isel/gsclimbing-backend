@@ -90,9 +90,10 @@ public class ProjectController {
 			List<Turbine> turbinas = getListTurbines(project.getNumberTurbines(), project);
 			project.setTurbines(turbinas);
 			projectService.createProject(project);
-			return null;
+			return new ResponseEntity<>(HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>("There is already a project with that name.", HttpStatus.EXPECTATION_FAILED);
 		}
-		return new ResponseEntity<>("There is already a project with that name.", HttpStatus.EXPECTATION_FAILED);
 	}
 
 	List<Turbine> getListTurbines(int numOfElements, Project project){

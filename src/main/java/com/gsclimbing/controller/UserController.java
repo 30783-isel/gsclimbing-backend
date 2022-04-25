@@ -2,7 +2,6 @@ package com.gsclimbing.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,7 +30,6 @@ import com.gsclimbing.database.entity.QUser;
 import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.UserService;
-import com.gsclimbing.dto.FilterProjectDTO;
 import com.gsclimbing.dto.FilterUserDTO;
 import com.gsclimbing.email.SendEmail;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -90,7 +88,7 @@ public class UserController {
 
 				user.setPassword(password);
 				userService.createUser(user);
-				return null;
+				return new ResponseEntity<>(HttpStatus.OK);
 			} else {
 				message = "There is already a user with this email";
 				return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
