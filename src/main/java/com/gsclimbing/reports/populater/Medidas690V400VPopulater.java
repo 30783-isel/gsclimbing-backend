@@ -77,7 +77,7 @@ public class Medidas690V400VPopulater {
 
 		_pdfDocument.getNumberOfPages();
 
-		setField("dateOfMeasurement", report.getDateOfMeasurement());
+		setField("dateOfMeasurements", report.getDateOfMeasurement());
 		setField("site", report.getSite());
 		setField("wtgNumber", report.getWtgNumber());
 

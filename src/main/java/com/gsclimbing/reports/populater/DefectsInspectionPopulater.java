@@ -102,11 +102,7 @@ public class DefectsInspectionPopulater {
 
 		}
 		if (i < 3) {
-			_pdfDocument.removePage(2);
 			_pdfDocument.removePage(1);
-		}
-		if (i > 2 && i < 7) {
-			_pdfDocument.removePage(2);
 		}
 
 		byte[] data = null;

@@ -1,5 +1,6 @@
 package com.gsclimbing.database.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -8,9 +9,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.Project;
+import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.repository.ProjectRepository;
+import com.gsclimbing.ftp.FTPDownloadFiles;
 
 @Service
 public class ProjectService {
@@ -20,6 +24,9 @@ public class ProjectService {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private FileService fileService;
 	
 	public Project getProjectById(Integer id){
 		return projectRepository.findById(id).orElse(null);
@@ -52,7 +59,19 @@ public class ProjectService {
 			user.setProjects(listaProjects);
 		}
 		Project project = projectRepository.findByName(name);
+		
+		List<Report> listaReports = project.getTurbines().stream().map(turbine -> turbine.getListReports()).flatMap(Collection::stream).collect(Collectors.toList());
+		List<FileData> listFileData = listaReports.stream().map(report->report.getListaFileData()).flatMap(Collection::stream).collect(Collectors.toList());
+		listFileData.stream().forEach(fileData -> {
+			fileService.deleteFile(fileData.getFileId());
+			FTPDownloadFiles.deleteFile2FTPServer(fileData.getHash());
+			for (int i = 0; i <= 5; i++) {
+				String path = "/oldImages/" + i + "/" + fileData.getHash();
+				FTPDownloadFiles.deleteFile2FTPServer(path);
+			}
+		});
 		projectRepository.deleteById(project.getIdProject());
+
 	}
 	
 	public Project updateProject(Project project) {

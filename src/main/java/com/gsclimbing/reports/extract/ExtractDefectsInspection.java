@@ -56,7 +56,7 @@ public class ExtractDefectsInspection {
 	private HistoricReport historicReport = null;
 	private DefectsInspectionReport defectsInspectionReport;
 	List<String> listPhotoNames = new ArrayList<String>();
-	
+
 	@Autowired
 	private DefectsInspectionReportService defectsInspectionReportService;
 	@Autowired
@@ -77,7 +77,7 @@ public class ExtractDefectsInspection {
 			oldDefectsInspectionReport = defectsInspectionReportService.readDefectsInspectionReport(idReport);
 			if (oldDefectsInspectionReport != null) {
 				try {
-					setDefectsInspectionReport( (DefectsInspectionReport) oldDefectsInspectionReport.clone() );
+					setDefectsInspectionReport((DefectsInspectionReport) oldDefectsInspectionReport.clone());
 				} catch (CloneNotSupportedException e) {
 					e.printStackTrace();
 				}
@@ -94,13 +94,14 @@ public class ExtractDefectsInspection {
 				historicReport.setReport(getDefectsInspectionReport());
 			}
 		} else if ("UPLOAD".equals(operacao)) {
-			setDefectsInspectionReport(new DefectsInspectionReport());;
+			setDefectsInspectionReport(new DefectsInspectionReport());
+			;
 			final String uuid = UUID.randomUUID().toString().replace("-", "");
 			setUuidStr(uuid);
 			getDefectsInspectionReport().setUuid(uuid);
 			getDefectsInspectionReport().setCreateDate(LocalDateTime.now());
 			getDefectsInspectionReport().setModifiedDate(LocalDateTime.now());
-			
+
 			Turbine turbine = turbineService.getTurbine(turbineId);
 			getDefectsInspectionReport().setTurbine(turbine);
 			getDefectsInspectionReport().setProjectoId(turbine.getProject().getIdProject());
@@ -118,7 +119,7 @@ public class ExtractDefectsInspection {
 			e.printStackTrace();
 		}
 		try (PDDocument document = PDDocument.load(convfile)) {
-			if(!populateAndCopy(document, typeReport)) {
+			if (!populateAndCopy(document, typeReport)) {
 				return null;
 			}
 		}
@@ -141,10 +142,13 @@ public class ExtractDefectsInspection {
 			if (field instanceof PDTextField) {
 				String valueField = ((PDTextField) field).getValue();
 				String nameField = field.getFullyQualifiedName();
+
+				System.out.println(nameField + " - " + valueField);
+
 				if (nameField.equals("typeReport")) {
-					if(typeReport == Integer.valueOf(valueField)) {
+					if (typeReport == Integer.valueOf(valueField)) {
 						getDefectsInspectionReport().setTypeReport(Integer.valueOf(valueField));
-					}else {
+					} else {
 						return false;
 					}
 				}
@@ -162,6 +166,7 @@ public class ExtractDefectsInspection {
 				}
 			} else if (field instanceof PDPushButton) {
 				String nameField = field.getFullyQualifiedName();
+				System.out.println(nameField);
 				for (final PDAnnotationWidget widget : field.getWidgets()) {
 					WidgetImageChecker checker = new WidgetImageChecker(widget);
 					try {
@@ -315,6 +320,7 @@ public class ExtractDefectsInspection {
 		public PDImage getpDimage() {
 			return pDimage;
 		}
+
 		public void setpDimage(PDImage pDimage) {
 			this.pDimage = pDimage;
 		}
@@ -326,7 +332,7 @@ public class ExtractDefectsInspection {
 		multipart.transferTo(convFile);
 		return convFile;
 	}
-	
+
 	public long fileSize(File file) {
 		long bytes = file.length();
 		long kilobytes = (bytes / 1024);

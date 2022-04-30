@@ -150,7 +150,7 @@ public class ExtractDataMedidas690V400V {
 						return false;
 					}
 				}
-				if (nameField.equals("dateOfMeasurement"))getMedidas690V400V().setDateOfMeasurement(valueField);;
+				if (nameField.equals("dateOfMeasurements"))getMedidas690V400V().setDateOfMeasurement(valueField);;
 				if (nameField.equals("site"))getMedidas690V400V().setSite(valueField);
 				if (nameField.equals("wtgNumber"))getMedidas690V400V().setWtgNumber(valueField);
 				if (nameField.equals("type1"))getMedidas690V400V().setType1(valueField);

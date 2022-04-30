@@ -174,11 +174,11 @@ public class ReportsController {
 			if (report != null) {
 				String uuid = report.getUuid();
 				List<FileData> listFileData = fileService.readFile(uuid);
+				reportService.deleteReport(report.getReportId());
 				listFileData.stream().forEach(fileData -> {
 					fileService.deleteFile(fileData.getFileId());
 					FTPDownloadFiles.deleteFile2FTPServer(fileData.getHash());
 				});
-				reportService.deleteReport(report.getReportId());
 			}
 			return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
 		}
