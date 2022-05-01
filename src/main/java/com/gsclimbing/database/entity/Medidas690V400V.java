@@ -412,6 +412,8 @@ public class Medidas690V400V extends Report implements Cloneable{
 	
 	public HashMap<String, String> mapeamento() {
 		HashMap<String, String> mapa = new HashMap<String, String>();
+		mapa.put("site", "Site");
+		mapa.put("wtgNumber", "WTG Number");
 		mapa.put("dateMeasurement", "Date of measurement");
 		mapa.put("type1", "Type");
 		mapa.put("voltage1", "Voltage");

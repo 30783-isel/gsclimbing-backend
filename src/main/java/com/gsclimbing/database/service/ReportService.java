@@ -116,6 +116,7 @@ public class ReportService {
 //					lista.add(fieldName);
 //				}	
 			}
+			/*
 			for (Field field : report.getClass().getDeclaredFields()) {
 				field.setAccessible(true);
 				Object object = field.get(report);
@@ -133,6 +134,7 @@ public class ReportService {
 					}
 				}
 			}
+			*/
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 		}

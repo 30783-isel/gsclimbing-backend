@@ -33,6 +33,9 @@ public class PerformanceReportRepairElevator extends Report implements Cloneable
 
 	public HashMap<String, String> mapeamento() {
 		HashMap<String, String> mapa = new HashMap<String, String>();
+		mapa.put("site", "Site");
+		mapa.put("wtgNumber", "WTG Number");
+		mapa.put("wtgType", "WTG Type");
 		mapa.put("reportNumber", "Performance report no");
 		mapa.put("inpectorsWorkers", "Inpectors Workers");
 		mapa.put("statementOfwork", "Statement of work");

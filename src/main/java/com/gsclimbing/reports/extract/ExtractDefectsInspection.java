@@ -179,7 +179,7 @@ public class ExtractDefectsInspection {
 							fileData.setDescription(getDescription());
 							extractAnnotationImages(pDimage, nameField, fileData);
 						}
-					} catch (IOException e) {
+ 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}

@@ -87,6 +87,9 @@ public class OnboardCraneInspectionReport extends Report implements Cloneable {
 
 	public HashMap<String, String> mapeamento() {
 		HashMap<String, String> mapa = new HashMap<String, String>();
+		mapa.put("site", "Site");
+		mapa.put("wtgNumber", "WTG Number");
+		mapa.put("wtgType", "WTG Type");
 		mapa.put("manufacturerOnboardCrane", "Manufacturer onboard crane");
 		mapa.put("type", "Type");
 		mapa.put("yearBuild", "Year Build");

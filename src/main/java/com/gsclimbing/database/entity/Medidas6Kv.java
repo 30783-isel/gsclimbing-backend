@@ -359,6 +359,8 @@ public class Medidas6Kv extends Report implements Cloneable{
 
 	public HashMap<String, String> mapeamento() {
 		HashMap<String, String> mapa = new HashMap<String, String>();
+		mapa.put("site", "Site");
+		mapa.put("wtgNumber", "WTG Number");
 		mapa.put("dateOfMeasurement", "Date of measurement");
 		mapa.put("chk1", "Visual inspection");
 		mapa.put("chk2", "Measurement the resistance of the line insulation from the switchgear to the transformer in the ground fault system");

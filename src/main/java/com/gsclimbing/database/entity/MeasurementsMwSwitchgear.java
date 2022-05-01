@@ -353,6 +353,8 @@ public class MeasurementsMwSwitchgear extends Report implements Cloneable{
 
 	public HashMap<String, String> mapeamento() {
 		HashMap<String, String> mapa = new HashMap<String, String>();
+		mapa.put("site", "Site");
+		mapa.put("wtgNumber", "WTG Number");
 		mapa.put("dateMeasurement", "Date of measurement");
 		mapa.put("manufacturerDate", "Manufacturer/Date");
 		mapa.put("type", "Type");

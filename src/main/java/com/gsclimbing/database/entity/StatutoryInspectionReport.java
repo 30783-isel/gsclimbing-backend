@@ -119,7 +119,10 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 
 	public HashMap<String, String> mapeamento() {
 		HashMap<String, String> mapa = new HashMap<String, String>();
-		mapa.put("reportNumber", "");
+		mapa.put("site", "Site");
+		mapa.put("wtgNumber", "WTG Number");
+		mapa.put("wtgType", "WTG Type");
+		mapa.put("yearConstruction", "Year of Construction");
 
 		mapa.put("reportNumber", "Report number");
 		mapa.put("client", "Client");

@@ -176,7 +176,6 @@ public class ReportsController {
 				List<FileData> listFileData = fileService.readFile(uuid);
 				reportService.deleteReport(report.getReportId());
 				listFileData.stream().forEach(fileData -> {
-					fileService.deleteFile(fileData.getFileId());
 					FTPDownloadFiles.deleteFile2FTPServer(fileData.getHash());
 				});
 			}
