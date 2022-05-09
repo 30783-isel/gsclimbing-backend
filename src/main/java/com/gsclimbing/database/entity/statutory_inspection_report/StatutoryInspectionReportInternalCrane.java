@@ -102,8 +102,33 @@ public class StatutoryInspectionReportInternalCrane  implements StatutoryInspect
 	
 	@Override
 	public HashMap<String, String> mapeamento() {
+		
 		HashMap<String, String> mapa = new HashMap<String, String>();
-		return null;
+		mapa.put("internalCrane1Txt", "Reading of the operating hours ");
+		mapa.put("internalCrane2Txt", "Interrupt the voltage supply to the crane by removing the CEE plug from the top box in the powerhouse.");
+		mapa.put("internalCrane3Txt", "Check that the circuit diagram is in position in the switch cabinet and is still legible");
+		mapa.put("internalCrane4Txt", "Check that the warning signs on the switch cabinet");
+		mapa.put("internalCrane5Txt", "Check all cables for signs of outer damage and firm attachment to the terminals");
+		mapa.put("internalCrane6Txt", "Check all the screwed cable glands for signs of outer damage and a firm fit");
+		mapa.put("internalCrane7Txt", "Open the switch cabinet cover and check the firm fit of the cables.");
+		mapa.put("internalCrane8Txt", "Check the operating unit for outer damage, a firm cable fit and make sure strain relief is working.");
+		mapa.put("internalCrane9Txt", "Check the limit switches for signs of outer damage, a firm cable fit and ease of movement of the switching rockers");
+		mapa.put("internalCrane10Txt", "Set up the voltage supply again.");
+		mapa.put("internalCrane11Txt", "Check that the motor brake is working.");
+		mapa.put("internalCrane12Txt", "Check the rope for mechanical damage such as breaks");
+		mapa.put("internalCrane13Txt", "Check the load hook for mechanical damage");
+		mapa.put("internalCrane14Txt", "Carry out a visual inspection of the drive unit for damage and leaks.");
+		mapa.put("internalCrane15Txt", "Use a feeler gauge to check the brake gap, it has to be 0.3 - 0.8 mm.");
+		mapa.put("internalCrane16Txt", "Check the  limit switch rockers to make sure they are present and move easily.");
+		mapa.put("internalCrane17Txt", "Check that the crane bridge is safely locked in place and that the locking lever is a firm fit");
+		mapa.put("internalCrane18Txt", "Check that the crab is safely locked in place and that the locking lever is a firm fit");
+		mapa.put("internalCrane19Txt", "Check the deflection rollers and the respective components");
+		mapa.put("internalCrane20Txt", "Check all the screw joints to make sure they are in position and a firm fit");
+		mapa.put("internalCrane21Txt", "Check all the rollers on the bridge and on the crab for mechanical damage");
+		mapa.put("internalCrane22Txt", "Check all the stop buffers to make sure they are in position and have no mechanical damage");
+		mapa.put("internalCrane23Txt", "Check all the components to make sure the coating");
+		mapa.put("internalCrane24Txt", "Load test");
+		return mapa;
 	}
 	
 }

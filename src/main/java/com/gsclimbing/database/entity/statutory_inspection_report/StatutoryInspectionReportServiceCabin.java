@@ -299,6 +299,60 @@ public class StatutoryInspectionReportServiceCabin implements StatutoryInspectio
 	@Override
 	public HashMap<String, String> mapeamento() {
 		HashMap<String, String> mapa = new HashMap<String, String>();
-		return null;
+		mapa.put("inspectionReportServiceCabin1Txt", "Visual inspection of Service lift. Visual Damage?");
+		mapa.put("inspectionReportServiceCabin2Txt", "Connection Hoist and Stirrup is secured with nylock-nuts");
+		mapa.put("inspectionReportServiceCabin3Txt", "All bolts and nylock nuts are fit and secured");
+		mapa.put("inspectionReportServiceCabin4Txt", "Documents available in Service lift");
+		mapa.put("inspectionReportServiceCabin5Txt", "All warning labels are still properly in place and readable.");
+		mapa.put("inspectionReportServiceCabin6Txt", "Galleries are correct? (see 38916-OM-E, section");
+		mapa.put("inspectionReportServiceCabin7Txt", "Locking system present on gallery?");
+		mapa.put("inspectionReportServiceCabin8Txt", "All electrical cables strapped and not loose");
+		mapa.put("inspectionReportServiceCabin9Txt", "MAIN SWITCH mounted on gallery");
+		mapa.put("inspectionReportServiceCabin10Txt", "LOCKING SYSTEM on gallery: transfer key can only be removed, if gate is locked.");
+		mapa.put("inspectionReportServiceCabin11Txt", "POWER ON LIGHT INSIDE SERVICE LIFT");
+		mapa.put("inspectionReportServiceCabin12Txt", "Installation double storage bin correct? (450mm - 500mm under bottom landing");
+		mapa.put("inspectionReportServiceCabin13Txt", "Proper collectioning of electical supply cable in storage bin?");
+		mapa.put("inspectionReportServiceCabin14Txt", "Tension on the Guiding wire ropes is ok? (see position of red mark)");
+		mapa.put("inspectionReportServiceCabin15Txt", "Rubber protection in all holes?");
+		mapa.put("inspectionReportServiceCabin16Txt", "10kg Weights position and \"Suspension wire rope\" can rotate freely?");
+		mapa.put("inspectionReportServiceCabin17Txt", "Refer notes, no._EMERGENCY STOP: up & down disabled; red safety integrity light is ON");
+		mapa.put("inspectionReportServiceCabin18Txt", "DOOR SWITCH: if door is open, up & down disabled; red safety integrity light is ON ");
+		mapa.put("inspectionReportServiceCabin19Txt", "TRANSFER KEY SWITCH: if not switched on, then up & down disabled; red light is ON");
+		mapa.put("inspectionReportServiceCabin20Txt", "INSIDE steering: UP / DOWN control ");
+		mapa.put("inspectionReportServiceCabin21Txt", "Control UP; safe zone (green light OFF); door locked");
+		mapa.put("inspectionReportServiceCabin22Txt", "BOTTOM LIMIT BY-PASS. (Pay attention to the weights on the suspension cable) ");
+		mapa.put("inspectionReportServiceCabin23Txt", "ULTIMATE BOTTOM LIMIT (bott. Trip plate):up & down disabled;red safety integrity light ON ");
+		mapa.put("inspectionReportServiceCabin24Txt", "Check 'NO POWER' DESCENT' (Make sure speed will not increase) ");
+		mapa.put("inspectionReportServiceCabin25Txt", "Manually trip overspeed and verify down direction is blocked (Electrically and with Brake)");
+		mapa.put("inspectionReportServiceCabin26Txt", "Check hand wheel for damage and check funtionality to reset");
+		mapa.put("inspectionReportServiceCabin27Txt", "OVERLOAD FUNCTIONALITY: 240kg (nominal operation); 300kg (up & down disabled)");
+		mapa.put("inspectionReportServiceCabin28Txt", "TOP LIMIT: up disabled, down still enabled");
+		mapa.put("inspectionReportServiceCabin29Txt", "ULTIMATE TOP LIMIT: up & down disabled; red safety integrity light is ON");
+		mapa.put("inspectionReportServiceCabin30Txt", "ELECTRIC SUPPLY PLUG: check for fixation and damage. ");
+		mapa.put("inspectionReportServiceCabin31Txt", "Bottom floor connection bolts");
+		mapa.put("inspectionReportServiceCabin32Txt", "Disconnect motor-plug, (X6) Create overspeed (by opening brake)");
+		mapa.put("inspectionReportServiceCabin33Txt", "Spray 1m of suspension wire and lift service lift up and down to let lubricated wire inside the hoist.");
+		mapa.put("inspectionReportServiceCabin34Txt", "OUTSIDE steering: SET, then DOWN control (person on first level holds top limit to activate)");
+		mapa.put("inspectionReportServiceCabin35Txt", "OUTSIDE steering: SET, then UP control (stop with main switch)");
+		mapa.put("inspectionReportServiceCabin36Txt", "Check the condition of the 8.4mm Suspension wire rope.");
+		mapa.put("inspectionReportServiceCabin37Txt", "Check the condition of the 8.4mm Safety wire rope.");
+		mapa.put("inspectionReportServiceCabin38Txt", "Check the condition of both Guiding wires");
+		mapa.put("inspectionReportServiceCabin39Txt", "Wire guides and wire fixes are working correctly");
+		mapa.put("inspectionReportServiceCabin40Txt", "Guiding wires do not show any damage.");
+		mapa.put("inspectionReportServiceCabin41Txt", "Verify that axial sway of service lift between two landings is acceptable and does not have any");
+		mapa.put("inspectionReportServiceCabin42Txt", "Safezone (green light ON); door unlocked");
+		mapa.put("inspectionReportServiceCabin43Txt", "LOCKING SYSTEM on gallery: gate can only be unlocked with transfer key");
+		mapa.put("inspectionReportServiceCabin44Txt", "Galleries are correct? (see 38913-OM-E, section \"Galleries According MD2006/42/EC\")");
+		mapa.put("inspectionReportServiceCabin45Txt", "Safezone (green light ON); door unlocked ");
+		mapa.put("inspectionReportServiceCabin46Txt", "LOCKING SYSTEM on gallery: gate can only be unlocked with transfer key");
+		mapa.put("inspectionReportServiceCabin47Txt", "Galleries are correct? (see 38913-OM-E, section \"Galleries According MD2006/42/EC\")");
+		mapa.put("inspectionReportServiceCabin48Txt", "Lift will stop on equal level as the gallery? If not change position of striker plate");
+		mapa.put("inspectionReportServiceCabin49Txt", "Check striker plate fixation.");
+		mapa.put("inspectionReportServiceCabin50Txt", "Connection of Guiding steel wires. (min. 2Ton Shackle and lock pins facing to thge front)");
+		mapa.put("inspectionReportServiceCabin51Txt", "Connection of 8.4mm steel wires. (min. 2Ton Shackle and lock pins facing to the front)");
+		mapa.put("inspectionReportServiceCabin52Txt", "Condition of Shackles and check for wear.");
+		mapa.put("inspectionReportServiceCabin53Txt", "When replacing the Steel-wires check hole in Suspension beam for damage");
+
+		return mapa;
 	}
 }

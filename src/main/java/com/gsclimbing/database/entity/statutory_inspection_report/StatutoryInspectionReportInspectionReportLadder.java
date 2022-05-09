@@ -155,7 +155,56 @@ public class StatutoryInspectionReportInspectionReportLadder implements Statutor
 	@Override
 	public HashMap<String, String> mapeamento() {
 		HashMap<String, String> mapa = new HashMap<String, String>();
-		return null;
+		mapa.put("inspectionReportLadder1Txt", "Is ladder secure and tight to structure");
+		mapa.put("inspectionReportLadder2Txt", "Are ladder brackets attached");
+		mapa.put("inspectionReportLadder3Txt", "Are all fasteners in place");
+		mapa.put("inspectionReportLadder4Txt", "Are all welds in good condition");
+		mapa.put("inspectionReportLadder5Txt", "Are connections between rais ok");
+		mapa.put("inspectionReportLadder6Txt", "Any bent rails/rungs");
+		mapa.put("inspectionReportLadder7Txt", "Any cracked rails/rungs");
+		mapa.put("inspectionReportLadder8Txt", "Is red rust/corrosion present");
+		mapa.put("inspectionReportLadder9Txt", "Unobstucted climb path");
+		mapa.put("inspectionReportLadder10Txt", "Is the overall condition safe");
+		mapa.put("inspectionReportLadder11Txt", "Is assembly secure and tight to Double-T");
+		mapa.put("inspectionReportLadder12Txt", "Are attachment fasteners in place");
+		mapa.put("inspectionReportLadder13Txt", "Is red rust/corrosion present");
+		mapa.put("inspectionReportLadder14Txt", "Are swaged fittings in good condition");
+		mapa.put("inspectionReportLadder15Txt", "Is eye bolt worn/cracked");
+		mapa.put("inspectionReportLadder16Txt", "Are welds in good condition");
+		mapa.put("inspectionReportLadder17Txt", "Any sign of wear or damage");
+		mapa.put("inspectionReportLadder18Txt", "Is cable termination in good condition");
+		mapa.put("inspectionReportLadder19Txt", "Does the overall condition appear safe");
+		mapa.put("inspectionReportLadder20Txt", "Is assembly secure and tight to the structure");
+		mapa.put("inspectionReportLadder21Txt", "Are channels secure to rungs");
+		mapa.put("inspectionReportLadder22Txt", "Are all fasteners present and secure");
+		mapa.put("inspectionReportLadder23Txt", "Is head anchor attachment secured");
+		mapa.put("inspectionReportLadder24Txt", "Are welds free of cracks");
+		mapa.put("inspectionReportLadder25Txt", "Are rungs bent or worn");
+		mapa.put("inspectionReportLadder26Txt", "Is any red rust/corrosion present");
+		mapa.put("inspectionReportLadder27Txt", "Does the overall condition appear safe");
+		mapa.put("inspectionReportLadder28Txt", "Does the cable show any flattened,frayed or kinked section/areas along the overall length");
+		mapa.put("inspectionReportLadder29Txt", "Is the assembly secure to the head assembly");
+		mapa.put("inspectionReportLadder30Txt", "Is the cable tight to the tower face");
+		mapa.put("inspectionReportLadder31Txt", "Is the climb path free of obstuction");
+		mapa.put("inspectionReportLadder32Txt", "Is the cable attached through the cable guides");
+		mapa.put("inspectionReportLadder33Txt", "Does the cable show signs of red rust");
+		mapa.put("inspectionReportLadder34Txt", "Does the cable show signs of electrical arcing/burns");
+		mapa.put("inspectionReportLadder35Txt", "Does the overall condition appear safe");
+		mapa.put("inspectionReportLadder36Txt", "Are cable guides provided every 20 to 40 ft");
+		mapa.put("inspectionReportLadder37Txt", "Are all fasteners present");
+		mapa.put("inspectionReportLadder38Txt", "Are cable guides secure to the structure");
+		mapa.put("inspectionReportLadder39Txt", "Are ladder rungs in good condition");
+		mapa.put("inspectionReportLadder40Txt", "Are rubber grommets in good condition");
+		mapa.put("inspectionReportLadder41Txt", "Is there any sign of red rust/corrosion");
+		mapa.put("inspectionReportLadder42Txt", "Is assembly secure to the structure");
+		mapa.put("inspectionReportLadder43Txt", "Are all clamp brackets/fasteners present");
+		mapa.put("inspectionReportLadder44Txt", "Are the cable clips present and secure");
+		mapa.put("inspectionReportLadder45Txt", "Is the cable taut at the assembly");
+		mapa.put("inspectionReportLadder46Txt", "Is any rust/corrosion present");
+		mapa.put("inspectionReportLadder47Txt", "Does the overall condition appear safe");
+		mapa.put("inspectionReportLadder48Txt", "Is the cable safe climb system secure");
+		mapa.put("inspectionReportLadder49Txt", "Does the overall condition appear safe");
+		return mapa;
 	}
     
 }

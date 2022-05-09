@@ -81,18 +81,12 @@ public class StatutoryInspectionReportInspectionDescenderDevice implements Statu
 		mapa.put("inspectionDescenderDeviceRepairRequired", "Repair required");
 		mapa.put("inspectionDescenderDeviceNextInspection", "Next inspection");
 
-		mapa.put("inspectionDescenderDevice1Chk", "Visual check of descender device");
-		mapa.put("inspectionDescenderDevice1Txt", "Visual check of descender device / refer notes,N°");
-		mapa.put("inspectionDescenderDevice2Chk", "Visual check rope");
-		mapa.put("inspectionDescenderDevice2Txt", "Visual check rope / refer notes,N");
-		mapa.put("inspectionDescenderDevice3Chk", "Visual check sling and carabiner");
-		mapa.put("inspectionDescenderDevice3Txt", "Visual check sling and carabiner / refer notes,N");
-		mapa.put("inspectionDescenderDevice4Chk", "Do function test");
-		mapa.put("inspectionDescenderDevice4Txt", "Do function test / refer notes,N");
-		mapa.put("inspectionDescenderDevice5Chk", "Fill document");
-		mapa.put("inspectionDescenderDevice5Txt", "Fill document / refer notes,N");
-		mapa.put("inspectionDescenderDevice6Chk", "Seal back and put sticker on");
-		mapa.put("inspectionDescenderDevice6Txt", "Seal back and put sticker on / refer notes,N");
+		mapa.put("inspectionDescenderDevice1Txt", "Visual check of descender device");
+		mapa.put("inspectionDescenderDevice2Txt", "Visual check rope");
+		mapa.put("inspectionDescenderDevice3Txt", "Visual check sling and carabiner");
+		mapa.put("inspectionDescenderDevice4Txt", "Do function test");
+		mapa.put("inspectionDescenderDevice5Txt", "Fill document");
+		mapa.put("inspectionDescenderDevice6Txt", "Seal back and put sticker on");
 
 		mapa.put("inspectionDescenderDeviceNotes", "Notes");
 
