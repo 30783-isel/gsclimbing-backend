@@ -385,15 +385,15 @@ public class ReportsController {
 		List<String> lista = reportService.chkIfAllFieldsNull(report);
 		if (report.getListaFileData() != null) {
 			for (FileData fileData : report.getListaFileData()) {
-//				if (fileData.getDescription() == null || fileData.getDescription().isEmpty()) {
-//					lista.add(System.lineSeparator() + "Description from " + fileData.getNameField() + " empty");
-//				}
+				if (fileData.getDescription() == null || fileData.getDescription().isEmpty()) {
+					lista.add(System.lineSeparator() + "Description from " + fileData.getNameField() + " empty");
+				}
 				if (!fileData.isInsertedOnFtpServer()) {
 					lista.add(System.lineSeparator() + "Image from " + fileData.getNameField() + " empty");
 				}
 			}
 		}
-		if((report instanceof DefectsInspectionReport || report instanceof OnboardCraneInspectionReport || report instanceof PerformanceReportRepairElevator|| report instanceof StatutoryInspectionReport)) {
+		if("Yes".equals(report.getInsertImagesChk())){
 			if( (!(report instanceof StatutoryInspectionReport) && report.getListaFileData().size() < 3) || ((report instanceof StatutoryInspectionReport) && report.getListaFileData().size() < 5)) {
 				lista.add(System.lineSeparator() + "You add to insert images at least 3 images.");
 			}

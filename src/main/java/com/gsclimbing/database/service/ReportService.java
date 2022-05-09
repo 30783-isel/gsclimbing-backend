@@ -116,7 +116,20 @@ public class ReportService {
 //					lista.add(fieldName);
 //				}	
 			}
-			/*
+
+			List<String> listaChkTrue = new ArrayList<String>();
+			for (Field field : report.getClass().getDeclaredFields()) {
+				field.setAccessible(true);
+				Object object = field.get(report);
+				String fieldName = field.getName();
+				System.out.println(fieldName + " - " + object);
+				if (("true".equals(object.toString()) && !ObjectUtils.isEmpty(object.toString())) && fieldName.contains("Chk")) {
+					if (fieldName != null) {
+						listaChkTrue.add(fieldName.substring(0, fieldName.length() - 3));
+					}
+				}
+			}
+
 			for (Field field : report.getClass().getDeclaredFields()) {
 				field.setAccessible(true);
 				Object object = field.get(report);
@@ -125,16 +138,28 @@ public class ReportService {
 						lista.add(field.getName());
 					}
 				} else {
-					if (object == null || ObjectUtils.isEmpty(object.toString())) {
+					String str = listaChkTrue.stream().filter(chkc -> (chkc + "Txt").equals(field.getName())).findAny().orElse(null);
+					if (str != null) {
 						System.out.println(field.getName() + " - " + object);
-						String fieldName = report.mapeamento().get(field.getName());
-						if (fieldName != null) {
-							lista.add(fieldName);
+						if ((object == null || ObjectUtils.isEmpty(object.toString()))) {
+							String fieldName = report.mapeamento().get(field.getName());
+							if (fieldName != null) {
+								lista.add(fieldName);
+							}
+						}
+
+					} else {
+						if ((object == null || ObjectUtils.isEmpty(object.toString()))) {
+							String fieldName = report.mapeamento().get(field.getName());
+							if (fieldName != null) {
+								lista.add(fieldName);
+							}
 						}
 					}
+
 				}
 			}
-			*/
+
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 		}

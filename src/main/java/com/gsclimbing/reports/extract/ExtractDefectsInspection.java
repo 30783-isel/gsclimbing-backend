@@ -20,6 +20,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDPushButton;
 import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
@@ -138,6 +139,7 @@ public class ExtractDefectsInspection {
 		getListPhotoNames().clear();
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
 		List<PDField> fields = acroForm.getFields();
+		boolean imageInsertion = false;
 		for (PDField field : fields) {
 			if (field instanceof PDTextField) {
 				String valueField = ((PDTextField) field).getValue();
@@ -160,27 +162,69 @@ public class ExtractDefectsInspection {
 					getDefectsInspectionReport().setWtgType(valueField);
 				if (nameField.equals("yearConstruction"))
 					getDefectsInspectionReport().setYearConstruction(valueField);
-				if (nameField.contains("Description")) {
+				if (nameField.equals("additionalField1Label"))
+					getDefectsInspectionReport().setAdditionalField1Label(valueField);
+				if (nameField.equals("additionalField1Text"))
+					getDefectsInspectionReport().setAdditionalField1Text(valueField);
+				if (nameField.equals("additionalField2Label"))
+					getDefectsInspectionReport().setAdditionalField2Label(valueField);
+				if (nameField.equals("additionalField2Text"))
+					getDefectsInspectionReport().setAdditionalField2Text(valueField);
+				if (nameField.equals("additionalField3Label"))
+					getDefectsInspectionReport().setAdditionalField3Label(valueField);
+				if (nameField.equals("additionalField3Text"))
+					getDefectsInspectionReport().setAdditionalField3Text(valueField);
+				if (nameField.equals("additionalField4Label"))
+					getDefectsInspectionReport().setAdditionalField4Label(valueField);
+				if (nameField.equals("additionalField4Text"))
+					getDefectsInspectionReport().setAdditionalField4Text(valueField);
+				if (nameField.equals("additionalField5Label"))
+					getDefectsInspectionReport().setAdditionalField5Label(valueField);
+				if (nameField.equals("additionalField5Text"))
+					getDefectsInspectionReport().setAdditionalField5Text(valueField);
+				if (nameField.equals("additionalField6Label"))
+					getDefectsInspectionReport().setAdditionalField6Label(valueField);
+				if (nameField.equals("additionalField6Text"))
+					getDefectsInspectionReport().setAdditionalField6Text(valueField);
+				if (nameField.equals("additionalField7Label"))
+					getDefectsInspectionReport().setAdditionalField7Label(valueField);
+				if (nameField.equals("additionalField7Text"))
+					getDefectsInspectionReport().setAdditionalField7Text(valueField);
+
+				if (nameField.contains("description") && imageInsertion) {
 					setNameField(nameField);
 					setDescription(valueField);
 				}
-			} else if (field instanceof PDPushButton) {
+			} else if (field instanceof PDCheckBox) {
 				String nameField = field.getFullyQualifiedName();
-				System.out.println(nameField);
-				for (final PDAnnotationWidget widget : field.getWidgets()) {
-					WidgetImageChecker checker = new WidgetImageChecker(widget);
-					try {
-						if (checker.hasImages()) {
-							PDImage pDimage = checker.getpDimage();
-							setPhoto(nameField);
-							FileData fileData = new FileData();
-							fileData.setImageChange(0);
-							fileData.setNameField(getNameField());
-							fileData.setDescription(getDescription());
-							extractAnnotationImages(pDimage, nameField, fileData);
+				String valueField = ((PDCheckBox) field).getValue();
+				if (nameField.equals("insertImagesChk")) {
+					getDefectsInspectionReport().setInsertImagesChk(valueField);
+					if ("Yes".equals(valueField)) {
+						imageInsertion = true;
+					} else if ("Off".equals(valueField)) {
+						imageInsertion = false;
+					}
+				}
+			} else if (field instanceof PDPushButton) {
+				if (imageInsertion) {
+					String nameField = field.getFullyQualifiedName();
+					System.out.println(nameField);
+					for (final PDAnnotationWidget widget : field.getWidgets()) {
+						WidgetImageChecker checker = new WidgetImageChecker(widget);
+						try {
+							if (checker.hasImages()) {
+								PDImage pDimage = checker.getpDimage();
+								setPhoto(nameField);
+								FileData fileData = new FileData();
+								fileData.setImageChange(0);
+								fileData.setNameField(getNameField());
+								fileData.setDescription(getDescription());
+								extractAnnotationImages(pDimage, nameField, fileData);
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
- 					} catch (IOException e) {
-						e.printStackTrace();
 					}
 				}
 			}

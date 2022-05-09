@@ -138,12 +138,14 @@ public class ExtractDataOnboardCraneInspectionReport {
 
 	private boolean populateAndCopy(PDDocument document, Integer typeReport) throws IOException {
 		getListPhotoNames().clear();
+		boolean imageInsertion = false;
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
 		List<PDField> fields = acroForm.getFields();
 		for (PDField field : fields) {
 			if (field instanceof PDTextField) {
 				String valueField = ((PDTextField) field).getValue();
 				String nameField = field.getFullyQualifiedName();
+				System.out.println(nameField + " - " + valueField);
 				if (nameField.equals("typeReport")) {
 					if(typeReport == Integer.valueOf(valueField)) {
 						getOnboardCraneInspectionReport().setTypeReport(Integer.valueOf(valueField));
@@ -179,16 +181,16 @@ public class ExtractDataOnboardCraneInspectionReport {
 					getOnboardCraneInspectionReport().setNextInspection(valueField);
 				if (nameField.equals("readingOperatingBusTxt"))
 					getOnboardCraneInspectionReport().setReadingOperatingBusTxt(valueField);
-				if (nameField.equals("InterruptVoltageSupplyTXt"))
-					getOnboardCraneInspectionReport().setInterruptVoltageSupplyTXt(valueField);
+				if (nameField.equals("InterruptVoltageSupplyTxt"))
+					getOnboardCraneInspectionReport().setInterruptVoltageSupplyTxt(valueField);
 				if (nameField.equals("circuitDiagramPositionTxt"))
 					getOnboardCraneInspectionReport().setCircuitDiagramPositionTxt(valueField);
 				if (nameField.equals("warningSignsTxt"))
 					getOnboardCraneInspectionReport().setWarningSignsTxt(valueField);
 				if (nameField.equals("cablesSignsTxt"))
 					getOnboardCraneInspectionReport().setCablesSignsTxt(valueField);
-				if (nameField.equals("screwedCableGlandsTXt"))
-					getOnboardCraneInspectionReport().setScrewedCableGlandsTXt(valueField);
+				if (nameField.equals("screwedCableGlandsTxt"))
+					getOnboardCraneInspectionReport().setScrewedCableGlandsTxt(valueField);
 				if (nameField.equals("openSwitchCabinetCoverTxt"))
 					getOnboardCraneInspectionReport().setOpenSwitchCabinetCoverTxt(valueField);
 				if (nameField.equals("checkOperatingUnitTxt"))
@@ -197,18 +199,18 @@ public class ExtractDataOnboardCraneInspectionReport {
 					getOnboardCraneInspectionReport().setCheckLimitSwitchesTxt(valueField);
 				if (nameField.equals("setVoltageSupplyTxt"))
 					getOnboardCraneInspectionReport().setSetVoltageSupplyTxt(valueField);
-				if (nameField.equals("checkMotorBrakeTXt"))
-					getOnboardCraneInspectionReport().setCheckMotorBrakeTXt(valueField);
+				if (nameField.equals("checkMotorBrakeTxt"))
+					getOnboardCraneInspectionReport().setCheckMotorBrakeTxt(valueField);
 				if (nameField.equals("checkRopeMechanicalDamageTxt"))
 					getOnboardCraneInspectionReport().setCheckRopeMechanicalDamageTxt(valueField);
 				if (nameField.equals("checkLoadHookMechanicalTxt"))
 					getOnboardCraneInspectionReport().setCheckLoadHookMechanicalTxt(valueField);
-				if (nameField.equals("carryVisualInspectionTXt"))
-					getOnboardCraneInspectionReport().setCarryVisualInspectionTXt(valueField);
+				if (nameField.equals("carryVisualInspectionTxt"))
+					getOnboardCraneInspectionReport().setCarryVisualInspectionTxt(valueField);
 				if (nameField.equals("usefeelerGaugeTxt"))
 					getOnboardCraneInspectionReport().setUsefeelerGaugeTxt(valueField);
-				if (nameField.equals("checkLimitSwitchRockersTXt"))
-					getOnboardCraneInspectionReport().setCheckLimitSwitchRockersTXt(valueField);
+				if (nameField.equals("checkLimitSwitchRockersTxt"))
+					getOnboardCraneInspectionReport().setCheckLimitSwitchRockersTxt(valueField);
 				if (nameField.equals("checkCraneBridgeTxt"))
 					getOnboardCraneInspectionReport().setCheckCraneBridgeTxt(valueField);
 				if (nameField.equals("checkCrabTxt"))
@@ -229,9 +231,15 @@ public class ExtractDataOnboardCraneInspectionReport {
 					getOnboardCraneInspectionReport().setLoadTestTxt(valueField);
 				if (nameField.equals("notes"))
 					getOnboardCraneInspectionReport().setNotes(valueField);
+				if (nameField.contains("description") && imageInsertion) {
+					setNameField(nameField);
+					setDescription(valueField);
+				}
 			} else if (field instanceof PDCheckBox) {
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDCheckBox) field).getValue();
+				System.out.println(nameField + " - " + valueField);
+				
 				if (nameField.equals("readingOperatingBusChk"))
 					getOnboardCraneInspectionReport().setReadingOperatingBusChk(valueField == "Yes" ? true : false);
 				if (nameField.equals("InterruptVoltageSupplyChk"))
@@ -282,8 +290,19 @@ public class ExtractDataOnboardCraneInspectionReport {
 					getOnboardCraneInspectionReport().setAncorPointSafetyEquipmentChk(valueField == "Yes" ? true : false);
 				if (nameField.equals("loadTestChk"))
 					getOnboardCraneInspectionReport().setLoadTestChk(valueField == "Yes" ? true : false);
+				if (nameField.equals("insertImagesChk")) {
+					getOnboardCraneInspectionReport().setInsertImagesChk(valueField);
+					if ("Yes".equals(valueField)) {
+						imageInsertion = true;
+					} else if ("Off".equals(valueField)) {
+						imageInsertion = false;
+					}
+				}
 			} else if (field instanceof PDPushButton) {
 				String nameField = field.getFullyQualifiedName();
+				String valueField = ((PDPushButton) field).getValue();
+				System.out.println(nameField + " - " + valueField);
+				
 				for (final PDAnnotationWidget widget : field.getWidgets()) {
 					WidgetImageChecker checker = new WidgetImageChecker(widget);
 					try {
@@ -452,53 +471,6 @@ public class ExtractDataOnboardCraneInspectionReport {
 		return convFile;
 	}
 
-	public OnboardCraneInspectionReport getOnboardCraneInspectionReport() {
-		return onboardCraneInspectionReport;
-	}
-
-	public void setOnboardCraneInspectionReport(OnboardCraneInspectionReport onboardCraneInspectionReport) {
-		this.onboardCraneInspectionReport = onboardCraneInspectionReport;
-	}
-
-	public String getUuidStr() {
-		return uuidStr;
-	}
-
-	public void setUuidStr(String uuidStr) {
-		this.uuidStr = uuidStr;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getNameField() {
-		return nameField;
-	}
-
-	public void setNameField(String nameField) {
-		this.nameField = nameField;
-	}
-
-	public String getPhoto() {
-		return photo;
-	}
-
-	public void setPhoto(String photo) {
-		this.photo = photo;
-	}
-
-	public List<String> getListPhotoNames() {
-		return listPhotoNames;
-	}
-
-	public void setListPhotoNames(List<String> listPhotoNames) {
-		this.listPhotoNames = listPhotoNames;
-	}
 	public long fileSize(File file) {
 		long bytes = file.length();
 		long kilobytes = (bytes / 1024);

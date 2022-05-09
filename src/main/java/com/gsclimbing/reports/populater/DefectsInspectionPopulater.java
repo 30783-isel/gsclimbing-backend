@@ -75,7 +75,22 @@ public class DefectsInspectionPopulater {
 		setField("wtgNumber", report.getWtgNumber());
 		setField("wtgType", report.getWtgType());
 		setField("yearConstruction", report.getYearConstruction());
-
+		setField("insertImagesChk", report.getInsertImagesChk());
+		setField("additionalField1Label", report.getAdditionalField1Label());
+		setField("additionalField1Text", report.getAdditionalField1Text());
+		setField("additionalField2Label", report.getAdditionalField2Label());
+		setField("additionalField2Text", report.getAdditionalField2Text());
+		setField("additionalField3Label", report.getAdditionalField3Label());
+		setField("additionalField3Text", report.getAdditionalField3Text());
+		setField("additionalField4Label", report.getAdditionalField4Label());
+		setField("additionalField4Text", report.getAdditionalField4Text());
+		setField("additionalField5Label", report.getAdditionalField5Label());
+		setField("additionalField5Text", report.getAdditionalField5Text());
+		setField("additionalField6Label", report.getAdditionalField6Label());
+		setField("additionalField6Text", report.getAdditionalField6Text());
+		setField("additionalField7Label", report.getAdditionalField7Label());
+		setField("additionalField7Text", report.getAdditionalField7Text());
+		
 		List<FileData> listFileData = null;
 		byte[] bytes = null;
 

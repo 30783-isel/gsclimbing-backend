@@ -89,21 +89,21 @@ public class OnboardCraneInspectionReportElevatorPopulater {
 		setField("nextInspection", report.getNextInspection());
 		
 		setField("readingOperatingBusTxt",report.getReadingOperatingBusTxt());
-		setField("InterruptVoltageSupplyTXt", report.getInterruptVoltageSupplyTXt());
+		setField("InterruptVoltageSupplyTxt", report.getInterruptVoltageSupplyTxt());
 		setField("circuitDiagramPositionTxt",report.getCircuitDiagramPositionTxt());
 		setField("warningSignsTxt",report.getWarningSignsTxt());
 		setField("cablesSignsTxt", report.getCablesSignsTxt());
-		setField("screwedCableGlandsTXt", report.getScrewedCableGlandsTXt());
+		setField("screwedCableGlandsTxt", report.getScrewedCableGlandsTxt());
 		setField("openSwitchCabinetCoverTxt", report.getOpenSwitchCabinetCoverTxt());
 		setField("checkOperatingUnitTxt", report.getCheckOperatingUnitTxt());
 		setField("checkLimitSwitchesTxt", report.getCheckLimitSwitchesTxt());
 		setField("getVoltageSupplyTxt", report.getSetVoltageSupplyTxt());
-		setField("checkMotorBrakeTXt", report.getCheckMotorBrakeTXt());
+		setField("checkMotorBrakeTxt", report.getCheckMotorBrakeTxt());
 		setField("checkRopeMechanicalDamageTxt", report.getCheckRopeMechanicalDamageTxt());
 		setField("checkLoadHookMechanicalTxt", report.getCheckLoadHookMechanicalTxt());
-		setField("carryVisualInspectionTXt", report.getCarryVisualInspectionTXt());
+		setField("carryVisualInspectionTxt", report.getCarryVisualInspectionTxt());
 		setField("usefeelerGaugeTxt", report.getUsefeelerGaugeTxt());
-		setField("checkLimitSwitchRockersTXt", report.getCheckLimitSwitchRockersTXt());
+		setField("checkLimitSwitchRockersTxt", report.getCheckLimitSwitchRockersTxt());
 		setField("checkCraneBridgeTxt", report.getCheckCraneBridgeTxt());
 		setField("checkCrabTxt", report.getCheckCrabTxt());
 		setField("checkDeflectionRollersTxt", report.getCheckDeflectionRollersTxt());

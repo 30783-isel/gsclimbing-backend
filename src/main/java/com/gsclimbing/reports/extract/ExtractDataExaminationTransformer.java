@@ -283,7 +283,10 @@ public class ExtractDataExaminationTransformer {
 					getExaminationTransformer().setPerformedBy(valueField);
 				if (nameField.equals("date"))
 					getExaminationTransformer().setDate(valueField);
-
+				if (nameField.contains("Description")) {
+					setNameField(nameField);
+					setDescription(valueField);
+				}
 			} else if (field instanceof PDCheckBox) {
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDCheckBox) field).getValue();

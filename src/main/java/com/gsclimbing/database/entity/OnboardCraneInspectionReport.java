@@ -29,7 +29,7 @@ public class OnboardCraneInspectionReport extends Report implements Cloneable {
 	private boolean readingOperatingBusChk;
 	private String readingOperatingBusTxt;
 	private boolean InterruptVoltageSupplyChk;
-	private String InterruptVoltageSupplyTXt;
+	private String InterruptVoltageSupplyTxt;
 	private boolean circuitDiagramPositionChk;
 	private String circuitDiagramPositionTxt;
 	private boolean warningSignsChk;
@@ -37,7 +37,7 @@ public class OnboardCraneInspectionReport extends Report implements Cloneable {
 	private boolean cablesSignsChk;
 	private String cablesSignsTxt;
 	private boolean screwedCableGlandsChk;
-	private String screwedCableGlandsTXt;
+	private String screwedCableGlandsTxt;
 	private boolean openSwitchCabinetCoverChk;
 	private String openSwitchCabinetCoverTxt;
 	private boolean checkOperatingUnitChk;
@@ -47,17 +47,17 @@ public class OnboardCraneInspectionReport extends Report implements Cloneable {
 	private boolean setVoltageSupplyChk;
 	private String setVoltageSupplyTxt;
 	private boolean checkMotorBrakeChk;
-	private String checkMotorBrakeTXt;
+	private String checkMotorBrakeTxt;
 	private boolean checkRopeMechanicalDamageChk;
 	private String checkRopeMechanicalDamageTxt;
 	private boolean checkLoadHookMechanicalChk;
 	private String checkLoadHookMechanicalTxt;
 	private boolean carryVisualInspectionChk;
-	private String carryVisualInspectionTXt;
+	private String carryVisualInspectionTxt;
 	private boolean usefeelerGaugeChk;
 	private String usefeelerGaugeTxt;
 	private boolean checkLimitSwitchRockersChk;
-	private String checkLimitSwitchRockersTXt;
+	private String checkLimitSwitchRockersTxt;
 	private boolean checkCraneBridgeChk;
 	private String checkCraneBridgeTxt;
 	private boolean checkCrabChk;
@@ -101,6 +101,32 @@ public class OnboardCraneInspectionReport extends Report implements Cloneable {
 		mapa.put("repairRequired", "Repair Required");
 		mapa.put("nextInspection", "Next Inspection");
 		mapa.put("notes", "Notes");
+		mapa.put("readingOperatingBusTxt", "Reading of the operating hours");
+		mapa.put("InterruptVoltageSupplyTxt", "Interrupt the voltage supply to the crane");
+		mapa.put("circuitDiagramPositionTxt", "Check that the circuit diagram is in position in the switch cabinet");
+		mapa.put("warningSignsTxt", "Check that the warning signs on the switch cabinet");
+		mapa.put("cablesSignsTxt", "Check all cables for signs of outer damage");
+		mapa.put("screwedCableGlandsTxt", "Check all the screwed cable glands for signs of outer damage and a firm fit");
+		mapa.put("openSwitchCabinetCoverTxt", "Open the switch cabinet cover and check the firm fit of the cables.");
+		mapa.put("checkOperatingUnitTxt", "Check the operating unit for outer damage");
+		mapa.put("checkLimitSwitchesTxt", "Check the limit switches for signs of outer damage");
+		mapa.put("setVoltageSupplyTxt", "Set up the voltage supply again.");
+		mapa.put("checkMotorBrakeTxt", "Check that the motor brake is working");
+		mapa.put("checkRopeMechanicalDamageTxt", "Check the rope for mechanical damage such as breaks");
+		mapa.put("checkLoadHookMechanicalTxt", "Check the load hook for mechanical damage");
+		mapa.put("carryVisualInspectionTxt", "Carry out a visual inspection of the drive unit for damage and leaks.");
+		mapa.put("usefeelerGaugeTxt", "Use a feeler gauge to check the brake gap");
+		mapa.put("checkLimitSwitchRockersTxt", "Check the limit switch rockers to make sure they are present and move easily");
+		mapa.put("checkCraneBridgeTxt", "Check that the crane bridge is safely locked in place and that the locking lever is a firm fit");
+		mapa.put("checkCrabTxt", "Check that the crab is safely locked in place and that the locking lever is a firm fit");
+		mapa.put("checkDeflectionRollersTxt", "Check the deflection rollers and the respective components");
+		mapa.put("checkScrewJointsTxt", "Check all the screw joints to make sure they are in position and a firm fit");
+		mapa.put("checkAllRollersBridgeTxt", "Check all the rollers on the bridge and on the crab for mechanical damage");
+		mapa.put("checkAllStopBuffersTxt", "Check all the stop buffers to make sure they are in position and have no mechanical damage");
+		mapa.put("checkAllComponentsTxt", "Check all the components to make sure the coating");
+		mapa.put("ancorPointSafetyEquipmentTxt", "Ancor point safety equipment");
+		mapa.put("loadTestTxt", "Load test");
+		
 		return mapa;
 	}
 

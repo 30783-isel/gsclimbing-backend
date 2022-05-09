@@ -45,7 +45,22 @@ public class Report {
 	private Integer typeReport;
     private Integer projectoId;
     private Integer turbinaId;
-	
+    private String insertImagesChk;
+    private String additionalField1Label;
+    private String additionalField1Text;
+    private String additionalField2Label;
+    private String additionalField2Text;
+    private String additionalField3Label;
+    private String additionalField3Text;
+    private String additionalField4Label;
+    private String additionalField4Text;
+    private String additionalField5Label;
+    private String additionalField5Text;
+    private String additionalField6Label;
+    private String additionalField6Text;
+    private String additionalField7Label;
+    private String additionalField7Text;
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "turbineId", nullable=true)
     @JsonIgnore
@@ -82,6 +97,21 @@ public class Report {
 			.typeReport(typeReport)
 			.projectoId(projectoId)
 			.turbinaId(turbinaId)
+			.insertImagesChk(insertImagesChk)
+		    .additionalField1Label(additionalField1Label)
+		    .additionalField1Text(additionalField1Text)
+		    .additionalField2Label(additionalField2Label)
+		    .additionalField2Text(additionalField2Text)
+		    .additionalField3Label(additionalField3Label)
+		    .additionalField3Text(additionalField3Text)
+		    .additionalField4Label(additionalField4Label)
+		    .additionalField4Text(additionalField4Text)
+		    .additionalField5Label(additionalField5Label)
+		    .additionalField5Text(additionalField5Text)
+		    .additionalField6Label(additionalField6Label)
+		    .additionalField6Text(additionalField6Text)
+		    .additionalField7Label(additionalField7Label)
+		    .additionalField7Text(additionalField7Text)
 			.build();
 	}
 	
