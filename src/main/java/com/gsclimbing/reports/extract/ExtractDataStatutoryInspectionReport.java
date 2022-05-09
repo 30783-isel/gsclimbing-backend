@@ -148,7 +148,7 @@ public class ExtractDataStatutoryInspectionReport {
 		StatutoryInspectionReportInspectionDescenderDevice statutoryInspectionReportInspectionDescenderDevice = getStatutoryInspectionReport().getStatutoryInspectionReportInspectionDescenderDevice() == null ? new StatutoryInspectionReportInspectionDescenderDevice() : getStatutoryInspectionReport().getStatutoryInspectionReportInspectionDescenderDevice();
 		
 		getListPhotoNames().clear();
-
+		boolean imageInsertion = false;
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
 		List<PDField> fields = acroForm.getFields();
 		for (PDField field : fields) {
@@ -314,8 +314,6 @@ public class ExtractDataStatutoryInspectionReport {
 					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabinRepairRequired(valueField);
 				if (nameField.equals("inspectionReportServiceCabinNextInspection"))
 					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabinNextInspection(valueField);
-				if (nameField.equals("inspectionStickerReportServiceCabinNextInspection"))
-					statutoryInspectionReportServiceCabin.setInspectionStickerReportServiceCabinNextInspection(valueField);
 				if (nameField.equals("inspectionReportServiceCabin1Txt"))
 					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin1Txt(valueField);
 				if (nameField.equals("inspectionReportServiceCabin2Txt"))
@@ -422,22 +420,20 @@ public class ExtractDataStatutoryInspectionReport {
 					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin52Txt(valueField);
 				if (nameField.equals("inspectionReportServiceCabin53Txt"))
 					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin53Txt(valueField);
-				if (nameField.equals("inspectionReportServiceCabin54Txt"))
-					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin54Txt(valueField);
-
+				if (nameField.equals("inspectionReportServiceCabinNotes"))
 					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabinNotes(valueField);
 
 				// 2.2. Inspection report internal crane
 				// ----------------------------------------------------------------------------------------------
 					
 				if (nameField.equals("internalCraneManufacturer"))
-					statutoryInspectionReportInternalCrane.setInternalCraneManufacturer_(valueField);
-				if (nameField.equals("internalCraneType_"))
-					statutoryInspectionReportInternalCrane.setInternalCraneType_(valueField);
+					statutoryInspectionReportInternalCrane.setInternalCraneManufacturer(valueField);
+				if (nameField.equals("internalCraneType"))
+					statutoryInspectionReportInternalCrane.setInternalCraneType(valueField);
 				if (nameField.equals("internalCraneYearBuild"))
 					statutoryInspectionReportInternalCrane.setInternalCraneYearBuild(valueField);
-				if (nameField.equals("internalCraneSerialNumber_"))
-					statutoryInspectionReportInternalCrane.setInternalCraneSerialNumber_(valueField);
+				if (nameField.equals("internalCraneSerialNumber"))
+					statutoryInspectionReportInternalCrane.setInternalCraneSerialNumber(valueField);
 				
 				
 				if (nameField.equals("internalCraneTypePlateTestBadge"))
@@ -762,11 +758,25 @@ public class ExtractDataStatutoryInspectionReport {
 				if (nameField.equals("inspectionDescenderDeviceNotes"))
 					statutoryInspectionReportInspectionDescenderDevice.setInspectionDescenderDeviceNotes(valueField);
 
+				if (nameField.contains("description") && imageInsertion) {
+					setNameField(nameField);
+					setDescription(valueField);
+				}
+				
 			} else if (field instanceof PDCheckBox) {
 
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDCheckBox) field).getValue();
 
+				if (nameField.equals("insertImagesChk")) {
+					getStatutoryInspectionReport().setInsertImagesChk(valueField);
+					if ("Yes".equals(valueField)) {
+						imageInsertion = true;
+					} else if ("Off".equals(valueField)) {
+						imageInsertion = false;
+					}
+				}
+				
 				// 2.1 inspection Report Service Cabin
 				// ---------------------------------------------------------------;
 
@@ -876,8 +886,6 @@ public class ExtractDataStatutoryInspectionReport {
 					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin52Chk(valueField =="Yes" ? true : false);
 				if (nameField.equals("inspectionReportServiceCabin53Chk"))
 					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin53Chk(valueField =="Yes" ? true : false);
-				if (nameField.equals("inspectionReportServiceCabin54Chk"))
-					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin54Chk(valueField =="Yes" ? true : false);
 
 				// 2.2 Internal Crane
 				// -----------------------------------------------------------;
@@ -1296,54 +1304,6 @@ public class ExtractDataStatutoryInspectionReport {
 		File convFile = File.createTempFile(fileName, null);
 		multipart.transferTo(convFile);
 		return convFile;
-	}
-
-	public StatutoryInspectionReport getStatutoryInspectionReport() {
-		return statutoryInspectionReport;
-	}
-
-	public void setStatutoryInspectionReport(StatutoryInspectionReport statutoryInspectionReport) {
-		this.statutoryInspectionReport = statutoryInspectionReport;
-	}
-
-	public String getUuidStr() {
-		return uuidStr;
-	}
-
-	public void setUuidStr(String uuidStr) {
-		this.uuidStr = uuidStr;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getNameField() {
-		return nameField;
-	}
-
-	public void setNameField(String nameField) {
-		this.nameField = nameField;
-	}
-
-	public String getPhoto() {
-		return photo;
-	}
-
-	public void setPhoto(String photo) {
-		this.photo = photo;
-	}
-
-	public List<String> getListPhotoNames() {
-		return listPhotoNames;
-	}
-
-	public void setListPhotoNames(List<String> listPhotoNames) {
-		this.listPhotoNames = listPhotoNames;
 	}
 
 	public long fileSize(File file) {

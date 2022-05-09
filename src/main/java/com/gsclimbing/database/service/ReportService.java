@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.Report;
+import com.gsclimbing.database.entity.StatutoryInspectionReportInt;
 import com.gsclimbing.database.repository.ReportRepository;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 
@@ -128,6 +129,20 @@ public class ReportService {
 						listaChkTrue.add(fieldName.substring(0, fieldName.length() - 3));
 					}
 				}
+
+				if (object instanceof StatutoryInspectionReportInt) {
+					for (Field statutoryInspectionReportField : object.getClass().getDeclaredFields()) {
+						statutoryInspectionReportField.setAccessible(true);
+						Object statutoryInspectionReportObject = statutoryInspectionReportField.get(object);
+						String statutoryInspectionReportFieldName = statutoryInspectionReportField.getName();
+						System.out.println(statutoryInspectionReportFieldName + " - " + statutoryInspectionReportObject);
+						if (("true".equals(statutoryInspectionReportObject.toString()) && !ObjectUtils.isEmpty(statutoryInspectionReportObject.toString())) && statutoryInspectionReportFieldName.contains("Chk")) {
+							if (statutoryInspectionReportFieldName != null) {
+								listaChkTrue.add(statutoryInspectionReportFieldName.substring(0, statutoryInspectionReportFieldName.length() - 3));
+							}
+						}
+					}
+				}
 			}
 
 			for (Field field : report.getClass().getDeclaredFields()) {
@@ -138,29 +153,77 @@ public class ReportService {
 						lista.add(field.getName());
 					}
 				} else {
-					String str = listaChkTrue.stream().filter(chkc -> (chkc + "Txt").equals(field.getName())).findAny().orElse(null);
-					if (str != null) {
-						System.out.println(field.getName() + " - " + object);
-						if ((object == null || ObjectUtils.isEmpty(object.toString()))) {
-							String fieldName = report.mapeamento().get(field.getName());
-							if (fieldName != null) {
-								lista.add(fieldName);
+					
+					
+					if (object instanceof StatutoryInspectionReportInt) {
+						for (Field statutoryInspectionReportField : object.getClass().getDeclaredFields()) {
+							statutoryInspectionReportField.setAccessible(true);
+							Object statutoryInspectionReportObject = statutoryInspectionReportField.get(object);
+							String statutoryInspectionReportFieldName = statutoryInspectionReportField.getName();
+							System.out.println(statutoryInspectionReportFieldName + " - " + statutoryInspectionReportObject);
+							String str = listaChkTrue.stream().filter(chkc -> (chkc + "Txt").equals(statutoryInspectionReportField.getName())).findAny().orElse(null);
+							
+							
+							
+							
+							
+							if (str != null) {
+								System.out.println(statutoryInspectionReportField.getName() + " - " + statutoryInspectionReportObject);
+								if ((statutoryInspectionReportObject == null || ObjectUtils.isEmpty(statutoryInspectionReportObject.toString()))) {
+									String fieldName = report.mapeamento().get(statutoryInspectionReportField.getName());
+									if (fieldName != null) {
+										lista.add(fieldName);
+									}
+								}
+							} else {
+								if ((statutoryInspectionReportObject == null || ObjectUtils.isEmpty(statutoryInspectionReportObject.toString()))) {
+									String fieldName = report.mapeamento().get(statutoryInspectionReportField.getName());
+									if (fieldName != null) {
+										lista.add(fieldName);
+									}
+								}
+							}
+							
+							
+							
+						}
+					}else {
+						
+						
+						
+						
+						
+						
+						String str = listaChkTrue.stream().filter(chkc -> (chkc + "Txt").equals(field.getName())).findAny().orElse(null);
+						if (str != null) {
+							System.out.println(field.getName() + " - " + object);
+							if ((object == null || ObjectUtils.isEmpty(object.toString()))) {
+								String fieldName = report.mapeamento().get(field.getName());
+								if (fieldName != null) {
+									lista.add(fieldName);
+								}
+							}
+						} else {
+							if ((object == null || ObjectUtils.isEmpty(object.toString()))) {
+								String fieldName = report.mapeamento().get(field.getName());
+								if (fieldName != null) {
+									lista.add(fieldName);
+								}
 							}
 						}
-
-					} else {
-						if ((object == null || ObjectUtils.isEmpty(object.toString()))) {
-							String fieldName = report.mapeamento().get(field.getName());
-							if (fieldName != null) {
-								lista.add(fieldName);
-							}
-						}
+						
+						
+						
+						
+						
 					}
+					
+					
+					
 
 				}
 			}
-
-		} catch (IllegalArgumentException | IllegalAccessException e) {
+		} catch (NullPointerException | IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		return lista;

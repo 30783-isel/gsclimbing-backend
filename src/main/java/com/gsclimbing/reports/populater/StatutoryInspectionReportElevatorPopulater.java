@@ -166,7 +166,6 @@ public class StatutoryInspectionReportElevatorPopulater {
 		setField("inspectionReportServiceCabinResultOfInspection", statutoryInspectionReportServiceCabin.getInspectionReportServiceCabinResultOfInspection());
 		setField("inspectionReportServiceCabinRepairRequired", statutoryInspectionReportServiceCabin.getInspectionReportServiceCabinRepairRequired());
 		setField("inspectionReportServiceCabinNextInspection", statutoryInspectionReportServiceCabin.getInspectionReportServiceCabinNextInspection());
-		setField("inspectionStickerReportServiceCabinNextInspection", statutoryInspectionReportServiceCabin.getInspectionStickerReportServiceCabinNextInspection());
 		
 		setField("inspectionReportServiceCabin1Txt", statutoryInspectionReportServiceCabin.getInspectionReportServiceCabin1Txt());
 		setField("inspectionReportServiceCabin2Txt", statutoryInspectionReportServiceCabin.getInspectionReportServiceCabin2Txt());
@@ -221,7 +220,6 @@ public class StatutoryInspectionReportElevatorPopulater {
 		setField("inspectionReportServiceCabin51Txt", statutoryInspectionReportServiceCabin.getInspectionReportServiceCabin51Txt());
 		setField("inspectionReportServiceCabin52Txt", statutoryInspectionReportServiceCabin.getInspectionReportServiceCabin52Txt());
 		setField("inspectionReportServiceCabin53Txt", statutoryInspectionReportServiceCabin.getInspectionReportServiceCabin53Txt());
-		setField("inspectionReportServiceCabin54Txt", statutoryInspectionReportServiceCabin.getInspectionReportServiceCabin54Txt());
 		setField("inspectionReportServiceCabinNotes", statutoryInspectionReportServiceCabin.getInspectionReportServiceCabinNotes());
 
 		// 2.2. Inspection report internal crane
@@ -229,10 +227,10 @@ public class StatutoryInspectionReportElevatorPopulater {
 
 		StatutoryInspectionReportInternalCrane statutoryInspectionReportInternalCrane = report.getStatutoryInspectionReportInternalCrane();
 
-		setField("internalCraneManufacturer_", statutoryInspectionReportInternalCrane.getInternalCraneManufacturer_());
-		setField("internalCraneType_", statutoryInspectionReportInternalCrane.getInternalCraneType_());
+		setField("internalCraneManufacturer", statutoryInspectionReportInternalCrane.getInternalCraneManufacturer());
+		setField("internalCraneType", statutoryInspectionReportInternalCrane.getInternalCraneType());
 		setField("internalCraneYearBuild", statutoryInspectionReportInternalCrane.getInternalCraneYearBuild());
-		setField("internalCraneSerialNumber_", statutoryInspectionReportInternalCrane.getInternalCraneSerialNumber_());
+		setField("internalCraneSerialNumber", statutoryInspectionReportInternalCrane.getInternalCraneSerialNumber());
 
 		setField("internalCraneTypePlateTestBadge", statutoryInspectionReportInternalCrane.getInternalCraneTypePlateTestBadge());
 
@@ -465,7 +463,6 @@ public class StatutoryInspectionReportElevatorPopulater {
 		setField("inspectionReportServiceCabin51Chk", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin51Chk() ? "Yes" : "Off");
 		setField("inspectionReportServiceCabin52Chk", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin52Chk() ? "Yes" : "Off");
 		setField("inspectionReportServiceCabin53Chk", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin53Chk() ? "Yes" : "Off");
-		setField("inspectionReportServiceCabin54Chk", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin54Chk() ? "Yes" : "Off");
 
 		// 2.2 Internal Crane
 		// -----------------------------------------------------------;
