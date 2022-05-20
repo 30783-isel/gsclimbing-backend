@@ -46,16 +46,27 @@ public class StatutoryInspectionReportInspectionDescenderDevice implements Statu
 	private String inspectionDescenderDeviceNextInspection;
 
 	private boolean inspectionDescenderDevice1Chk;
+	private boolean inspectionDescenderDevice1Chkn;
 	private String inspectionDescenderDevice1Txt;
+	
 	private boolean inspectionDescenderDevice2Chk;
+	private boolean inspectionDescenderDevice2Chkn;
 	private String inspectionDescenderDevice2Txt;
+	
 	private boolean inspectionDescenderDevice3Chk;
+	private boolean inspectionDescenderDevice3Chkn;
 	private String inspectionDescenderDevice3Txt;
+	
 	private boolean inspectionDescenderDevice4Chk;
+	private boolean inspectionDescenderDevice4Chkn;
 	private String inspectionDescenderDevice4Txt;
+	
 	private boolean inspectionDescenderDevice5Chk;
+	private boolean inspectionDescenderDevice5Chkn;
 	private String inspectionDescenderDevice5Txt;
+	
 	private boolean inspectionDescenderDevice6Chk;
+	private boolean inspectionDescenderDevice6Chkn;
 	private String inspectionDescenderDevice6Txt;
 
 	private String inspectionDescenderDeviceNotes;

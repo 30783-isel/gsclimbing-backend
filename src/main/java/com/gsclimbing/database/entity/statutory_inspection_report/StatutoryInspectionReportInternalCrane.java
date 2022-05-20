@@ -46,52 +46,99 @@ public class StatutoryInspectionReportInternalCrane  implements StatutoryInspect
 	private String internalCraneNextInspection;
 
 	private boolean internalCrane1Chk;
+	private boolean internalCrane1Chkn;
 	private String internalCrane1Txt ;
+	
 	private boolean internalCrane2Chk ;
+	private boolean internalCrane2Chkn ;
 	private String internalCrane2Txt ;
+	
 	private boolean internalCrane3Chk ;
+	private boolean internalCrane3Chkn ;
 	private String internalCrane3Txt ;
+	
 	private boolean internalCrane4Chk ;
+	private boolean internalCrane4Chkn ;
 	private String internalCrane4Txt ;
+	
 	private boolean internalCrane5Chk ;
+	private boolean internalCrane5Chkn ;
 	private String internalCrane5Txt ;
+	
 	private boolean internalCrane6Chk ;
+	private boolean internalCrane6Chkn ;
 	private String internalCrane6Txt ;
+	
 	private boolean internalCrane7Chk ;
+	private boolean internalCrane7Chkn ;
 	private String internalCrane7Txt ;
+	
 	private boolean internalCrane8Chk ;
+	private boolean internalCrane8Chkn ;
 	private String internalCrane8Txt ;
+	
 	private boolean internalCrane9Chk ;
+	private boolean internalCrane9Chkn ;
 	private String internalCrane9Txt ;
+	
 	private boolean internalCrane10Chk;
+	private boolean internalCrane10Chkn;
 	private String internalCrane10Txt;
+	
 	private boolean internalCrane11Chk;
+	private boolean internalCrane11Chkn;
 	private String internalCrane11Txt;
+	
 	private boolean internalCrane12Chk;
+	private boolean internalCrane12Chkn;
 	private String internalCrane12Txt;
+	
 	private boolean internalCrane13Chk;
+	private boolean internalCrane13Chkn;
 	private String internalCrane13Txt;
+	
 	private boolean internalCrane14Chk;
+	private boolean internalCrane14Chkn;
 	private String internalCrane14Txt;
+	
 	private boolean internalCrane15Chk;
+	private boolean internalCrane15Chkn;
 	private String internalCrane15Txt;
+	
 	private boolean internalCrane16Chk;
+	private boolean internalCrane16Chkn;
 	private String internalCrane16Txt;
+	
 	private boolean internalCrane17Chk;
+	private boolean internalCrane17Chkn;
 	private String internalCrane17Txt;
+	
 	private boolean internalCrane18Chk;
+	private boolean internalCrane18Chkn;
 	private String internalCrane18Txt;
+	
 	private boolean internalCrane19Chk;
+	private boolean internalCrane19Chkn;
 	private String internalCrane19Txt;
+	
 	private boolean internalCrane20Chk;
+	private boolean internalCrane20Chkn;
 	private String internalCrane20Txt;
+	
 	private boolean internalCrane21Chk;
+	private boolean internalCrane21Chkn;
 	private String internalCrane21Txt;
+	
 	private boolean internalCrane22Chk;
+	private boolean internalCrane22Chkn;
 	private String internalCrane22Txt;
+	
 	private boolean internalCrane23Chk;
+	private boolean internalCrane23Chkn;
 	private String internalCrane23Txt;
+	
 	private boolean internalCrane24Chk;
+	private boolean internalCrane24Chkn;
 	private String internalCrane24Txt;
 
 	private String internalCraneNotes;

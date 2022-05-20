@@ -463,6 +463,64 @@ public class StatutoryInspectionReportElevatorPopulater {
 		setField("inspectionReportServiceCabin51Chk", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin51Chk() ? "Yes" : "Off");
 		setField("inspectionReportServiceCabin52Chk", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin52Chk() ? "Yes" : "Off");
 		setField("inspectionReportServiceCabin53Chk", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin53Chk() ? "Yes" : "Off");
+		
+		
+		
+		
+		setField("inspectionReportServiceCabin1Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin1Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin2Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin2Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin3Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin3Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin4Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin4Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin5Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin5Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin6Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin6Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin7Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin7Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin8Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin8Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin9Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin9Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin10Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin10Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin11Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin11Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin12Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin12Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin13Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin13Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin14Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin14Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin15Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin15Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin16Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin16Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin17Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin17Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin18Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin18Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin19Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin19Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin20Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin20Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin21Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin21Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin22Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin22Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin23Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin23Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin24Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin24Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin25Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin25Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin26Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin26Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin27Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin27Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin28Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin28Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin29Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin29Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin30Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin30Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin31Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin31Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin32Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin32Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin33Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin33Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin34Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin34Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin35Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin35Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin36Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin36Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin37Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin37Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin38Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin38Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin39Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin39Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin40Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin40Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin41Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin41Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin42Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin42Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin43Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin43Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin44Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin44Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin45Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin45Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin46Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin46Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin47Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin47Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin48Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin48Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin49Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin49Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin50Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin50Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin51Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin51Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin52Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin52Chkn() ? "Yes" : "Off");
+		setField("inspectionReportServiceCabin53Chkn", statutoryInspectionReportServiceCabin.isInspectionReportServiceCabin53Chkn() ? "Yes" : "Off");
+		
 
 		// 2.2 Internal Crane
 		// -----------------------------------------------------------;
@@ -491,6 +549,33 @@ public class StatutoryInspectionReportElevatorPopulater {
 		setField("internalCrane22Chk", statutoryInspectionReportInternalCrane.isInternalCrane22Chk() ? "Yes" : "Off");
 		setField("internalCrane23Chk", statutoryInspectionReportInternalCrane.isInternalCrane23Chk() ? "Yes" : "Off");
 		setField("internalCrane24Chk", statutoryInspectionReportInternalCrane.isInternalCrane24Chk() ? "Yes" : "Off");
+		
+		
+		setField("internalCrane1Chkn", statutoryInspectionReportInternalCrane.isInternalCrane1Chkn() ? "Yes" : "Off");
+		setField("internalCrane2Chkn", statutoryInspectionReportInternalCrane.isInternalCrane2Chkn() ? "Yes" : "Off");
+		setField("internalCrane3Chkn", statutoryInspectionReportInternalCrane.isInternalCrane3Chkn() ? "Yes" : "Off");
+		setField("internalCrane4Chkn", statutoryInspectionReportInternalCrane.isInternalCrane4Chkn() ? "Yes" : "Off");
+		setField("internalCrane5Chkn", statutoryInspectionReportInternalCrane.isInternalCrane5Chkn() ? "Yes" : "Off");
+		setField("internalCrane6Chkn", statutoryInspectionReportInternalCrane.isInternalCrane6Chkn() ? "Yes" : "Off");
+		setField("internalCrane7Chkn", statutoryInspectionReportInternalCrane.isInternalCrane7Chkn() ? "Yes" : "Off");
+		setField("internalCrane8Chkn", statutoryInspectionReportInternalCrane.isInternalCrane8Chkn() ? "Yes" : "Off");
+		setField("internalCrane9Chkn", statutoryInspectionReportInternalCrane.isInternalCrane9Chkn() ? "Yes" : "Off");
+		setField("internalCrane10Chkn", statutoryInspectionReportInternalCrane.isInternalCrane10Chkn() ? "Yes" : "Off");
+		setField("internalCrane11Chkn", statutoryInspectionReportInternalCrane.isInternalCrane11Chkn() ? "Yes" : "Off");
+		setField("internalCrane12Chkn", statutoryInspectionReportInternalCrane.isInternalCrane12Chkn() ? "Yes" : "Off");
+		setField("internalCrane13Chkn", statutoryInspectionReportInternalCrane.isInternalCrane13Chkn() ? "Yes" : "Off");
+		setField("internalCrane14Chkn", statutoryInspectionReportInternalCrane.isInternalCrane14Chkn() ? "Yes" : "Off");
+		setField("internalCrane15Chkn", statutoryInspectionReportInternalCrane.isInternalCrane15Chkn() ? "Yes" : "Off");
+		setField("internalCrane16Chkn", statutoryInspectionReportInternalCrane.isInternalCrane16Chkn() ? "Yes" : "Off");
+		setField("internalCrane17Chkn", statutoryInspectionReportInternalCrane.isInternalCrane17Chkn() ? "Yes" : "Off");
+		setField("internalCrane18Chkn", statutoryInspectionReportInternalCrane.isInternalCrane18Chkn() ? "Yes" : "Off");
+		setField("internalCrane19Chkn", statutoryInspectionReportInternalCrane.isInternalCrane19Chkn() ? "Yes" : "Off");
+		setField("internalCrane20Chkn", statutoryInspectionReportInternalCrane.isInternalCrane20Chkn() ? "Yes" : "Off");
+		setField("internalCrane21Chkn", statutoryInspectionReportInternalCrane.isInternalCrane21Chkn() ? "Yes" : "Off");
+		setField("internalCrane22Chkn", statutoryInspectionReportInternalCrane.isInternalCrane22Chkn() ? "Yes" : "Off");
+		setField("internalCrane23Chkn", statutoryInspectionReportInternalCrane.isInternalCrane23Chkn() ? "Yes" : "Off");
+		setField("internalCrane24Chkn", statutoryInspectionReportInternalCrane.isInternalCrane24Chkn() ? "Yes" : "Off");
+		
 
 		// 2.3 Inspection Report Ladder
 		// -----------------------------------------------------------;
@@ -544,6 +629,57 @@ public class StatutoryInspectionReportElevatorPopulater {
 		setField("inspectionReportLadder47Chk", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder47Chk() ? "Yes" : "Off");
 		setField("inspectionReportLadder48Chk", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder48Chk() ? "Yes" : "Off");
 		setField("inspectionReportLadder49Chk", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder49Chk() ? "Yes" : "Off");
+		
+		setField("inspectionReportLadder1Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder1Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder2Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder2Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder3Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder3Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder4Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder4Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder5Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder5Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder6Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder6Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder7Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder7Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder8Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder8Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder9Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder9Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder10Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder10Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder11Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder11Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder12Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder12Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder13Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder13Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder14Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder14Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder15Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder15Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder16Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder16Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder17Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder17Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder18Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder18Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder19Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder19Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder20Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder20Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder21Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder21Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder22Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder22Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder23Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder23Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder24Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder24Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder25Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder25Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder26Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder26Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder27Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder27Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder28Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder28Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder29Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder29Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder30Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder30Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder31Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder31Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder32Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder32Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder33Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder33Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder34Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder34Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder35Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder35Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder36Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder36Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder37Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder37Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder38Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder38Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder39Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder39Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder40Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder40Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder41Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder41Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder42Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder42Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder43Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder43Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder44Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder44Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder45Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder45Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder46Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder46Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder47Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder47Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder48Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder48Chkn() ? "Yes" : "Off");
+		setField("inspectionReportLadder49Chkn", statutoryInspectionReportInspectionReportLadder.isInspectionReportLadder49Chkn() ? "Yes" : "Off");
+		
 
 		// 2.4 Inspection Anchor Points
 		// -----------------------------------------------------------
@@ -579,6 +715,37 @@ public class StatutoryInspectionReportElevatorPopulater {
 		setField("inspectionAnchorPoints29Chk", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints29Chk() ? "Yes" : "Off");
 		setField("inspectionAnchorPoints30Chk", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints30Chk() ? "Yes" : "Off");
 
+		setField("inspectionAnchorPoints1Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints1Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints2Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints2Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints3Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints3Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints4Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints4Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints5Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints5Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints6Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints6Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints7Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints7Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints8Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints8Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints9Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints9Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints10Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints10Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints11Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints11Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints12Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints12Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints13Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints13Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints14Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints14Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints15Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints15Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints16Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints16Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints17Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints17Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints18Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints18Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints19Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints19Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints20Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints20Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints21Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints21Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints22Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints22Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints23Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints23Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints24Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints24Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints25Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints25Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints26Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints26Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints27Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints27Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints28Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints28Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints29Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints29Chkn() ? "Yes" : "Off");
+		setField("inspectionAnchorPoints30Chkn", statutoryInspectionReportInspectionAnchorPoints.isInspectionAnchorPoints30Chkn() ? "Yes" : "Off");
+		
 		// 2.5 Inspection descender device ------------------------------------------"
 
 		setField("inspectionDescenderDevice1Chk", statutoryInspectionReportInspectionDescenderDevice.isInspectionDescenderDevice1Chk() ? "Yes" : "Off");
@@ -588,6 +755,30 @@ public class StatutoryInspectionReportElevatorPopulater {
 		setField("inspectionDescenderDevice5Chk", statutoryInspectionReportInspectionDescenderDevice.isInspectionDescenderDevice5Chk() ? "Yes" : "Off");
 		setField("inspectionDescenderDevice6Chk", statutoryInspectionReportInspectionDescenderDevice.isInspectionDescenderDevice6Chk() ? "Yes" : "Off");
 
+		setField("inspectionDescenderDevice1Chkn", statutoryInspectionReportInspectionDescenderDevice.isInspectionDescenderDevice1Chkn() ? "Yes" : "Off");
+		setField("inspectionDescenderDevice2Chkn", statutoryInspectionReportInspectionDescenderDevice.isInspectionDescenderDevice2Chkn() ? "Yes" : "Off");
+		setField("inspectionDescenderDevice3Chkn", statutoryInspectionReportInspectionDescenderDevice.isInspectionDescenderDevice3Chkn() ? "Yes" : "Off");
+		setField("inspectionDescenderDevice4Chkn", statutoryInspectionReportInspectionDescenderDevice.isInspectionDescenderDevice4Chkn() ? "Yes" : "Off");
+		setField("inspectionDescenderDevice5Chkn", statutoryInspectionReportInspectionDescenderDevice.isInspectionDescenderDevice5Chkn() ? "Yes" : "Off");
+		setField("inspectionDescenderDevice6Chkn", statutoryInspectionReportInspectionDescenderDevice.isInspectionDescenderDevice6Chkn() ? "Yes" : "Off");
+		
+		setField("insertImagesChk", report.getInsertImagesChk());
+		
+		setField("additionalField1Label", report.getAdditionalField1Label());
+		setField("additionalField1Text", report.getAdditionalField1Text());
+		setField("additionalField2Label", report.getAdditionalField2Label());
+		setField("additionalField2Text", report.getAdditionalField2Text());
+		setField("additionalField3Label", report.getAdditionalField3Label());
+		setField("additionalField3Text", report.getAdditionalField3Text());
+		setField("additionalField4Label", report.getAdditionalField4Label());
+		setField("additionalField4Text", report.getAdditionalField4Text());
+		setField("additionalField5Label", report.getAdditionalField5Label());
+		setField("additionalField5Text", report.getAdditionalField5Text());
+		setField("additionalField6Label", report.getAdditionalField6Label());
+		setField("additionalField6Text", report.getAdditionalField6Text());
+		setField("additionalField7Label", report.getAdditionalField7Label());
+		setField("additionalField7Text", report.getAdditionalField7Text());
+		
 		List<FileData> listFileData = null;
 		byte[] bytes = null;
 

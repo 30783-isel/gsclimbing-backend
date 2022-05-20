@@ -48,102 +48,199 @@ public class StatutoryInspectionReportInspectionReportLadder implements Statutor
 	private String inspectionReportLadderNextInspection;
 
 	private boolean inspectionReportLadder1Chk;
+	private boolean inspectionReportLadder1Chkn;
 	private String inspectionReportLadder1Txt;
+	
 	private boolean inspectionReportLadder2Chk ;
+	private boolean inspectionReportLadder2Chkn ;
 	private String inspectionReportLadder2Txt ;
+	
 	private boolean inspectionReportLadder3Chk ;
+	private boolean inspectionReportLadder3Chkn ;
 	private String inspectionReportLadder3Txt ;
+	
 	private boolean inspectionReportLadder4Chk ;
+	private boolean inspectionReportLadder4Chkn ;
 	private String inspectionReportLadder4Txt ;
+	
 	private boolean inspectionReportLadder5Chk ;
+	private boolean inspectionReportLadder5Chkn ;
 	private String inspectionReportLadder5Txt ;
+	
 	private boolean inspectionReportLadder6Chk ;
+	private boolean inspectionReportLadder6Chkn ;
 	private String inspectionReportLadder6Txt ;
+	
 	private boolean inspectionReportLadder7Chk ;
+	private boolean inspectionReportLadder7Chkn ;
 	private String inspectionReportLadder7Txt ;
+	
 	private boolean inspectionReportLadder8Chk ;
+	private boolean inspectionReportLadder8Chkn ;
 	private String inspectionReportLadder8Txt ;
+	
 	private boolean inspectionReportLadder9Chk ;
+	private boolean inspectionReportLadder9Chkn ;
 	private String inspectionReportLadder9Txt ;
+	
 	private boolean inspectionReportLadder10Chk;
+	private boolean inspectionReportLadder10Chkn;
 	private String inspectionReportLadder10Txt;
+	
 	private boolean inspectionReportLadder11Chk;
+	private boolean inspectionReportLadder11Chkn;
 	private String inspectionReportLadder11Txt;
+	
 	private boolean inspectionReportLadder12Chk;
+	private boolean inspectionReportLadder12Chkn;
 	private String inspectionReportLadder12Txt;
+	
 	private boolean inspectionReportLadder13Chk;
+	private boolean inspectionReportLadder13Chkn;
 	private String inspectionReportLadder13Txt;
+	
 	private boolean inspectionReportLadder14Chk;
+	private boolean inspectionReportLadder14Chkn;
 	private String inspectionReportLadder14Txt;
+	
 	private boolean inspectionReportLadder15Chk;
+	private boolean inspectionReportLadder15Chkn;
 	private String inspectionReportLadder15Txt;
+	
 	private boolean inspectionReportLadder16Chk;
+	private boolean inspectionReportLadder16Chkn;
 	private String inspectionReportLadder16Txt;
+	
 	private boolean inspectionReportLadder17Chk;
+	private boolean inspectionReportLadder17Chkn;
 	private String inspectionReportLadder17Txt;
+	
 	private boolean inspectionReportLadder18Chk;
+	private boolean inspectionReportLadder18Chkn;
 	private String inspectionReportLadder18Txt;
+	
 	private boolean inspectionReportLadder19Chk;
+	private boolean inspectionReportLadder19Chkn;
 	private String inspectionReportLadder19Txt;
+	
 	private boolean inspectionReportLadder20Chk;
+	private boolean inspectionReportLadder20Chkn;
 	private String inspectionReportLadder20Txt;
+	
 	private boolean inspectionReportLadder21Chk;
+	private boolean inspectionReportLadder21Chkn;
 	private String inspectionReportLadder21Txt;
+	
 	private boolean inspectionReportLadder22Chk;
+	private boolean inspectionReportLadder22Chkn;
 	private String inspectionReportLadder22Txt;
+	
 	private boolean inspectionReportLadder23Chk;
+	private boolean inspectionReportLadder23Chkn;
 	private String inspectionReportLadder23Txt;
+	
 	private boolean inspectionReportLadder24Chk;
+	private boolean inspectionReportLadder24Chkn;
 	private String inspectionReportLadder24Txt;
+	
 	private boolean inspectionReportLadder25Chk;
+	private boolean inspectionReportLadder25Chkn;
 	private String inspectionReportLadder25Txt;
+	
 	private boolean inspectionReportLadder26Chk;
+	private boolean inspectionReportLadder26Chkn;
 	private String inspectionReportLadder26Txt;
+	
 	private boolean inspectionReportLadder27Chk;
+	private boolean inspectionReportLadder27Chkn;
 	private String inspectionReportLadder27Txt;
+	
 	private boolean inspectionReportLadder28Chk;
+	private boolean inspectionReportLadder28Chkn;
 	private String inspectionReportLadder28Txt;
+	
 	private boolean inspectionReportLadder29Chk;
+	private boolean inspectionReportLadder29Chkn;
 	private String inspectionReportLadder29Txt;
+	
 	private boolean inspectionReportLadder30Chk;
+	private boolean inspectionReportLadder30Chkn;
 	private String inspectionReportLadder30Txt;
+	
 	private boolean inspectionReportLadder31Chk;
+	private boolean inspectionReportLadder31Chkn;
 	private String inspectionReportLadder31Txt;
+	
 	private boolean inspectionReportLadder32Chk;
+	private boolean inspectionReportLadder32Chkn;
 	private String inspectionReportLadder32Txt;
+	
 	private boolean inspectionReportLadder33Chk;
+	private boolean inspectionReportLadder33Chkn;
 	private String inspectionReportLadder33Txt;
+	
 	private boolean inspectionReportLadder34Chk;
+	private boolean inspectionReportLadder34Chkn;
 	private String inspectionReportLadder34Txt;
+	
 	private boolean inspectionReportLadder35Chk;
+	private boolean inspectionReportLadder35Chkn;
 	private String inspectionReportLadder35Txt;
+	
 	private boolean inspectionReportLadder36Chk;
+	private boolean inspectionReportLadder36Chkn;
 	private String inspectionReportLadder36Txt;
+	
 	private boolean inspectionReportLadder37Chk;
+	private boolean inspectionReportLadder37Chkn;
 	private String inspectionReportLadder37Txt;
+	
 	private boolean inspectionReportLadder38Chk;
+	private boolean inspectionReportLadder38Chkn;
 	private String inspectionReportLadder38Txt;
+	
 	private boolean inspectionReportLadder39Chk;
+	private boolean inspectionReportLadder39Chkn;
 	private String inspectionReportLadder39Txt;
+	
 	private boolean inspectionReportLadder40Chk;
+	private boolean inspectionReportLadder40Chkn;
 	private String inspectionReportLadder40Txt;
+	
 	private boolean inspectionReportLadder41Chk;
+	private boolean inspectionReportLadder41Chkn;
 	private String inspectionReportLadder41Txt;
+	
 	private boolean inspectionReportLadder42Chk;
+	private boolean inspectionReportLadder42Chkn;
 	private String inspectionReportLadder42Txt;
+	
 	private boolean inspectionReportLadder43Chk;
+	private boolean inspectionReportLadder43Chkn;
 	private String inspectionReportLadder43Txt;
+	
 	private boolean inspectionReportLadder44Chk;
+	private boolean inspectionReportLadder44Chkn;
 	private String inspectionReportLadder44Txt;
+	
 	private boolean inspectionReportLadder45Chk;
+	private boolean inspectionReportLadder45Chkn;
 	private String inspectionReportLadder45Txt;
+	
 	private boolean inspectionReportLadder46Chk;
+	private boolean inspectionReportLadder46Chkn;
 	private String inspectionReportLadder46Txt;
+	
 	private boolean inspectionReportLadder47Chk;
+	private boolean inspectionReportLadder47Chkn;
 	private String inspectionReportLadder47Txt;
+	
 	private boolean inspectionReportLadder48Chk;
+	private boolean inspectionReportLadder48Chkn;
 	private String inspectionReportLadder48Txt;
+	
 	private boolean inspectionReportLadder49Chk;
+	private boolean inspectionReportLadder49Chkn;
 	private String inspectionReportLadder49Txt;
 
 	private String inspectionReportLadderNotes;

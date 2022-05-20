@@ -26,56 +26,106 @@ public class OnboardCraneInspectionReport extends Report implements Cloneable {
 	private String repairRequired;
 	private String nextInspection;
 
+	private boolean readingOperatingBusChkn;
 	private boolean readingOperatingBusChk;
 	private String readingOperatingBusTxt;
-	private boolean InterruptVoltageSupplyChk;
-	private String InterruptVoltageSupplyTxt;
+
+	private boolean interruptVoltageSupplyChkn;
+	private boolean interruptVoltageSupplyChk;
+	private String interruptVoltageSupplyTxt;
+	
+	private boolean circuitDiagramPositionChkn;
 	private boolean circuitDiagramPositionChk;
 	private String circuitDiagramPositionTxt;
+	
+	private boolean warningSignsChkn;
 	private boolean warningSignsChk;
 	private String warningSignsTxt;
+	
+	private boolean cablesSignsChkn;
 	private boolean cablesSignsChk;
 	private String cablesSignsTxt;
+	
+	private boolean screwedCableGlandsChkn;
 	private boolean screwedCableGlandsChk;
 	private String screwedCableGlandsTxt;
+
+	private boolean openSwitchCabinetCoverChkn;
 	private boolean openSwitchCabinetCoverChk;
 	private String openSwitchCabinetCoverTxt;
+	
+	private boolean checkOperatingUnitChkn;
 	private boolean checkOperatingUnitChk;
 	private String checkOperatingUnitTxt;
+	
+	private boolean checkLimitSwitchesChkn;
 	private boolean checkLimitSwitchesChk;
 	private String checkLimitSwitchesTxt;
+	
+	private boolean setVoltageSupplyChkn;
 	private boolean setVoltageSupplyChk;
 	private String setVoltageSupplyTxt;
+	
+	private boolean checkMotorBrakeChkn;
 	private boolean checkMotorBrakeChk;
 	private String checkMotorBrakeTxt;
+	
+	private boolean checkRopeMechanicalDamageChkn;
 	private boolean checkRopeMechanicalDamageChk;
 	private String checkRopeMechanicalDamageTxt;
+	
+	private boolean checkLoadHookMechanicalChkn;
 	private boolean checkLoadHookMechanicalChk;
 	private String checkLoadHookMechanicalTxt;
+	
+	private boolean carryVisualInspectionChkn;
 	private boolean carryVisualInspectionChk;
 	private String carryVisualInspectionTxt;
+
+	private boolean usefeelerGaugeChkn;
 	private boolean usefeelerGaugeChk;
 	private String usefeelerGaugeTxt;
+	
+	private boolean checkLimitSwitchRockersChkn;
 	private boolean checkLimitSwitchRockersChk;
 	private String checkLimitSwitchRockersTxt;
+	
+	private boolean checkCraneBridgeChkn;
 	private boolean checkCraneBridgeChk;
 	private String checkCraneBridgeTxt;
+	
+	private boolean checkCrabChkn;
 	private boolean checkCrabChk;
 	private String checkCrabTxt;
+	
+	private boolean checkDeflectionRollersChkn;
 	private boolean checkDeflectionRollersChk;
 	private String checkDeflectionRollersTxt;
+	
+	private boolean checkScrewJointsChkn;
 	private boolean checkScrewJointsChk;
 	private String checkScrewJointsTxt;
+	
+	private boolean checkAllRollersBridgeChkn;
 	private boolean checkAllRollersBridgeChk;
 	private String checkAllRollersBridgeTxt;
+	
+	private boolean checkAllStopBuffersChkn;
 	private boolean checkAllStopBuffersChk;
 	private String checkAllStopBuffersTxt;
+	
+	private boolean checkAllComponentsChkn;
 	private boolean checkAllComponentsChk;
 	private String checkAllComponentsTxt;
+	
+	private boolean ancorPointSafetyEquipmentChkn;
 	private boolean ancorPointSafetyEquipmentChk;
 	private String ancorPointSafetyEquipmentTxt;
+	
+	private boolean loadTestChkn;
 	private boolean loadTestChk;
 	private String loadTestTxt;
+	
 	private String notes;
 
 	@Transient
@@ -102,7 +152,7 @@ public class OnboardCraneInspectionReport extends Report implements Cloneable {
 		mapa.put("nextInspection", "Next Inspection");
 		mapa.put("notes", "Notes");
 		mapa.put("readingOperatingBusTxt", "Reading of the operating hours");
-		mapa.put("InterruptVoltageSupplyTxt", "Interrupt the voltage supply to the crane");
+		mapa.put("interruptVoltageSupplyTxt", "Interrupt the voltage supply to the crane");
 		mapa.put("circuitDiagramPositionTxt", "Check that the circuit diagram is in position in the switch cabinet");
 		mapa.put("warningSignsTxt", "Check that the warning signs on the switch cabinet");
 		mapa.put("cablesSignsTxt", "Check all cables for signs of outer damage");

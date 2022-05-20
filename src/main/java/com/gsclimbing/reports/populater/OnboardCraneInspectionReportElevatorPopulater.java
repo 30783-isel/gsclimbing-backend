@@ -76,7 +76,7 @@ public class OnboardCraneInspectionReportElevatorPopulater {
 		setField("site", report.getSite());
 		setField("wtgNumber", report.getWtgNumber());
 		setField("wtgType", report.getWtgType());
-
+		setField("insertImagesChk", report.getInsertImagesChk());
 		setField("manufacturerOnboardCrane", report.getManufacturerOnboardCrane());
 		setField("type", report.getType());
 		setField("yearBuild", report.getYearBuild());
@@ -89,7 +89,7 @@ public class OnboardCraneInspectionReportElevatorPopulater {
 		setField("nextInspection", report.getNextInspection());
 		
 		setField("readingOperatingBusTxt",report.getReadingOperatingBusTxt());
-		setField("InterruptVoltageSupplyTxt", report.getInterruptVoltageSupplyTxt());
+		setField("interruptVoltageSupplyTxt", report.getInterruptVoltageSupplyTxt());
 		setField("circuitDiagramPositionTxt",report.getCircuitDiagramPositionTxt());
 		setField("warningSignsTxt",report.getWarningSignsTxt());
 		setField("cablesSignsTxt", report.getCablesSignsTxt());
@@ -97,7 +97,6 @@ public class OnboardCraneInspectionReportElevatorPopulater {
 		setField("openSwitchCabinetCoverTxt", report.getOpenSwitchCabinetCoverTxt());
 		setField("checkOperatingUnitTxt", report.getCheckOperatingUnitTxt());
 		setField("checkLimitSwitchesTxt", report.getCheckLimitSwitchesTxt());
-		setField("getVoltageSupplyTxt", report.getSetVoltageSupplyTxt());
 		setField("checkMotorBrakeTxt", report.getCheckMotorBrakeTxt());
 		setField("checkRopeMechanicalDamageTxt", report.getCheckRopeMechanicalDamageTxt());
 		setField("checkLoadHookMechanicalTxt", report.getCheckLoadHookMechanicalTxt());
@@ -118,30 +117,93 @@ public class OnboardCraneInspectionReportElevatorPopulater {
 		
 		
 		setField("readingOperatingBusChk",report.isReadingOperatingBusChk() ? "Yes" : "Off");
-		setField("InterruptVoltageSupplyChk",report.isInterruptVoltageSupplyChk() ? "Yes" : "Off");
+		setField("readingOperatingBusChkn",report.isReadingOperatingBusChkn() ? "Yes" : "Off");
+		
+		setField("interruptVoltageSupplyChk",report.isInterruptVoltageSupplyChk() ? "Yes" : "Off");
+		setField("interruptVoltageSupplyChkn",report.isInterruptVoltageSupplyChkn() ? "Yes" : "Off");
+		
 		setField("circuitDiagramPositionChk",report.isCircuitDiagramPositionChk() ? "Yes" : "Off");
+		setField("circuitDiagramPositionChkn",report.isCircuitDiagramPositionChkn() ? "Yes" : "Off");
+		
 		setField("warningSignsChk",report.isWarningSignsChk() ? "Yes" : "Off");
+		setField("warningSignsChkn",report.isWarningSignsChkn() ? "Yes" : "Off");
+		
 		setField("cablesSignsChk",report.isCablesSignsChk() ? "Yes" : "Off");
+		setField("cablesSignsChkn",report.isCablesSignsChkn() ? "Yes" : "Off");
+		
 		setField("screwedCableGlandsChk",report.isScrewedCableGlandsChk() ? "Yes" : "Off");
+		setField("screwedCableGlandsChkn",report.isScrewedCableGlandsChkn() ? "Yes" : "Off");
+		
 		setField("openSwitchCabinetCoverChk",report.isOpenSwitchCabinetCoverChk() ? "Yes" : "Off");
+		setField("openSwitchCabinetCoverChkn",report.isOpenSwitchCabinetCoverChkn() ? "Yes" : "Off");
+		
 		setField("checkOperatingUnitChk",report.isCheckOperatingUnitChk() ? "Yes" : "Off");
+		setField("checkOperatingUnitChkn",report.isCheckOperatingUnitChkn() ? "Yes" : "Off");
+		
 		setField("checkLimitSwitchesChk",report.isCheckLimitSwitchesChk() ? "Yes" : "Off");
+		setField("checkLimitSwitchesChkn",report.isCheckLimitSwitchesChkn() ? "Yes" : "Off");
+		
 		setField("setVoltageSupplyChk",report.isSetVoltageSupplyChk() ? "Yes" : "Off");
+		setField("setVoltageSupplyChkn",report.isSetVoltageSupplyChkn() ? "Yes" : "Off");
+		
 		setField("checkMotorBrakeChk",report.isCheckMotorBrakeChk() ? "Yes" : "Off");
+		setField("checkMotorBrakeChkn",report.isCheckMotorBrakeChkn() ? "Yes" : "Off");
+		
 		setField("checkRopeMechanicalDamageChk",report.isCheckRopeMechanicalDamageChk() ? "Yes" : "Off");
+		setField("checkRopeMechanicalDamageChkn",report.isCheckRopeMechanicalDamageChkn() ? "Yes" : "Off");
+		
 		setField("checkLoadHookMechanicalChk",report.isCheckLoadHookMechanicalChk() ? "Yes" : "Off");
+		setField("checkLoadHookMechanicalChkn",report.isCheckLoadHookMechanicalChkn() ? "Yes" : "Off");
+		
 		setField("carryVisualInspectionChk",report.isCarryVisualInspectionChk() ? "Yes" : "Off");
+		setField("carryVisualInspectionChkn",report.isCarryVisualInspectionChkn() ? "Yes" : "Off");
+		
 		setField("usefeelerGaugeChk",report.isUsefeelerGaugeChk() ? "Yes" : "Off");
+		setField("usefeelerGaugeChkn",report.isUsefeelerGaugeChkn() ? "Yes" : "Off");
+		
 		setField("checkLimitSwitchRockersChk",report.isCheckLimitSwitchRockersChk() ? "Yes" : "Off");
+		setField("checkLimitSwitchRockersChkn",report.isCheckLimitSwitchRockersChkn() ? "Yes" : "Off");
+		
 		setField("checkCraneBridgeChk",report.isCheckCraneBridgeChk() ? "Yes" : "Off");
+		setField("checkCraneBridgeChkn",report.isCheckCraneBridgeChkn() ? "Yes" : "Off");
+		
 		setField("checkCrabChk",report.isCheckCrabChk() ? "Yes" : "Off");
+		setField("checkCrabChkn",report.isCheckCrabChkn() ? "Yes" : "Off");
+		
 		setField("checkDeflectionRollersChk",report.isCheckDeflectionRollersChk() ? "Yes" : "Off");
+		setField("checkDeflectionRollersChkn",report.isCheckDeflectionRollersChkn() ? "Yes" : "Off");
+		
 		setField("checkScrewJointsChk",report.isCheckScrewJointsChk() ? "Yes" : "Off");
+		setField("checkScrewJointsChkn",report.isCheckScrewJointsChkn() ? "Yes" : "Off");
+		
 		setField("checkAllRollersBridgeChk",report.isCheckAllRollersBridgeChk() ? "Yes" : "Off");
+		setField("checkAllRollersBridgeChkn",report.isCheckAllRollersBridgeChkn() ? "Yes" : "Off");
+		
 		setField("checkAllStopBuffersChk",report.isCheckAllStopBuffersChk() ? "Yes" : "Off");
+		setField("checkAllStopBuffersChkn",report.isCheckAllStopBuffersChkn() ? "Yes" : "Off");
+		
 		setField("checkAllComponentsChk",report.isCheckAllComponentsChk() ? "Yes" : "Off");
+		setField("checkAllComponentsChkn",report.isCheckAllComponentsChkn() ? "Yes" : "Off");
+		
 		setField("ancorPointSafetyEquipmentChk",report.isAncorPointSafetyEquipmentChk() ? "Yes" : "Off");
+		setField("ancorPointSafetyEquipmentChkn",report.isAncorPointSafetyEquipmentChkn() ? "Yes" : "Off");
+		
 		setField("loadTestChk",report.isLoadTestChk() ? "Yes" : "Off");
+		
+		setField("additionalField1Label", report.getAdditionalField1Label());
+		setField("additionalField1Text", report.getAdditionalField1Text());
+		setField("additionalField2Label", report.getAdditionalField2Label());
+		setField("additionalField2Text", report.getAdditionalField2Text());
+		setField("additionalField3Label", report.getAdditionalField3Label());
+		setField("additionalField3Text", report.getAdditionalField3Text());
+		setField("additionalField4Label", report.getAdditionalField4Label());
+		setField("additionalField4Text", report.getAdditionalField4Text());
+		setField("additionalField5Label", report.getAdditionalField5Label());
+		setField("additionalField5Text", report.getAdditionalField5Text());
+		setField("additionalField6Label", report.getAdditionalField6Label());
+		setField("additionalField6Text", report.getAdditionalField6Text());
+		setField("additionalField7Label", report.getAdditionalField7Label());
+		setField("additionalField7Text", report.getAdditionalField7Text());
 		
 		
 

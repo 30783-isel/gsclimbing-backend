@@ -138,6 +138,7 @@ public class ExtractDataExaminationTransformer {
 		getListPhotoNames().clear();
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
 		List<PDField> fields = acroForm.getFields();
+		boolean imageInsertion = false;
 		for (PDField field : fields) {
 			if (field instanceof PDTextField) {
 				String valueField = ((PDTextField) field).getValue();
@@ -283,7 +284,37 @@ public class ExtractDataExaminationTransformer {
 					getExaminationTransformer().setPerformedBy(valueField);
 				if (nameField.equals("date"))
 					getExaminationTransformer().setDate(valueField);
-				if (nameField.contains("Description")) {
+							
+				if (nameField.equals("additionalField1Label"))
+					getExaminationTransformer().setAdditionalField1Label(valueField);
+				if (nameField.equals("additionalField1Text"))
+					getExaminationTransformer().setAdditionalField1Text(valueField);
+				if (nameField.equals("additionalField2Label"))
+					getExaminationTransformer().setAdditionalField2Label(valueField);
+				if (nameField.equals("additionalField2Text"))
+					getExaminationTransformer().setAdditionalField2Text(valueField);
+				if (nameField.equals("additionalField3Label"))
+					getExaminationTransformer().setAdditionalField3Label(valueField);
+				if (nameField.equals("additionalField3Text"))
+					getExaminationTransformer().setAdditionalField3Text(valueField);
+				if (nameField.equals("additionalField4Label"))
+					getExaminationTransformer().setAdditionalField4Label(valueField);
+				if (nameField.equals("additionalField4Text"))
+					getExaminationTransformer().setAdditionalField4Text(valueField);
+				if (nameField.equals("additionalField5Label"))
+					getExaminationTransformer().setAdditionalField5Label(valueField);
+				if (nameField.equals("additionalField5Text"))
+					getExaminationTransformer().setAdditionalField5Text(valueField);
+				if (nameField.equals("additionalField6Label"))
+					getExaminationTransformer().setAdditionalField6Label(valueField);
+				if (nameField.equals("additionalField6Text"))
+					getExaminationTransformer().setAdditionalField6Text(valueField);
+				if (nameField.equals("additionalField7Label"))
+					getExaminationTransformer().setAdditionalField7Label(valueField);
+				if (nameField.equals("additionalField7Text"))
+					getExaminationTransformer().setAdditionalField7Text(valueField);
+				
+				if (nameField.contains("description") && imageInsertion) {
 					setNameField(nameField);
 					setDescription(valueField);
 				}
@@ -298,10 +329,19 @@ public class ExtractDataExaminationTransformer {
 					getExaminationTransformer().setCorrect2(valueField);
 				if (nameField.equals("notCorrect2"))
 					getExaminationTransformer().setNotCorrect2(valueField);
+				if (nameField.equals("insertImagesChk")) {
+					getExaminationTransformer().setInsertImagesChk(valueField);
+					if ("Yes".equals(valueField)) {
+						imageInsertion = true;
+					} else if ("Off".equals(valueField)) {
+						imageInsertion = false;
+					}
+				}
 			} else if (field instanceof PDRadioButton) {
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDRadioButton) field).getValue();
 			} else if (field instanceof PDPushButton) {
+				if (imageInsertion) {
 				String nameField = field.getFullyQualifiedName();
 				for (final PDAnnotationWidget widget : field.getWidgets()) {
 					WidgetImageChecker checker = new WidgetImageChecker(widget);
@@ -319,6 +359,7 @@ public class ExtractDataExaminationTransformer {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
+				}
 				}
 			}
 		}

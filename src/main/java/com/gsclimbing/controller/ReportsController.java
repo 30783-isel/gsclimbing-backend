@@ -162,7 +162,7 @@ public class ReportsController {
 				String subject = "User " + user.getUsername() + " inserted a new Defects Inspection Report on project " + project.getName();
 				byte[] bytes = null;
 				bytes = generatePDF(typeReport, report);
-				runnable = new SendEmail("reports@gsclimbing.com", subject, org.apache.commons.lang3.StringUtils.EMPTY,  "Defects Inspection Report.pdf", bytes);
+				runnable = new SendEmail("reports@gsclimbing.com", subject, org.apache.commons.lang3.StringUtils.EMPTY, ReportEnum.values()[typeReport].label + ".pdf", bytes);
 				Thread t = new Thread(runnable);
 				t.start();
 			} else {
@@ -182,15 +182,14 @@ public class ReportsController {
 			return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
 		}
 	}
-	
-	
+
 	private String convertEmptyListToString(List<String> lista) {
 		StringBuilder strBuilder = new StringBuilder();
 		lista.stream().forEach(str -> {
 			strBuilder.append(str);
 			strBuilder.append(System.lineSeparator());
 		});
-		
+
 		return strBuilder.toString();
 	}
 
@@ -393,14 +392,12 @@ public class ReportsController {
 				}
 			}
 		}
-		if("Yes".equals(report.getInsertImagesChk())){
-			if( (!(report instanceof StatutoryInspectionReport) && report.getListaFileData().size() < 3) || ((report instanceof StatutoryInspectionReport) && report.getListaFileData().size() < 5)) {
+		if ("Yes".equals(report.getInsertImagesChk())) {
+			if ((!(report instanceof StatutoryInspectionReport) && report.getListaFileData().size() < 3) || ((report instanceof StatutoryInspectionReport) && report.getListaFileData().size() < 5)) {
 				lista.add(System.lineSeparator() + "You add to insert images at least 3 images.");
 			}
 		}
 		return lista;
 	}
-	
-	
 
 }

@@ -119,7 +119,7 @@ public class ExtractDataMeasurementsMwSwitchgear {
 			e.printStackTrace();
 		}
 		try (PDDocument document = PDDocument.load(convfile)) {
-			if(!populateAndCopy(document, typeReport)) {
+			if (!populateAndCopy(document, typeReport)) {
 				return null;
 			}
 		}
@@ -138,17 +138,48 @@ public class ExtractDataMeasurementsMwSwitchgear {
 		getListPhotoNames().clear();
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
 		List<PDField> fields = acroForm.getFields();
+		boolean imageInsertion = false;
 		for (PDField field : fields) {
 			if (field instanceof PDTextField) {
 				String valueField = ((PDTextField) field).getValue();
 				String nameField = field.getFullyQualifiedName();
 				if (nameField.equals("typeReport")) {
-					if(typeReport == Integer.valueOf(valueField)) {
+					if (typeReport == Integer.valueOf(valueField)) {
 						getMeasurementsMwSwitchgear().setTypeReport(Integer.valueOf(valueField));
-					}else {
+					} else {
 						return false;
 					}
 				}
+				
+				if (nameField.equals("additionalField1Label"))
+					getMeasurementsMwSwitchgear().setAdditionalField1Label(valueField);
+				if (nameField.equals("additionalField1Text"))
+					getMeasurementsMwSwitchgear().setAdditionalField1Text(valueField);
+				if (nameField.equals("additionalField2Label"))
+					getMeasurementsMwSwitchgear().setAdditionalField2Label(valueField);
+				if (nameField.equals("additionalField2Text"))
+					getMeasurementsMwSwitchgear().setAdditionalField2Text(valueField);
+				if (nameField.equals("additionalField3Label"))
+					getMeasurementsMwSwitchgear().setAdditionalField3Label(valueField);
+				if (nameField.equals("additionalField3Text"))
+					getMeasurementsMwSwitchgear().setAdditionalField3Text(valueField);
+				if (nameField.equals("additionalField4Label"))
+					getMeasurementsMwSwitchgear().setAdditionalField4Label(valueField);
+				if (nameField.equals("additionalField4Text"))
+					getMeasurementsMwSwitchgear().setAdditionalField4Text(valueField);
+				if (nameField.equals("additionalField5Label"))
+					getMeasurementsMwSwitchgear().setAdditionalField5Label(valueField);
+				if (nameField.equals("additionalField5Text"))
+					getMeasurementsMwSwitchgear().setAdditionalField5Text(valueField);
+				if (nameField.equals("additionalField6Label"))
+					getMeasurementsMwSwitchgear().setAdditionalField6Label(valueField);
+				if (nameField.equals("additionalField6Text"))
+					getMeasurementsMwSwitchgear().setAdditionalField6Text(valueField);
+				if (nameField.equals("additionalField7Label"))
+					getMeasurementsMwSwitchgear().setAdditionalField7Label(valueField);
+				if (nameField.equals("additionalField7Text"))
+					getMeasurementsMwSwitchgear().setAdditionalField7Text(valueField);
+				
 				if (nameField.equals("manufacturerDate"))
 					getMeasurementsMwSwitchgear().setManufacturerDate(valueField);
 				if (nameField.equals("dateMeasurement"))
@@ -369,6 +400,10 @@ public class ExtractDataMeasurementsMwSwitchgear {
 					getMeasurementsMwSwitchgear().setTestPerformedBy(valueField);
 				if (nameField.equals("closedDate"))
 					getMeasurementsMwSwitchgear().setClosedDate(valueField);
+				if (nameField.contains("description") && imageInsertion) {
+					setNameField(nameField);
+					setDescription(valueField);
+				}
 			} else if (field instanceof PDCheckBox) {
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDCheckBox) field).getValue();
@@ -380,26 +415,36 @@ public class ExtractDataMeasurementsMwSwitchgear {
 					getMeasurementsMwSwitchgear().setSf6Correct(valueField);
 				if (nameField.equals("sf6NotCorrect"))
 					getMeasurementsMwSwitchgear().setSf6NotCorrect(valueField);
+				if (nameField.equals("insertImagesChk")) {
+					getMeasurementsMwSwitchgear().setInsertImagesChk(valueField);
+					if ("Yes".equals(valueField)) {
+						imageInsertion = true;
+					} else if ("Off".equals(valueField)) {
+						imageInsertion = false;
+					}
+				}
 			} else if (field instanceof PDRadioButton) {
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDRadioButton) field).getValue();
 			} else if (field instanceof PDPushButton) {
-				String nameField = field.getFullyQualifiedName();
-				for (final PDAnnotationWidget widget : field.getWidgets()) {
-					WidgetImageChecker checker = new WidgetImageChecker(widget);
-					try {
-						if (checker.hasImages()) {
-							PDImage pDimage = checker.getpDimage();
-							setPhoto(nameField);
-							FileData fileData = new FileData();
-							fileData.setImageChange(0);
-							fileData.setNameField(getNameField());
-							fileData.setDescription(getDescription());
-							getMeasurementsMwSwitchgear().addImgOnListImages(fileData);
-							extractAnnotationImages(pDimage, nameField, fileData);
+				if (imageInsertion) {
+					String nameField = field.getFullyQualifiedName();
+					for (final PDAnnotationWidget widget : field.getWidgets()) {
+						WidgetImageChecker checker = new WidgetImageChecker(widget);
+						try {
+							if (checker.hasImages()) {
+								PDImage pDimage = checker.getpDimage();
+								setPhoto(nameField);
+								FileData fileData = new FileData();
+								fileData.setImageChange(0);
+								fileData.setNameField(getNameField());
+								fileData.setDescription(getDescription());
+								getMeasurementsMwSwitchgear().addImgOnListImages(fileData);
+								extractAnnotationImages(pDimage, nameField, fileData);
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
-					} catch (IOException e) {
-						e.printStackTrace();
 					}
 				}
 			}
@@ -433,7 +478,7 @@ public class ExtractDataMeasurementsMwSwitchgear {
 			uploadImage(image, fileDataFiltered.get().getHash(), String.valueOf(getIdHistoric()), fileDataFiltered.get().getName());
 		}
 	}
-	
+
 	private void uploadImage(PDImage image, String hash, String idHistoric, String imageFieldName) throws IOException {
 		File file = File.createTempFile(imageFieldName, null);
 		ImageIO.write(image.getImage(), "jpg", file);
@@ -599,7 +644,7 @@ public class ExtractDataMeasurementsMwSwitchgear {
 	public void setListPhotoNames(List<String> listPhotoNames) {
 		this.listPhotoNames = listPhotoNames;
 	}
-	
+
 	public long fileSize(File file) {
 		long bytes = file.length();
 		long kilobytes = (bytes / 1024);

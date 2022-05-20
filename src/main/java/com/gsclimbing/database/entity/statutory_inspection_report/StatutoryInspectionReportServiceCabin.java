@@ -68,216 +68,268 @@ public class StatutoryInspectionReportServiceCabin implements StatutoryInspectio
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabinNextInspection;
-
 	private boolean inspectionReportServiceCabin1Chk ;
+	private boolean inspectionReportServiceCabin1Chkn ;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin1Txt ;
 	private boolean inspectionReportServiceCabin2Chk ;
+	private boolean inspectionReportServiceCabin2Chkn ;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin2Txt ;
 	private boolean inspectionReportServiceCabin3Chk ;
+	private boolean inspectionReportServiceCabin3Chkn ;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin3Txt ;
 	private boolean inspectionReportServiceCabin4Chk ;
+	private boolean inspectionReportServiceCabin4Chkn ;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin4Txt ;
 	private boolean inspectionReportServiceCabin5Chk ;
+	private boolean inspectionReportServiceCabin5Chkn ;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin5Txt ;
 	private boolean inspectionReportServiceCabin6Chk ;
+	private boolean inspectionReportServiceCabin6Chkn ;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin6Txt ;
 	private boolean inspectionReportServiceCabin7Chk ;
+	private boolean inspectionReportServiceCabin7Chkn ;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin7Txt ;
 	private boolean inspectionReportServiceCabin8Chk ;
+	private boolean inspectionReportServiceCabin8Chkn ;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin8Txt ;
 	private boolean inspectionReportServiceCabin9Chk ;
+	private boolean inspectionReportServiceCabin9Chkn ;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin9Txt ;
 	private boolean inspectionReportServiceCabin10Chk;
+	private boolean inspectionReportServiceCabin10Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin10Txt;
 	private boolean inspectionReportServiceCabin11Chk;
+	private boolean inspectionReportServiceCabin11Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin11Txt;
 	private boolean inspectionReportServiceCabin12Chk;
+	private boolean inspectionReportServiceCabin12Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin12Txt;
 	private boolean inspectionReportServiceCabin13Chk;
+	private boolean inspectionReportServiceCabin13Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin13Txt;
 	private boolean inspectionReportServiceCabin14Chk;
+	private boolean inspectionReportServiceCabin14Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin14Txt;
 	private boolean inspectionReportServiceCabin15Chk;
+	private boolean inspectionReportServiceCabin15Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin15Txt;
 	private boolean inspectionReportServiceCabin16Chk;
+	private boolean inspectionReportServiceCabin16Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin16Txt;
 	private boolean inspectionReportServiceCabin17Chk;
+	private boolean inspectionReportServiceCabin17Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin17Txt;
 	private boolean inspectionReportServiceCabin18Chk;
+	private boolean inspectionReportServiceCabin18Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin18Txt;
 	private boolean inspectionReportServiceCabin19Chk;
+	private boolean inspectionReportServiceCabin19Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin19Txt;
 	private boolean inspectionReportServiceCabin20Chk;
+	private boolean inspectionReportServiceCabin20Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin20Txt;
 	private boolean inspectionReportServiceCabin21Chk;
+	private boolean inspectionReportServiceCabin21Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin21Txt;
 	private boolean inspectionReportServiceCabin22Chk;
+	private boolean inspectionReportServiceCabin22Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin22Txt;
 	private boolean inspectionReportServiceCabin23Chk;
+	private boolean inspectionReportServiceCabin23Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin23Txt;
 	private boolean inspectionReportServiceCabin24Chk;
+	private boolean inspectionReportServiceCabin24Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin24Txt;
 	private boolean inspectionReportServiceCabin25Chk;
+	private boolean inspectionReportServiceCabin25Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin25Txt;
 	private boolean inspectionReportServiceCabin26Chk;
+	private boolean inspectionReportServiceCabin26Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin26Txt;
 	private boolean inspectionReportServiceCabin27Chk;
+	private boolean inspectionReportServiceCabin27Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin27Txt;
 	private boolean inspectionReportServiceCabin28Chk;
+	private boolean inspectionReportServiceCabin28Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin28Txt;
 	private boolean inspectionReportServiceCabin29Chk;
+	private boolean inspectionReportServiceCabin29Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin29Txt;
 	private boolean inspectionReportServiceCabin30Chk;
+	private boolean inspectionReportServiceCabin30Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin30Txt;
 	private boolean inspectionReportServiceCabin31Chk;
+	private boolean inspectionReportServiceCabin31Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin31Txt;
 	private boolean inspectionReportServiceCabin32Chk;
+	private boolean inspectionReportServiceCabin32Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin32Txt;
 	private boolean inspectionReportServiceCabin33Chk;
+	private boolean inspectionReportServiceCabin33Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin33Txt;
 	private boolean inspectionReportServiceCabin34Chk;
+	private boolean inspectionReportServiceCabin34Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin34Txt;
 	private boolean inspectionReportServiceCabin35Chk;
+	private boolean inspectionReportServiceCabin35Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin35Txt;
 	private boolean inspectionReportServiceCabin36Chk;
+	private boolean inspectionReportServiceCabin36Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin36Txt;
 	private boolean inspectionReportServiceCabin37Chk;
+	private boolean inspectionReportServiceCabin37Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin37Txt;
 	private boolean inspectionReportServiceCabin38Chk;
+	private boolean inspectionReportServiceCabin38Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin38Txt;
 	private boolean inspectionReportServiceCabin39Chk;
+	private boolean inspectionReportServiceCabin39Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin39Txt;
 	private boolean inspectionReportServiceCabin40Chk;
+	private boolean inspectionReportServiceCabin40Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin40Txt;
 	private boolean inspectionReportServiceCabin41Chk;
+	private boolean inspectionReportServiceCabin41Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin41Txt;
 	private boolean inspectionReportServiceCabin42Chk;
+	private boolean inspectionReportServiceCabin42Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin42Txt;
 	private boolean inspectionReportServiceCabin43Chk;
+	private boolean inspectionReportServiceCabin43Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin43Txt;
 	private boolean inspectionReportServiceCabin44Chk;
+	private boolean inspectionReportServiceCabin44Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin44Txt;
 	private boolean inspectionReportServiceCabin45Chk;
+	private boolean inspectionReportServiceCabin45Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin45Txt;
 	private boolean inspectionReportServiceCabin46Chk;
+	private boolean inspectionReportServiceCabin46Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin46Txt;
 	private boolean inspectionReportServiceCabin47Chk;
+	private boolean inspectionReportServiceCabin47Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin47Txt;
 	private boolean inspectionReportServiceCabin48Chk;
+	private boolean inspectionReportServiceCabin48Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin48Txt;
 	private boolean inspectionReportServiceCabin49Chk;
+	private boolean inspectionReportServiceCabin49Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin49Txt;
 	private boolean inspectionReportServiceCabin50Chk;
+	private boolean inspectionReportServiceCabin50Chkn;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin50Txt;
 	private boolean inspectionReportServiceCabin51Chk ;
+	private boolean inspectionReportServiceCabin51Chkn ;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin51Txt ;
 	private boolean inspectionReportServiceCabin52Chk ;
+	private boolean inspectionReportServiceCabin52Chkn ;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin52Txt ;
 	private boolean inspectionReportServiceCabin53Chk ;
+	private boolean inspectionReportServiceCabin53Chkn ;
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabin53Txt ;

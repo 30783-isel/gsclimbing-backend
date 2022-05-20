@@ -124,9 +124,9 @@ public class ReportService {
 				Object object = field.get(report);
 				String fieldName = field.getName();
 				System.out.println(fieldName + " - " + object);
-				if (("true".equals(object.toString()) && !ObjectUtils.isEmpty(object.toString())) && fieldName.contains("Chk")) {
+				if (("true".equals(object.toString()) && !ObjectUtils.isEmpty(object.toString())) && fieldName.contains("Chkn")) {
 					if (fieldName != null) {
-						listaChkTrue.add(fieldName.substring(0, fieldName.length() - 3));
+						listaChkTrue.add(fieldName.substring(0, fieldName.length() - 4));
 					}
 				}
 
@@ -136,9 +136,9 @@ public class ReportService {
 						Object statutoryInspectionReportObject = statutoryInspectionReportField.get(object);
 						String statutoryInspectionReportFieldName = statutoryInspectionReportField.getName();
 						System.out.println(statutoryInspectionReportFieldName + " - " + statutoryInspectionReportObject);
-						if (("true".equals(statutoryInspectionReportObject.toString()) && !ObjectUtils.isEmpty(statutoryInspectionReportObject.toString())) && statutoryInspectionReportFieldName.contains("Chk")) {
+						if (("true".equals(statutoryInspectionReportObject.toString()) && !ObjectUtils.isEmpty(statutoryInspectionReportObject.toString())) && statutoryInspectionReportFieldName.contains("Chkn")) {
 							if (statutoryInspectionReportFieldName != null) {
-								listaChkTrue.add(statutoryInspectionReportFieldName.substring(0, statutoryInspectionReportFieldName.length() - 3));
+								listaChkTrue.add(statutoryInspectionReportFieldName.substring(0, statutoryInspectionReportFieldName.length() - 4));
 							}
 						}
 					}
@@ -153,8 +153,7 @@ public class ReportService {
 						lista.add(field.getName());
 					}
 				} else {
-					
-					
+
 					if (object instanceof StatutoryInspectionReportInt) {
 						for (Field statutoryInspectionReportField : object.getClass().getDeclaredFields()) {
 							statutoryInspectionReportField.setAccessible(true);
@@ -162,11 +161,7 @@ public class ReportService {
 							String statutoryInspectionReportFieldName = statutoryInspectionReportField.getName();
 							System.out.println(statutoryInspectionReportFieldName + " - " + statutoryInspectionReportObject);
 							String str = listaChkTrue.stream().filter(chkc -> (chkc + "Txt").equals(statutoryInspectionReportField.getName())).findAny().orElse(null);
-							
-							
-							
-							
-							
+
 							if (str != null) {
 								System.out.println(statutoryInspectionReportField.getName() + " - " + statutoryInspectionReportObject);
 								if ((statutoryInspectionReportObject == null || ObjectUtils.isEmpty(statutoryInspectionReportObject.toString()))) {
@@ -183,26 +178,19 @@ public class ReportService {
 									}
 								}
 							}
-							
-							
-							
+
 						}
-					}else {
-						
-						
-						
-						
-						
-						
+					} else {
+
 						String str = listaChkTrue.stream().filter(chkc -> (chkc + "Txt").equals(field.getName())).findAny().orElse(null);
 						if (str != null) {
 							System.out.println(field.getName() + " - " + object);
-							if ((object == null || ObjectUtils.isEmpty(object.toString()))) {
-								String fieldName = report.mapeamento().get(field.getName());
-								if (fieldName != null) {
-									lista.add(fieldName);
-								}
-							}
+//							if ((object != null || ObjectUtils.isEmpty(object.toString()))) {
+//								String fieldName = report.mapeamento().get(field.getName());
+//								if (fieldName != null) {
+//									lista.add(fieldName);
+//								}
+//							}
 						} else {
 							if ((object == null || ObjectUtils.isEmpty(object.toString()))) {
 								String fieldName = report.mapeamento().get(field.getName());
@@ -211,15 +199,8 @@ public class ReportService {
 								}
 							}
 						}
-						
-						
-						
-						
-						
+
 					}
-					
-					
-					
 
 				}
 			}

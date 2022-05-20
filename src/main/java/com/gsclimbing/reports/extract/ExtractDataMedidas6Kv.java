@@ -138,13 +138,10 @@ public class ExtractDataMedidas6Kv {
 	}
 
 	private boolean populateAndCopy(PDDocument document, Integer typeReport) throws IOException {
-
 		getListPhotoNames().clear();
-
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
-
 		List<PDField> fields = acroForm.getFields();
-
+		boolean imageInsertion = false;
 		for (PDField field : fields) {
 
 			if (field instanceof PDTextField) {
@@ -158,6 +155,41 @@ public class ExtractDataMedidas6Kv {
 						return false;
 					}
 				}
+				
+				
+				
+				
+				if (nameField.equals("additionalField1Label"))
+					getMedidas6Kv().setAdditionalField1Label(valueField);
+				if (nameField.equals("additionalField1Text"))
+					getMedidas6Kv().setAdditionalField1Text(valueField);
+				if (nameField.equals("additionalField2Label"))
+					getMedidas6Kv().setAdditionalField2Label(valueField);
+				if (nameField.equals("additionalField2Text"))
+					getMedidas6Kv().setAdditionalField2Text(valueField);
+				if (nameField.equals("additionalField3Label"))
+					getMedidas6Kv().setAdditionalField3Label(valueField);
+				if (nameField.equals("additionalField3Text"))
+					getMedidas6Kv().setAdditionalField3Text(valueField);
+				if (nameField.equals("additionalField4Label"))
+					getMedidas6Kv().setAdditionalField4Label(valueField);
+				if (nameField.equals("additionalField4Text"))
+					getMedidas6Kv().setAdditionalField4Text(valueField);
+				if (nameField.equals("additionalField5Label"))
+					getMedidas6Kv().setAdditionalField5Label(valueField);
+				if (nameField.equals("additionalField5Text"))
+					getMedidas6Kv().setAdditionalField5Text(valueField);
+				if (nameField.equals("additionalField6Label"))
+					getMedidas6Kv().setAdditionalField6Label(valueField);
+				if (nameField.equals("additionalField6Text"))
+					getMedidas6Kv().setAdditionalField6Text(valueField);
+				if (nameField.equals("additionalField7Label"))
+					getMedidas6Kv().setAdditionalField7Label(valueField);
+				if (nameField.equals("additionalField7Text"))
+					getMedidas6Kv().setAdditionalField7Text(valueField);
+				
+				
+				
 				if (nameField.equals("dateOfMeasurement"))
 					getMedidas6Kv().setDateOfMeasurement(valueField);
 				if (nameField.equals("site"))
@@ -415,7 +447,10 @@ public class ExtractDataMedidas6Kv {
 					getMedidas6Kv().setPerformedBy(valueField);
 				if (nameField.equals("closedDate"))
 					getMedidas6Kv().setClosedDate(valueField);
-
+				if (nameField.contains("description") && imageInsertion) {
+					setNameField(nameField);
+					setDescription(valueField);
+				}
 			} else if (field instanceof PDCheckBox) {
 
 				String nameField = field.getFullyQualifiedName();
@@ -427,34 +462,42 @@ public class ExtractDataMedidas6Kv {
 					getMedidas6Kv().setChk2(valueField == "Yes" ? true : false);
 				if (nameField.equals("chk3"))
 					getMedidas6Kv().setChk3(valueField == "Yes" ? true : false);
-
+				if (nameField.equals("insertImagesChk")) {
+					getMedidas6Kv().setInsertImagesChk(valueField);
+					if ("Yes".equals(valueField)) {
+						imageInsertion = true;
+					} else if ("Off".equals(valueField)) {
+						imageInsertion = false;
+					}
+				}
 			} else if (field instanceof PDRadioButton) {
 
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDRadioButton) field).getValue();
 
 			} else if (field instanceof PDPushButton) {
+				if (imageInsertion) {
+					String nameField = field.getFullyQualifiedName();
 
-				String nameField = field.getFullyQualifiedName();
+					for (final PDAnnotationWidget widget : field.getWidgets()) {
 
-				for (final PDAnnotationWidget widget : field.getWidgets()) {
+						WidgetImageChecker checker = new WidgetImageChecker(widget);
+						try {
+							if (checker.hasImages()) {
+								PDImage pDimage = checker.getpDimage();
 
-					WidgetImageChecker checker = new WidgetImageChecker(widget);
-					try {
-						if (checker.hasImages()) {
-							PDImage pDimage = checker.getpDimage();
+								setPhoto(nameField);
+								FileData fileData = new FileData();
+								fileData.setImageChange(0);
+								fileData.setNameField(getNameField());
+								fileData.setDescription(getDescription());
+								medidas6Kv.addImgOnListImages(fileData);
+								extractAnnotationImages(pDimage, nameField, fileData);
 
-							setPhoto(nameField);
-							FileData fileData = new FileData();
-							fileData.setImageChange(0);
-							fileData.setNameField(getNameField());
-							fileData.setDescription(getDescription());
-							medidas6Kv.addImgOnListImages(fileData);
-							extractAnnotationImages(pDimage, nameField, fileData);
-
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
-					} catch (IOException e) {
-						e.printStackTrace();
 					}
 				}
 			}

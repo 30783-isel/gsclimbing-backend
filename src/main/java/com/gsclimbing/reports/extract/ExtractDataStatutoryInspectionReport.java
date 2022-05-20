@@ -162,6 +162,40 @@ public class ExtractDataStatutoryInspectionReport {
 						return false;
 					}
 				}
+				
+				
+				
+				
+				if (nameField.equals("additionalField1Label"))
+					getStatutoryInspectionReport().setAdditionalField1Label(valueField);
+				if (nameField.equals("additionalField1Text"))
+					getStatutoryInspectionReport().setAdditionalField1Text(valueField);
+				if (nameField.equals("additionalField2Label"))
+					getStatutoryInspectionReport().setAdditionalField2Label(valueField);
+				if (nameField.equals("additionalField2Text"))
+					getStatutoryInspectionReport().setAdditionalField2Text(valueField);
+				if (nameField.equals("additionalField3Label"))
+					getStatutoryInspectionReport().setAdditionalField3Label(valueField);
+				if (nameField.equals("additionalField3Text"))
+					getStatutoryInspectionReport().setAdditionalField3Text(valueField);
+				if (nameField.equals("additionalField4Label"))
+					getStatutoryInspectionReport().setAdditionalField4Label(valueField);
+				if (nameField.equals("additionalField4Text"))
+					getStatutoryInspectionReport().setAdditionalField4Text(valueField);
+				if (nameField.equals("additionalField5Label"))
+					getStatutoryInspectionReport().setAdditionalField5Label(valueField);
+				if (nameField.equals("additionalField5Text"))
+					getStatutoryInspectionReport().setAdditionalField5Text(valueField);
+				if (nameField.equals("additionalField6Label"))
+					getStatutoryInspectionReport().setAdditionalField6Label(valueField);
+				if (nameField.equals("additionalField6Text"))
+					getStatutoryInspectionReport().setAdditionalField6Text(valueField);
+				if (nameField.equals("additionalField7Label"))
+					getStatutoryInspectionReport().setAdditionalField7Label(valueField);
+				if (nameField.equals("additionalField7Text"))
+					getStatutoryInspectionReport().setAdditionalField7Text(valueField);
+				
+				
 				if (nameField.equals("site"))
 					getStatutoryInspectionReport().setSite(valueField);
 				if (nameField.equals("wtgNumber"))
@@ -886,6 +920,115 @@ public class ExtractDataStatutoryInspectionReport {
 					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin52Chk(valueField =="Yes" ? true : false);
 				if (nameField.equals("inspectionReportServiceCabin53Chk"))
 					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin53Chk(valueField =="Yes" ? true : false);
+				
+				
+				
+				if (nameField.equals("inspectionReportServiceCabin1Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin1Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin2Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin2Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin3Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin3Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin4Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin4Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin5Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin5Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin6Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin6Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin7Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin7Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin8Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin8Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin9Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin9Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin10Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin10Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin11Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin11Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin12Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin12Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin13Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin13Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin14Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin14Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin15Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin15Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin16Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin16Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin17Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin17Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin18Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin18Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin19Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin19Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin20Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin20Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin21Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin21Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin22Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin22Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin23Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin23Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin24Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin24Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin25Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin25Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin26Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin26Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin27Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin27Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin28Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin28Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin29Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin29Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin30Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin30Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin31Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin31Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin32Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin32Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin33Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin33Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin34Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin34Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin35Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin35Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin36Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin36Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin37Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin37Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin38Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin38Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin39Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin39Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin40Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin40Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin41Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin41Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin42Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin42Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin43Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin43Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin44Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin44Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin45Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin45Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin46Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin46Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin47Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin47Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin48Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin48Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin49Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin49Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin50Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin50Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin51Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin51Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin52Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin52Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("inspectionReportServiceCabin53Chkn"))
+					statutoryInspectionReportServiceCabin.setInspectionReportServiceCabin53Chkn(valueField =="Yes" ? true : false);
 
 				// 2.2 Internal Crane
 				// -----------------------------------------------------------;
@@ -938,6 +1081,57 @@ public class ExtractDataStatutoryInspectionReport {
 					statutoryInspectionReportInternalCrane.setInternalCrane23Chk(valueField =="Yes" ? true : false);
 				if (nameField.equals("internalCrane24Chk"))
 					statutoryInspectionReportInternalCrane.setInternalCrane24Chk(valueField =="Yes" ? true : false);
+				
+				
+				if (nameField.equals("internalCrane1Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane1Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane2Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane2Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane3Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane3Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane4Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane4Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane5Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane5Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane6Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane6Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane7Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane7Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane8Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane8Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane9Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane9Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane10Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane10Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane11Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane11Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane12Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane12Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane13Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane13Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane14Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane14Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane15Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane15Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane16Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane16Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane17Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane17Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane18Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane18Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane19Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane19Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane20Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane20Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane21Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane21Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane22Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane22Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane23Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane23Chkn(valueField =="Yes" ? true : false);
+				if (nameField.equals("internalCrane24Chkn"))
+					statutoryInspectionReportInternalCrane.setInternalCrane24Chkn(valueField =="Yes" ? true : false);
+				
 
 				// 2.3 Inspection Report Ladder
 				// -----------------------------------------------------------;

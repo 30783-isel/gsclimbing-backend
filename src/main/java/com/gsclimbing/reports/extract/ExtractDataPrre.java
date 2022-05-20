@@ -136,6 +136,7 @@ public class ExtractDataPrre {
 	private boolean populateAndCopy(PDDocument document, Integer typeReport) throws IOException {
 		getListPhotoNames().clear();
 		PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
+		boolean imageInsertion = false;
 		List<PDField> fields = acroForm.getFields();
 		for (PDField field : fields) {
 			if (field instanceof PDTextField) {
@@ -148,6 +149,40 @@ public class ExtractDataPrre {
 						return false;
 					}
 				}
+				
+				
+				
+				if (nameField.equals("additionalField1Label"))
+					getPerformanceReportRepairElevator().setAdditionalField1Label(valueField);
+				if (nameField.equals("additionalField1Text"))
+					getPerformanceReportRepairElevator().setAdditionalField1Text(valueField);
+				if (nameField.equals("additionalField2Label"))
+					getPerformanceReportRepairElevator().setAdditionalField2Label(valueField);
+				if (nameField.equals("additionalField2Text"))
+					getPerformanceReportRepairElevator().setAdditionalField2Text(valueField);
+				if (nameField.equals("additionalField3Label"))
+					getPerformanceReportRepairElevator().setAdditionalField3Label(valueField);
+				if (nameField.equals("additionalField3Text"))
+					getPerformanceReportRepairElevator().setAdditionalField3Text(valueField);
+				if (nameField.equals("additionalField4Label"))
+					getPerformanceReportRepairElevator().setAdditionalField4Label(valueField);
+				if (nameField.equals("additionalField4Text"))
+					getPerformanceReportRepairElevator().setAdditionalField4Text(valueField);
+				if (nameField.equals("additionalField5Label"))
+					getPerformanceReportRepairElevator().setAdditionalField5Label(valueField);
+				if (nameField.equals("additionalField5Text"))
+					getPerformanceReportRepairElevator().setAdditionalField5Text(valueField);
+				if (nameField.equals("additionalField6Label"))
+					getPerformanceReportRepairElevator().setAdditionalField6Label(valueField);
+				if (nameField.equals("additionalField6Text"))
+					getPerformanceReportRepairElevator().setAdditionalField6Text(valueField);
+				if (nameField.equals("additionalField7Label"))
+					getPerformanceReportRepairElevator().setAdditionalField7Label(valueField);
+				if (nameField.equals("additionalField7Text"))
+					getPerformanceReportRepairElevator().setAdditionalField7Text(valueField);
+				
+				
+								
 				if (nameField.equals("reportNumber"))
 					getPerformanceReportRepairElevator().setReportNumber(valueField);
 				if (nameField.equals("site"))
@@ -166,7 +201,24 @@ public class ExtractDataPrre {
 					getPerformanceReportRepairElevator().setPlaceDate(valueField);
 				if (nameField.equals("responsibleTechnician"))
 					getPerformanceReportRepairElevator().setResponsibleTechnician(valueField);
-			} else if (field instanceof PDRadioButton) {
+				if (nameField.contains("description") && imageInsertion) {
+					setNameField(nameField);
+					setDescription(valueField);
+				}
+			} else if (field instanceof PDCheckBox) {
+				
+				String nameField = field.getFullyQualifiedName();
+				String valueField = ((PDCheckBox) field).getValue();
+				
+				if (nameField.equals("insertImagesChk")) {
+					getPerformanceReportRepairElevator().setInsertImagesChk(valueField);
+					if ("Yes".equals(valueField)) {
+						imageInsertion = true;
+					} else if ("Off".equals(valueField)) {
+						imageInsertion = false;
+					}
+				}
+			}else if (field instanceof PDRadioButton) {
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDRadioButton) field).getValue();
 				if (nameField.equals("workCompleted"))
@@ -174,22 +226,24 @@ public class ExtractDataPrre {
 				if (nameField.equals("turbineOperable"))
 					getPerformanceReportRepairElevator().setTurbineOperable(valueField);
 			} else if (field instanceof PDPushButton) {
-				String nameField = field.getFullyQualifiedName();
-				for (final PDAnnotationWidget widget : field.getWidgets()) {
-					WidgetImageChecker checker = new WidgetImageChecker(widget);
-					try {
-						if (checker.hasImages()) {
-							PDImage pDimage = checker.getpDimage();
-							setPhoto(nameField);
-							FileData fileData = new FileData();
-							fileData.setImageChange(0);
-							fileData.setNameField(getNameField());
-							fileData.setDescription(getDescription());
-							performanceReportRepairElevator.addImgOnListImages(fileData);
-							extractAnnotationImages(pDimage, nameField, fileData);
+				if (imageInsertion) {
+					String nameField = field.getFullyQualifiedName();
+					for (final PDAnnotationWidget widget : field.getWidgets()) {
+						WidgetImageChecker checker = new WidgetImageChecker(widget);
+						try {
+							if (checker.hasImages()) {
+								PDImage pDimage = checker.getpDimage();
+								setPhoto(nameField);
+								FileData fileData = new FileData();
+								fileData.setImageChange(0);
+								fileData.setNameField(getNameField());
+								fileData.setDescription(getDescription());
+								performanceReportRepairElevator.addImgOnListImages(fileData);
+								extractAnnotationImages(pDimage, nameField, fileData);
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
-					} catch (IOException e) {
-						e.printStackTrace();
 					}
 				}
 			}
