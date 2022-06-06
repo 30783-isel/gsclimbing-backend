@@ -159,7 +159,7 @@ public class ReportsController {
 				String username = reportService.getCurrentLoggedUser();
 				User user = userService.getUserByUsername(username);
 				Project project = projectService.getProjectById(Integer.parseInt(projectId));
-				String subject = "User " + user.getUsername() + " inserted a new Defects Inspection Report on project " + project.getName();
+				String subject = "User " + user.getUsername() + " inserted a new " + ReportEnum.values()[typeReport].label + " on project " + project.getName();
 				byte[] bytes = null;
 				bytes = generatePDF(typeReport, report);
 				runnable = new SendEmail("reports@gsclimbing.com", subject, org.apache.commons.lang3.StringUtils.EMPTY, ReportEnum.values()[typeReport].label + ".pdf", bytes);
@@ -213,7 +213,37 @@ public class ReportsController {
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete-report/{id}")
 	public Integer deleteReport(@PathVariable Integer id) {
-		Integer turbineId = reportService.readReport(id).getTurbinaId();
+		Report report = reportService.readReport(id);
+		Integer turbineId = report.getTurbinaId();
+
+//		Turbine turbine = report.getTurbine();
+//		switch (ReportEnum.values()[report.getTypeReport()]) {
+//		case DIR:
+//			turbine.setDefectsInspectionReport(false);
+//			break;
+//		case ET:
+//			turbine.setExaminationTransformer(false);
+//			break;
+//		case M690V400V:
+//			turbine.setMeasurements690V400V(false);
+//			break;
+//		case M6KV:
+//			turbine.setMeasurements6KV(false);
+//			break;
+//		case MMSSC:
+//			turbine.setMeasurementsMwSwitchgear(false);
+//			break;
+//		case OCIR:
+//			turbine.setOnboardCraneInspectionReport(false);
+//			break;
+//		case PRRE:
+//			turbine.setPerformanceReportRepairElevator(false);
+//			break;
+//		case SIR:
+//			turbine.setStatutoryInspectionReport(false);
+//			break;
+//		}
+
 		reportService.deleteReport(id);
 		return turbineId;
 	}

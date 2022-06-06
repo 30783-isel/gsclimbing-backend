@@ -25,11 +25,11 @@ public class ExaminationTransformer extends Report implements Cloneable {
 	@Column(length = 100)
 	private String equipamentSerialNumber;
 
-	@Column(length = 5)
-	private String correct1;
+	@Column(length = 10)
+	private String ratioIdentified;
 
-	@Column(length = 5)
-	private String notCorrect1;
+	@Column(length = 10)
+	private String visualInspectionTransformer;
 
 	@Column(length = 100)
 	private String equipamentType1;
@@ -193,12 +193,6 @@ public class ExaminationTransformer extends Report implements Cloneable {
 	@Column(length = 100)
 	private String ratioTest;
 
-	@Column(length = 5)
-	private String correct2;
-
-	@Column(length = 6)
-	private String notCorrect2;
-
 	private String conclusion;
 
 	@Column(length = 100)
@@ -271,8 +265,8 @@ public class ExaminationTransformer extends Report implements Cloneable {
 		mapa.put("nextCalibrationDate4", "Next calibration date:");
 		mapa.put("insulationResistance", "Insulation resistance test");
 		mapa.put("ratioTest", "Radio test");
-//		mapa.put("correct2", "Correct");
-//		mapa.put("notCorrect2", "Not correct");
+		mapa.put("visualInspectionTransformer", "Visual Inspection Transformer");
+		mapa.put("ratioIdentified", "Ratio Identified");
 		mapa.put("conclusion", "Conclusion");
 		mapa.put("performedBy", "Test performed by");
 		mapa.put("date", "Date");

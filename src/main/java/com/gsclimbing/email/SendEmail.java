@@ -46,7 +46,7 @@ public class SendEmail implements Runnable {
 	public void sendEmailTLS() {
 
 		final String username = "reports@gsclimbing.com";
-		final String password = "gs.climbing.5rh&4P8a";
+		final String password = "reports.73Xg&u4V";
 		
 		String host = "smtp.gmail.com";
 		Properties props = new Properties();
@@ -68,7 +68,16 @@ public class SendEmail implements Runnable {
 
 			Multipart multipart = new MimeMultipart();
 			BodyPart messageBodyPart1 = new MimeBodyPart();
-			messageBodyPart1.setText(this.message);
+			
+			
+			
+			messageBodyPart1.setContent( this.message, "text/html; charset=utf-8" );
+			//messageBodyPart1.setText(this.message);
+			
+			
+			
+			
+			
 			multipart.addBodyPart(messageBodyPart1);
 
 			if (this.bytes != null) {

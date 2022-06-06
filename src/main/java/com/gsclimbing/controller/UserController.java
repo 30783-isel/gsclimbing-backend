@@ -80,7 +80,11 @@ public class UserController {
 				String password = PasswordGenerator.generateCommonLangPassword();
 
 				String subject = "Welcome " + user.getName();
-				message = "Credentials \n Username - " + user.getUsername() + "\nPassword - " + password;
+				message = "<h2>Welcome to GS-Climbing team.</h2>";
+				message+= "<p><span>Credentials</span></p>";
+				message+= "<span><b>Username - </b>" + user.getUsername() +"</span>";
+				message+= "<p><span><b>Password - </b>" + password +"<span></p>";
+				message+= "<p><a href=\"http://31.171.250.208/\">Go to portal</a></p>";
 				byte[] bytes = null;
 				SendEmail runnable = new SendEmail(user.getEmail(), subject, message, "Defects Inspection Report.pdf", bytes);
 				Thread t = new Thread(runnable);
@@ -99,7 +103,7 @@ public class UserController {
 		}
 	}
 
-	@PutMapping(value = "/user/")
+	@PostMapping(value = "/update")
 	public void updateUser(@RequestBody User user) {
 		userService.updateUser(user);
 	}
@@ -131,16 +135,16 @@ public class UserController {
 		QUser user = QUser.user;
 		JPAQuery<QProject> query = new JPAQuery<>(entityManager);
 		if(filter.getName() != null) {
-			query.from(user).where(user.name.eq(filter.getName()));
+			query.from(user).where(user.name.contains(filter.getName()));
 		}
 		if(filter.getUsername() != null) {
-			query.from(user).where(user.username.eq(filter.getUsername()));
+			query.from(user).where(user.username.contains(filter.getUsername()));
 		}
 		if(filter.getEmail() != null) {
-			query.from(user).where(user.email.eq(filter.getEmail()));
+			query.from(user).where(user.email.contains(filter.getEmail()));
 		}
 		if(filter.getRoles() != null) {
-			query.from(user).where(user.roles.eq(filter.getRoles()));
+			query.from(user).where(user.roles.contains(filter.getRoles()));
 		}
 		List<QProject> lista = query.fetch();
 		

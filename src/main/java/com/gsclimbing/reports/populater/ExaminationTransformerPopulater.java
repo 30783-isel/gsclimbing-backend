@@ -66,9 +66,8 @@ public class ExaminationTransformerPopulater {
 		setField("manufacturer", report.getManufacturer());
 		setField("type", report.getType());
 		setField("equipamentSerialNumber", report.getEquipamentSerialNumber());
-		//TODO
-		setField("correct1", report.getCorrect1());
-		setField("notCorrect1", report.getNotCorrect1());
+		setField("ratioIdentified", report.getRatioIdentified());
+		setField("visualInspectionTransformer", report.getVisualInspectionTransformer());
 		setField("equipamentType1", report.getEquipamentType1());
 		setField("serialNumber1", report.getSerialNumber1());
 		setField("calibrationDate1", report.getCalibrationDate1());
@@ -123,12 +122,9 @@ public class ExaminationTransformerPopulater {
 		setField("nextCalibrationDate4", report.getNextCalibrationDate4());
 		setField("insulationResistance", report.getInsulationResistance());
 		setField("ratioTest", report.getRatioTest());
-		setField("correct2", report.getCorrect2());
-		setField("notCorrect2", report.getNotCorrect2());
 		setField("conclusion", report.getConclusion());
 		setField("performedBy", report.getPerformedBy());
 		setField("date", report.getDate());
-		
 		setField("insertImagesChk", report.getInsertImagesChk());
 		setField("additionalField1Label", report.getAdditionalField1Label());
 		setField("additionalField1Text", report.getAdditionalField1Text());

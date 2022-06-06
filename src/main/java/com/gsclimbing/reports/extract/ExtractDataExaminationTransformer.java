@@ -166,10 +166,6 @@ public class ExtractDataExaminationTransformer {
 					getExaminationTransformer().setType(valueField);
 				if (nameField.equals("equipamentSerialNumber"))
 					getExaminationTransformer().setEquipamentSerialNumber(valueField);
-				if (nameField.equals("correct1"))
-					getExaminationTransformer().setCorrect1(valueField);
-				if (nameField.equals("notCorrect1"))
-					getExaminationTransformer().setNotCorrect1(valueField);
 				if (nameField.equals("equipamentType1"))
 					getExaminationTransformer().setEquipamentType1(valueField);
 				if (nameField.equals("serialNumber1"))
@@ -321,14 +317,6 @@ public class ExtractDataExaminationTransformer {
 			} else if (field instanceof PDCheckBox) {
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDCheckBox) field).getValue();
-				if (nameField.equals("correct1"))
-					getExaminationTransformer().setCorrect1(valueField);
-				if (nameField.equals("notCorrect1"))
-					getExaminationTransformer().setNotCorrect1(valueField);
-				if (nameField.equals("correct2"))
-					getExaminationTransformer().setCorrect2(valueField);
-				if (nameField.equals("notCorrect2"))
-					getExaminationTransformer().setNotCorrect2(valueField);
 				if (nameField.equals("insertImagesChk")) {
 					getExaminationTransformer().setInsertImagesChk(valueField);
 					if ("Yes".equals(valueField)) {
@@ -340,6 +328,12 @@ public class ExtractDataExaminationTransformer {
 			} else if (field instanceof PDRadioButton) {
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDRadioButton) field).getValue();
+				
+				if (nameField.equals("visualInspectionTransformer"))
+					getExaminationTransformer().setVisualInspectionTransformer(valueField);
+				if (nameField.equals("ratioIdentified"))
+					getExaminationTransformer().setRatioIdentified(valueField);
+				
 			} else if (field instanceof PDPushButton) {
 				if (imageInsertion) {
 				String nameField = field.getFullyQualifiedName();

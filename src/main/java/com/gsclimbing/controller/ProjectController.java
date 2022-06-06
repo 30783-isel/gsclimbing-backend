@@ -67,16 +67,16 @@ public class ProjectController {
 		QProject project = QProject.project;
 		JPAQuery<QProject> query = new JPAQuery<>(entityManager);
 		if(filter.getName() != null) {
-			query.from(project).where(project.name.eq(filter.getName()));
+			query.from(project).where(project.name.contains(filter.getName()));
 		}
 		if(filter.getCountry() != null) {
-			query.from(project).where(project.country.eq(filter.getCountry()));
+			query.from(project).where(project.country.contains(filter.getCountry()));
 		}
 		if(filter.getLocation() != null) {
-			query.from(project).where(project.location.eq(filter.getLocation()));
+			query.from(project).where(project.location.contains(filter.getLocation()));
 		}
 		if(filter.getSite() != null) {
-			query.from(project).where(project.site.eq(filter.getSite()));
+			query.from(project).where(project.site.contains(filter.getSite()));
 		}
 		List<QProject> lista = query.fetch();
 		
