@@ -132,4 +132,5 @@ public class Report {
 		mapa.put("turbinaId", "Turbine Id");
 		return mapa;
 	}
+	
 }

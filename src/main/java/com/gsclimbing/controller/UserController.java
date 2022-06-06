@@ -80,10 +80,10 @@ public class UserController {
 				String password = PasswordGenerator.generateCommonLangPassword();
 
 				String subject = "Welcome " + user.getName();
-				message = "<h2>Welcome to GS-Climbing team.</h2>";
-				message+= "<p><span>Credentials</span></p>";
+				message = "<h3>Welcome to GS-Climbing team.</h3>";
+				//message+= "<h3><span>Credentials</span></h3>";
 				message+= "<span><b>Username - </b>" + user.getUsername() +"</span>";
-				message+= "<p><span><b>Password - </b>" + password +"<span></p>";
+				message+= "<p style=\"line-height:.10px;\"><span><b>Password - </b>" + password +"<span></p>";
 				message+= "<p><a href=\"http://31.171.250.208/\">Go to portal</a></p>";
 				byte[] bytes = null;
 				SendEmail runnable = new SendEmail(user.getEmail(), subject, message, "Defects Inspection Report.pdf", bytes);

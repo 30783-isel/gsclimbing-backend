@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspectionReportInspectionAnchorPoints;
 import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspectionReportInspectionDescenderDevice;
 import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspectionReportInspectionReportLadder;
@@ -26,22 +27,27 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "inspection_descender_device_id", referencedColumnName = "id", nullable = true)
+	@JsonIgnore
 	private StatutoryInspectionReportInspectionDescenderDevice statutoryInspectionReportInspectionDescenderDevice;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "inspection_report_ladder_id", referencedColumnName = "id", nullable = true)
+	@JsonIgnore
 	private StatutoryInspectionReportInspectionReportLadder statutoryInspectionReportInspectionReportLadder;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "internal_crane_id", referencedColumnName = "id", nullable = true)
+	@JsonIgnore
 	private StatutoryInspectionReportInternalCrane statutoryInspectionReportInternalCrane;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "inspection_report_service_cabin_id", referencedColumnName = "id", nullable = true)
+	@JsonIgnore
 	private StatutoryInspectionReportServiceCabin statutoryInspectionReportServiceCabin;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "inspection_anchor_points_id", referencedColumnName = "id", nullable = true)
+	@JsonIgnore
 	private StatutoryInspectionReportInspectionAnchorPoints statutoryInspectionReportInspectionAnchorPoints;
 
 	private String reportNumber;
