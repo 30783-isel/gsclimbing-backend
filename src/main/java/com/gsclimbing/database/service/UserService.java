@@ -39,9 +39,8 @@ public class UserService {
 		userRepository.deleteById(id);
 	}
 
-	public void deleteUser(String userName) {
-		Optional<User> user = userRepository.findByUsername(userName);
-		userRepository.deleteById(user.get().getIdUser());
+	public void deleteUser(User user) {
+		userRepository.delete(user);
 	}
 
 	public void updateUser(User user) {

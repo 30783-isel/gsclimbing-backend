@@ -3,6 +3,7 @@ package com.gsclimbing.database.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,7 +39,7 @@ public class User {
 	private String active;
 	private String roles;
 	
-    @ManyToMany(mappedBy = "users")
+    @ManyToMany(mappedBy = "users", cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
     @JsonIgnoreProperties({"projects", "users"})
     private Set<Project> projects = new HashSet<>();
     

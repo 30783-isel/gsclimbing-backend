@@ -45,7 +45,7 @@ public class Project {
 	private String number;
 	private String type;
     
-    @ManyToMany()
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
     @JoinTable(
         name = "ProjectUser", 
         joinColumns = { @JoinColumn(name = "idProject") }, 
@@ -73,4 +73,9 @@ public class Project {
     				.users(this.users.stream().map(user -> user.mapper()).collect(Collectors.toSet()))
     				.build();
     }
+    
+//    public boolean removeUsers(String idUser) {
+//    	users.removeIf(user => user.)
+//    	return true;
+//    }
 }
