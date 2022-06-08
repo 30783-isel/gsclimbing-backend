@@ -74,8 +74,9 @@ public class Project {
     				.build();
     }
     
-//    public boolean removeUsers(String idUser) {
-//    	users.removeIf(user => user.)
-//    	return true;
-//    }
+    public boolean removeUsers(User user) {
+    	this.users.remove(user);
+    	user.getProjects().remove(user);
+    	return true;
+    }
 }

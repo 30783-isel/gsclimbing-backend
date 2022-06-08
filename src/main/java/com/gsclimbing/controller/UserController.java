@@ -52,6 +52,9 @@ public class UserController {
 	public void deleteUser(@PathVariable String username) {
 		User user = userService.getUserByUsername(username);
 		if (user != null) {
+			for(Project project : user.getProjects()){
+				project.removeUsers(user);
+			}
 			userService.deleteUser(user);
 		}
 	}
