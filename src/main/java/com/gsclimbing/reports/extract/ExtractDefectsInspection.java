@@ -145,8 +145,6 @@ public class ExtractDefectsInspection {
 				String valueField = ((PDTextField) field).getValue();
 				String nameField = field.getFullyQualifiedName();
 
-				System.out.println(nameField + " - " + valueField);
-
 				if (nameField.equals("typeReport")) {
 					if (typeReport == Integer.valueOf(valueField)) {
 						getDefectsInspectionReport().setTypeReport(Integer.valueOf(valueField));
@@ -209,7 +207,6 @@ public class ExtractDefectsInspection {
 			} else if (field instanceof PDPushButton) {
 				if (imageInsertion) {
 					String nameField = field.getFullyQualifiedName();
-					System.out.println(nameField);
 					for (final PDAnnotationWidget widget : field.getWidgets()) {
 						WidgetImageChecker checker = new WidgetImageChecker(widget);
 						try {

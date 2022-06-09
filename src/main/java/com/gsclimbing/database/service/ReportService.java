@@ -100,7 +100,6 @@ public class ReportService {
 			for (Field field : report.getClass().getSuperclass().getDeclaredFields()) {
 				field.setAccessible(true);
 				Object object = field.get(report);
-				System.out.println(field.getName() + " - " + object);
 				if (object == null || ObjectUtils.isEmpty(object.toString())) {
 					String fieldName = report.mapeamento().get(field.getName());
 					if (fieldName != null) {
@@ -123,7 +122,6 @@ public class ReportService {
 				field.setAccessible(true);
 				Object object = field.get(report);
 				String fieldName = field.getName();
-				System.out.println(fieldName + " - " + object);
 				if (("true".equals(object.toString()) && !ObjectUtils.isEmpty(object.toString())) && fieldName.contains("Chkn")) {
 					if (fieldName != null) {
 						listaChkTrue.add(fieldName.substring(0, fieldName.length() - 4));
@@ -135,7 +133,6 @@ public class ReportService {
 						statutoryInspectionReportField.setAccessible(true);
 						Object statutoryInspectionReportObject = statutoryInspectionReportField.get(object);
 						String statutoryInspectionReportFieldName = statutoryInspectionReportField.getName();
-						System.out.println(statutoryInspectionReportFieldName + " - " + statutoryInspectionReportObject);
 						if (("true".equals(statutoryInspectionReportObject.toString()) && !ObjectUtils.isEmpty(statutoryInspectionReportObject.toString())) && statutoryInspectionReportFieldName.contains("Chkn")) {
 							if (statutoryInspectionReportFieldName != null) {
 								listaChkTrue.add(statutoryInspectionReportFieldName.substring(0, statutoryInspectionReportFieldName.length() - 4));
@@ -159,11 +156,9 @@ public class ReportService {
 							statutoryInspectionReportField.setAccessible(true);
 							Object statutoryInspectionReportObject = statutoryInspectionReportField.get(object);
 							String statutoryInspectionReportFieldName = statutoryInspectionReportField.getName();
-							System.out.println(statutoryInspectionReportFieldName + " - " + statutoryInspectionReportObject);
 							String str = listaChkTrue.stream().filter(chkc -> (chkc + "Txt").equals(statutoryInspectionReportField.getName())).findAny().orElse(null);
 
 							if (str != null) {
-								System.out.println(statutoryInspectionReportField.getName() + " - " + statutoryInspectionReportObject);
 								if ((statutoryInspectionReportObject == null || ObjectUtils.isEmpty(statutoryInspectionReportObject.toString()))) {
 									String fieldName = report.mapeamento().get(statutoryInspectionReportField.getName());
 									if (fieldName != null) {

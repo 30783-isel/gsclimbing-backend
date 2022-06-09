@@ -145,7 +145,6 @@ public class ExtractDataOnboardCraneInspectionReport {
 			if (field instanceof PDTextField) {
 				String valueField = ((PDTextField) field).getValue();
 				String nameField = field.getFullyQualifiedName();
-				System.out.println(nameField + " - " + valueField);
 				if (nameField.equals("typeReport")) {
 					if(typeReport == Integer.valueOf(valueField)) {
 						getOnboardCraneInspectionReport().setTypeReport(Integer.valueOf(valueField));
@@ -272,7 +271,6 @@ public class ExtractDataOnboardCraneInspectionReport {
 			} else if (field instanceof PDCheckBox) {
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDCheckBox) field).getValue();
-				System.out.println(nameField + " - " + valueField);
 				
 				if (nameField.equals("readingOperatingBusChk"))
 					getOnboardCraneInspectionReport().setReadingOperatingBusChk(valueField == "Yes" ? true : false);
@@ -402,8 +400,6 @@ public class ExtractDataOnboardCraneInspectionReport {
 			} else if (field instanceof PDPushButton) {
 				String nameField = field.getFullyQualifiedName();
 				String valueField = ((PDPushButton) field).getValue();
-				System.out.println(nameField + " - " + valueField);
-				
 				for (final PDAnnotationWidget widget : field.getWidgets()) {
 					WidgetImageChecker checker = new WidgetImageChecker(widget);
 					try {
