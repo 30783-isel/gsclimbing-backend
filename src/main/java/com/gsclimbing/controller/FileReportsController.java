@@ -54,8 +54,8 @@ import com.gsclimbing.zip.ZipUtils;
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 
 @RestController
-@RequestMapping(path = "/api/files")
-public class FileController {
+@RequestMapping(path = "/api/reports/files")
+public class FileReportsController {
 	@Autowired
 	private ProjectService projectService;
 	@Autowired

@@ -84,29 +84,23 @@ public class FTPUploadFile {
 		}
 	}
 
-	public static void uploadPdfFile2FTPServer(File firstLocalFile, String name, String team) {
+	public static boolean uploadPdfFile2FTPServer(File firstLocalFile, String name, String team) {
 		String server = "localhost";
 		int port = 2121;
 		String user = "admin";
 		String pass = "admin";
-
+		boolean inserted = false;
 		FTPClient ftpClient = new FTPClient();
 		try {
-
 			ftpClient.connect(server, port);
 			ftpClient.login(user, pass);
 			ftpClient.enterLocalPassiveMode();
-
 			ftpClient.changeWorkingDirectory(team);
-
 			ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-
 			String firstRemoteFile = name;
 			InputStream inputStream = new FileInputStream(firstLocalFile);
-
-			ftpClient.storeFile(firstRemoteFile, inputStream);
+			inserted = ftpClient.storeFile(firstRemoteFile, inputStream);
 			inputStream.close();
-
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		} finally {
@@ -119,6 +113,7 @@ public class FTPUploadFile {
 				ex.printStackTrace();
 			}
 		}
+		return inserted;
 	}
 
 	

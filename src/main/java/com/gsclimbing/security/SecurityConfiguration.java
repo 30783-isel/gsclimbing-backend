@@ -27,22 +27,25 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
-		http.csrf().disable()
-            .authorizeRequests()
-            .antMatchers(HttpMethod.GET,"/auth/**").permitAll()
-            .antMatchers(HttpMethod.POST,"/auth/**").permitAll()
-            .antMatchers(HttpMethod.OPTIONS, "/auth/**").permitAll()
-            .antMatchers(HttpMethod.GET,"/api/**").permitAll()
-            .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
-            .antMatchers(HttpMethod.POST,"/api/**").permitAll()
-            .antMatchers(HttpMethod.PUT,"/api/**").permitAll()
-            .antMatchers(HttpMethod.DELETE,"/api/**").permitAll()
-            .anyRequest()
-            .authenticated()
-            .and()
-            .httpBasic();
 		
-//		http.authorizeRequests().antMatchers("/api/**").permitAll();
+		//Com autenticação
+//		http.csrf().disable()
+//            .authorizeRequests()
+//            .antMatchers(HttpMethod.GET,"/auth/**").permitAll()
+//            .antMatchers(HttpMethod.POST,"/auth/**").permitAll()
+//            .antMatchers(HttpMethod.OPTIONS, "/auth/**").permitAll()
+//            .antMatchers(HttpMethod.GET,"/api/**").permitAll()
+//            .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
+//            .antMatchers(HttpMethod.POST,"/api/**").permitAll()
+//            .antMatchers(HttpMethod.PUT,"/api/**").permitAll()
+//            .antMatchers(HttpMethod.DELETE,"/api/**").permitAll()
+//            .anyRequest()
+//            .authenticated()
+//            .and()
+//            .httpBasic();
+		
+//		Sem autenticação
+		http.csrf().disable().authorizeRequests().antMatchers("/api/**").permitAll();
 	}
 	
 	@Bean
