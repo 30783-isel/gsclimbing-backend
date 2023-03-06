@@ -47,7 +47,10 @@ public class SendEmail implements Runnable {
 
 		final String username = "reports@gsclimbing.com";
 		final String password = "reports.73Xg&u4V";
-		
+
+//		final String username = "mail.gsclimbing@gmail.com";
+//		final String password = "mail.messages.gsclimbing.987";
+
 		String host = "smtp.gmail.com";
 		Properties props = new Properties();
 		props.put("mail.smtp.host", host);
@@ -68,16 +71,10 @@ public class SendEmail implements Runnable {
 
 			Multipart multipart = new MimeMultipart();
 			BodyPart messageBodyPart1 = new MimeBodyPart();
-			
-			
-			
-			messageBodyPart1.setContent( this.message, "text/html; charset=utf-8" );
-			//messageBodyPart1.setText(this.message);
-			
-			
-			
-			
-			
+
+			messageBodyPart1.setContent(this.message, "text/html; charset=utf-8");
+			// messageBodyPart1.setText(this.message);
+
 			multipart.addBodyPart(messageBodyPart1);
 
 			if (this.bytes != null) {

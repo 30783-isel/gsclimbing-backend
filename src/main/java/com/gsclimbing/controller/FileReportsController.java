@@ -255,7 +255,7 @@ public class FileReportsController {
 		
 		
 		if (examinationTransformerBool) {
-			String folder = "/ExaminationTransformer/";
+			String folder = "/examinationTransformer/";
 			String filenameExaminationTransformer = "Examination Transformer.pdf";
 			bytesExaminationTransformer = populateAndCopy(folder, filenameExaminationTransformer, project.getSite(), project.getNumber(), project.getType());
 			//bytesExaminationTransformer = FTPDownloadFiles.downloadPdfReportFromFTPServer(filenameExaminationTransformer, "0", "ExaminationTransformer/");
