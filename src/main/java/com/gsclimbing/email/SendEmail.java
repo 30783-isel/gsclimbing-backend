@@ -45,19 +45,13 @@ public class SendEmail implements Runnable {
 
 	public void sendEmailTLS() {
 
-		final String username = "reports@gsclimbing.com";
-		final String password = "reports.73Xg&u4V";
-
-//		final String username = "mail.gsclimbing@gmail.com";
-//		final String password = "mail.messages.gsclimbing.987";
-
-		String host = "smtp.gmail.com";
+		final String username = "reports@gs-climbing.com";
+		final String password = "Reports2023!";
 		Properties props = new Properties();
-		props.put("mail.smtp.host", host);
-		props.put("mail.smtp.port", "587");
+		props.put("mail.smtp.host", "xceptions4.de");
+		props.put("mail.smtp.port", "465");
 		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.starttls.enable", "true");
-
+		props.put("mail.smtp.ssl.enable", "true");
 		Session session = Session.getInstance(props, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(username, password);
@@ -88,6 +82,7 @@ public class SendEmail implements Runnable {
 			}
 			mail.setContent(multipart);
 			Transport.send(mail);
+			System.out.println("Mail enviado");
 		} catch (MessagingException ex) {
 			ex.printStackTrace();
 		}
