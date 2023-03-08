@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class PerformanceReportRepairElevator extends Report implements Cloneable {
+public class PerformanceReportRepairElevator extends Report implements Cloneable { 
 
 	private String reportNumber;
 	private String inpectorsWorkers;

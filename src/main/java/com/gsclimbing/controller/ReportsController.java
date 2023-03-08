@@ -170,6 +170,8 @@ public class ReportsController {
 			}
 			return ResponseEntity.status(HttpStatus.OK).body(turbineService.getTurbine(turbineId));
 		} catch (Exception e) {
+			System.out.println(e.getCause());
+			System.out.println(e.getMessage());
 			message = "Could not upload the file: " + file.getOriginalFilename() + "!!!\n" + "Empty fields:\n" + convertEmptyListToString(lista);
 			if (report != null) {
 				String uuid = report.getUuid();

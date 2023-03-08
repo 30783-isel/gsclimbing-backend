@@ -122,7 +122,7 @@ public class ReportService {
 				field.setAccessible(true);
 				Object object = field.get(report);
 				String fieldName = field.getName();
-				if (("true".equals(object.toString()) && !ObjectUtils.isEmpty(object.toString())) && fieldName.contains("Chkn")) {
+				if (object != null && ("true".equals(object.toString()) && !ObjectUtils.isEmpty(object.toString())) && fieldName.contains("Chkn")) {
 					if (fieldName != null) {
 						listaChkTrue.add(fieldName.substring(0, fieldName.length() - 4));
 					}
