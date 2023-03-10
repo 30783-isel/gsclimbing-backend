@@ -68,6 +68,12 @@ public class UserController {
 	public User getUser(@PathVariable String username) {
 		return userService.getUserByUsername(username);
 	}
+	
+	@GetMapping(value = "/userId/{id}")
+	public User getUser(@PathVariable Integer id) {
+		return userService.getUserById(id).get();
+	}
+
 
 	@PostMapping(value = "/create")
 	public ResponseEntity<?> createUsers(@RequestBody User user) {
