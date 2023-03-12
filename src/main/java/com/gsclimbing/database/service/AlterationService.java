@@ -47,8 +47,9 @@ public class AlterationService {
 									newStaturoryInspectionReportField.setAccessible(true);
 									if (oldStatutoryInspectionReportField.getName().equals(newStaturoryInspectionReportField.getName()) && !(oldStatutoryInspectionReportField.get(oldField.get(oldReport)) instanceof StatutoryInspectionReport) && !(newStaturoryInspectionReportField.get(newField.get(newReport)) instanceof StatutoryInspectionReport)) {
 										if (oldStatutoryInspectionReportField.get(oldField.get(oldReport)) != null && newStaturoryInspectionReportField.get(newField.get(newReport)) != null && !oldStatutoryInspectionReportField.get(oldField.get(oldReport)).equals(newStaturoryInspectionReportField.get(newField.get(newReport)))) {											
+											System.out.println(newStaturoryInspectionReportField.getName());
 											Alteration alteration = new Alteration();
-											alteration.setField(oldReport.mapeamento().get(newField.getName()));
+											alteration.setField(oldReport.mapeamento().get(newStaturoryInspectionReportField.getName()));
 											alteration.setFieldOld(String.valueOf(oldStatutoryInspectionReportField.get(oldField.get(oldReport))));
 											alteration.setFieldNew(String.valueOf(newStaturoryInspectionReportField.get(newField.get(newReport))));
 											alteration.setImage(false);

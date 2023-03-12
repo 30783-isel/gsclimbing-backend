@@ -21,12 +21,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gsclimbing.commons.PasswordGenerator;
 import com.gsclimbing.database.entity.Project;
 import com.gsclimbing.database.entity.QProject;
 import com.gsclimbing.database.entity.QUser;
+import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.UserService;
@@ -44,7 +46,7 @@ public class UserController {
 
 	@Autowired
 	private ProjectService projectService;
-	
+
 	@Autowired
 	private EntityManager entityManager;
 
@@ -52,7 +54,7 @@ public class UserController {
 	public void deleteUser(@PathVariable String username) {
 		User user = userService.getUserByUsername(username);
 		if (user != null) {
-			for(Project project : user.getProjects()){
+			for (Project project : user.getProjects()) {
 				project.removeUsers(user);
 			}
 			userService.deleteUser(user);
@@ -68,12 +70,11 @@ public class UserController {
 	public User getUser(@PathVariable String username) {
 		return userService.getUserByUsername(username);
 	}
-	
+
 	@GetMapping(value = "/userId/{id}")
 	public User getUser(@PathVariable Integer id) {
 		return userService.getUserById(id).get();
 	}
-
 
 	@PostMapping(value = "/create")
 	public ResponseEntity<?> createUsers(@RequestBody User user) {
@@ -84,23 +85,27 @@ public class UserController {
 		}
 		if (userService.getUserByUsername(user.getUsername()) == null) {
 			if (userService.getUserByEmail(user.getEmail()) == null) {
-				user.setActive("true");
-				String password = PasswordGenerator.generateCommonLangPassword();
+				if (!user.getName().equals(null) && !user.getUsername().equals(null) && !user.getEmail().equals(null) && !user.getRoles().equals(null)) {
+					user.setActive("true");
+					String password = PasswordGenerator.generateCommonLangPassword();
 
-				String subject = "Welcome " + user.getName();
-				message = "<h3>Welcome to GS-Climbing team.</h3>";
-				//message+= "<h3><span>Credentials</span></h3>";
-				message+= "<span><b>Username - </b>" + user.getUsername() +"</span>";
-				message+= "<p style=\"line-height:.10px;\"><span><b>Password - </b>" + password +"<span></p>";
-				message+= "<p><a href=\"http://31.171.250.208/\">Go to portal</a></p>";
-				byte[] bytes = null;
-				SendEmail runnable = new SendEmail(user.getEmail(), subject, message, "Defects Inspection Report.pdf", bytes);
-				Thread t = new Thread(runnable);
-				t.start();
-
-				user.setPassword(password);
-				userService.createUser(user);
-				return new ResponseEntity<>(HttpStatus.OK);
+					String subject = "Welcome " + user.getName();
+					message = "<h3>Welcome to GS-Climbing team.</h3>";
+					message += "<span><b>Username - </b>" + user.getUsername() + "</span>";
+					message += "<p style=\"line-height:.10px;\"><span><b>Password - </b>" + password + "<span></p>";
+					message += "<p><a href=\"http://31.171.250.208/\">Go to portal</a></p>";
+					byte[] bytes = null;
+					SendEmail runnable = new SendEmail(user.getEmail(), subject, message, "Defects Inspection Report.pdf", bytes);
+					Thread t = new Thread(runnable);
+					t.start();
+					user.setPassword(password);
+					userService.createUser(user);
+					return new ResponseEntity<>(HttpStatus.OK);
+				} else {
+					message = "Empty fields:".concat(user.getUsername().equals(null) ? "Name" : "").concat("\n").concat(user.getUsername().equals(null) ? "Username" : "").concat("\n")
+							.concat(user.getEmail().equals(null) ? "Email" : "").concat("\n").concat(user.getRoles().equals(null) ? "Roles" : "").concat("\n");
+					return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+				}
 			} else {
 				message = "There is already a user with this email";
 				return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -128,34 +133,63 @@ public class UserController {
 		if (user.isPresent()) {
 			if (!ObjectUtils.isEmpty(listProjects)) {
 				List<Project> listaProjectos = Arrays.asList(listProjects.split("-")).stream().map(id -> projectService.getProjectById(Integer.valueOf(id))).collect(Collectors.toList());
-				listaProjectos.stream().forEach( project -> updateProjectUser( user.get(),  project));
+				listaProjectos.stream().forEach(project -> updateProjectUser(user.get(), project));
 			}
 		}
 	}
-	
+
+	@RequestMapping(method = RequestMethod.POST, value = "/update-user-data")
+	public ResponseEntity<?> updateUser(@RequestParam("userId") Integer userId, @RequestParam("name") String name, @RequestParam("username") String username, @RequestParam("email") String email,
+			@RequestParam("roles") String roles) {
+		try {
+			Optional<User> user = userService.getUserById(userId);
+			if (user.isPresent()) {
+				User utilizador = user.get();
+				User userEmail = userService.getUserByEmail(email);
+				if (userEmail == null || (userEmail != null && userEmail.getIdUser() == utilizador.getIdUser())) {
+					User userUsername = userService.getUserByUsername(username);
+					if (userUsername == null || (userUsername != null && userUsername.getIdUser() == utilizador.getIdUser())) {
+						utilizador.setName(name);
+						utilizador.setUsername(username);
+						utilizador.setEmail(email);
+						utilizador.setRoles(roles);
+						userService.updateUser(utilizador);
+					} else {
+						return new ResponseEntity<>("There is already a user with this username", HttpStatus.INTERNAL_SERVER_ERROR);
+					}
+				} else {
+					return new ResponseEntity<>("There is already a user with this email", HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<>("Error. User not updated", HttpStatus.EXPECTATION_FAILED);
+		}
+		return null;
+	}
+
 	private Project updateProjectUser(User user, Project project) {
 		project.getUsers().add(user);
 		return projectService.updateProject(project);
 	}
-	
+
 	@PostMapping(value = "/search")
 	public List<QProject> searchUsers(@RequestBody FilterUserDTO filter) {
 		QUser user = QUser.user;
 		JPAQuery<QProject> query = new JPAQuery<>(entityManager);
-		if(filter.getName() != null) {
+		if (filter.getName() != null) {
 			query.from(user).where(user.name.contains(filter.getName()));
 		}
-		if(filter.getUsername() != null) {
+		if (filter.getUsername() != null) {
 			query.from(user).where(user.username.contains(filter.getUsername()));
 		}
-		if(filter.getEmail() != null) {
+		if (filter.getEmail() != null) {
 			query.from(user).where(user.email.contains(filter.getEmail()));
 		}
-		if(filter.getRoles() != null) {
+		if (filter.getRoles() != null) {
 			query.from(user).where(user.roles.contains(filter.getRoles()));
 		}
 		List<QProject> lista = query.fetch();
-		
+
 		return lista;
 	}
 

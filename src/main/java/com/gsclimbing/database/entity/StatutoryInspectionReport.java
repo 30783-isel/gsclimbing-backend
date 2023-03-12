@@ -194,7 +194,59 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		
 		
 		
-		
+		mapa.put("inspectionReportServiceCabin1Chk", "Visual inspection of Service lift. Visual Damage? - Checkbox");
+		mapa.put("inspectionReportServiceCabin2Chk", "Connection Hoist and Stirrup is secured with nylock-nuts - Checkbox");
+		mapa.put("inspectionReportServiceCabin3Chk", "All bolts and nylock nuts are fit and secured - Checkbox");
+		mapa.put("inspectionReportServiceCabin4Chk", "Documents available in Service lift - Checkbox");
+		mapa.put("inspectionReportServiceCabin5Chk", "All warning labels are still properly in place and readable. - Checkbox");
+		mapa.put("inspectionReportServiceCabin6Chk", "Galleries are correct? (see 38916-OM-E, section - Checkbox");
+		mapa.put("inspectionReportServiceCabin7Chk", "Locking system present on gallery? - Checkbox");
+		mapa.put("inspectionReportServiceCabin8Chk", "All electrical cables strapped and not loose - Checkbox");
+		mapa.put("inspectionReportServiceCabin9Chk", "MAIN SWITCH mounted on gallery - Checkbox");
+		mapa.put("inspectionReportServiceCabin10Chk", "LOCKING SYSTEM on gallery: transfer key can only be removed, if gate is locked. - Checkbox");
+		mapa.put("inspectionReportServiceCabin11Chk", "POWER ON LIGHT INSIDE SERVICE LIFT - Checkbox");
+		mapa.put("inspectionReportServiceCabin12Chk", "Installation double storage bin correct? (450mm - 500mm under bottom landing - Checkbox");
+		mapa.put("inspectionReportServiceCabin13Chk", "Proper collectioning of electical supply cable in storage bin? - Checkbox");
+		mapa.put("inspectionReportServiceCabin14Chk", "Tension on the Guiding wire ropes is ok? (see position of red mark) - Checkbox");
+		mapa.put("inspectionReportServiceCabin15Chk", "Rubber protection in all holes? - Checkbox");
+		mapa.put("inspectionReportServiceCabin16Chk", "10kg Weights position and \"Suspension wire rope\" can rotate freely? - Checkbox");
+		mapa.put("inspectionReportServiceCabin17Chk", "Refer notes, no._EMERGENCY STOP: up & down disabled; red safety integrity light is ON - Checkbox");
+		mapa.put("inspectionReportServiceCabin18Chk", "DOOR SWITCH: if door is open, up & down disabled; red safety integrity light is ON  - Checkbox");
+		mapa.put("inspectionReportServiceCabin19Chk", "TRANSFER KEY SWITCH: if not switched on, then up & down disabled; red light is ON - Checkbox");
+		mapa.put("inspectionReportServiceCabin20Chk", "INSIDE steering: UP / DOWN control  - Checkbox");
+		mapa.put("inspectionReportServiceCabin21Chk", "Control UP; safe zone (green light OFF); door locked - Checkbox");
+		mapa.put("inspectionReportServiceCabin22Chk", "BOTTOM LIMIT BY-PASS. (Pay attention to the weights on the suspension cable)  - Checkbox");
+		mapa.put("inspectionReportServiceCabin23Chk", "ULTIMATE BOTTOM LIMIT (bott. Trip plate):up & down disabled;red safety integrity light ON  - Checkbox");
+		mapa.put("inspectionReportServiceCabin24Chk", "Check 'NO POWER' DESCENT' (Make sure speed will not increase)  - Checkbox");
+		mapa.put("inspectionReportServiceCabin25Chk", "Manually trip overspeed and verify down direction is blocked (Electrically and with Brake) - Checkbox");
+		mapa.put("inspectionReportServiceCabin26Chk", "Check hand wheel for damage and check funtionality to reset - Checkbox");
+		mapa.put("inspectionReportServiceCabin27Chk", "OVERLOAD FUNCTIONALITY: 240kg (nominal operation); 300kg (up & down disabled) - Checkbox");
+		mapa.put("inspectionReportServiceCabin28Chk", "TOP LIMIT: up disabled, down still enabled - Checkbox");
+		mapa.put("inspectionReportServiceCabin29Chk", "ULTIMATE TOP LIMIT: up & down disabled; red safety integrity light is ON - Checkbox");
+		mapa.put("inspectionReportServiceCabin30Chk", "ELECTRIC SUPPLY PLUG: check for fixation and damage.  - Checkbox");
+		mapa.put("inspectionReportServiceCabin31Chk", "Bottom floor connection bolts - Checkbox");
+		mapa.put("inspectionReportServiceCabin32Chk", "Disconnect motor-plug, (X6) Create overspeed (by opening brake) - Checkbox");
+		mapa.put("inspectionReportServiceCabin33Chk", "Spray 1m of suspension wire and lift service lift up and down to let lubricated wire inside the hoist. - Checkbox");
+		mapa.put("inspectionReportServiceCabin34Chk", "OUTSIDE steering: SET, then DOWN control (person on first level holds top limit to activate) - Checkbox");
+		mapa.put("inspectionReportServiceCabin35Chk", "OUTSIDE steering: SET, then UP control (stop with main switch) - Checkbox");
+		mapa.put("inspectionReportServiceCabin36Chk", "Check the condition of the 8.4mm Suspension wire rope. - Checkbox");
+		mapa.put("inspectionReportServiceCabin37Chk", "Check the condition of the 8.4mm Safety wire rope. - Checkbox");
+		mapa.put("inspectionReportServiceCabin38Chk", "Check the condition of both Guiding wires - Checkbox");
+		mapa.put("inspectionReportServiceCabin39Chk", "Wire guides and wire fixes are working correctly - Checkbox");
+		mapa.put("inspectionReportServiceCabin40Chk", "Guiding wires do not show any damage. - Checkbox");
+		mapa.put("inspectionReportServiceCabin41Chk", "Verify that axial sway of service lift between two landings is acceptable and does not have any - Checkbox");
+		mapa.put("inspectionReportServiceCabin42Chk", "Safezone (green light ON); door unlocked - Checkbox");
+		mapa.put("inspectionReportServiceCabin43Chk", "LOCKING SYSTEM on gallery: gate can only be unlocked with transfer key - Checkbox");
+		mapa.put("inspectionReportServiceCabin44Chk", "Galleries are correct? (see 38913-OM-E, section \"Galleries According MD2006/42/EC\") - Checkbox");
+		mapa.put("inspectionReportServiceCabin45Chk", "Safezone (green light ON); door unlocked  - Checkbox");
+		mapa.put("inspectionReportServiceCabin46Chk", "LOCKING SYSTEM on gallery: gate can only be unlocked with transfer key - Checkbox");
+		mapa.put("inspectionReportServiceCabin47Chk", "Galleries are correct? (see 38913-OM-E, section \"Galleries According MD2006/42/EC\") - Checkbox");
+		mapa.put("inspectionReportServiceCabin48Chk", "Lift will stop on equal level as the gallery? If not change position of striker plate - Checkbox");
+		mapa.put("inspectionReportServiceCabin49Chk", "Check striker plate fixation. - Checkbox");
+		mapa.put("inspectionReportServiceCabin50Chk", "Connection of Guiding steel wires. (min. 2Ton Shackle and lock pins facing to thge front) - Checkbox");
+		mapa.put("inspectionReportServiceCabin51Chk", "Connection of 8.4mm steel wires. (min. 2Ton Shackle and lock pins facing to the front) - Checkbox");
+		mapa.put("inspectionReportServiceCabin52Chk", "Condition of Shackles and check for wear. - Checkbox");
+		mapa.put("inspectionReportServiceCabin53Chk", "When replacing the Steel-wires check hole in Suspension beam for damage - Checkbox");
 		
 		mapa.put("inspectionReportServiceCabin1Txt", "Visual inspection of Service lift. Visual Damage?");
 		mapa.put("inspectionReportServiceCabin2Txt", "Connection Hoist and Stirrup is secured with nylock-nuts");
@@ -264,7 +316,30 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		
 		
 		
-		
+		mapa.put("internalCrane1Chk", "Reading of the operating hours  - Checkbox");
+		mapa.put("internalCrane2Chk", "Interrupt the voltage supply to the crane by removing the CEE plug from the top box in the powerhouse. - Checkbox");
+		mapa.put("internalCrane3Chk", "Check that the circuit diagram is in position in the switch cabinet and is still legible - Checkbox");
+		mapa.put("internalCrane4Chk", "Check that the warning signs on the switch cabinet - Checkbox");
+		mapa.put("internalCrane5Chk", "Check all cables for signs of outer damage and firm attachment to the terminals - Checkbox");
+		mapa.put("internalCrane6Chk", "Check all the screwed cable glands for signs of outer damage and a firm fit - Checkbox");
+		mapa.put("internalCrane7Chk", "Open the switch cabinet cover and check the firm fit of the cables. - Checkbox");
+		mapa.put("internalCrane8Chk", "Check the operating unit for outer damage, a firm cable fit and make sure strain relief is working. - Checkbox");
+		mapa.put("internalCrane9Chk", "Check the limit switches for signs of outer damage, a firm cable fit and ease of movement of the switching rockers - Checkbox");
+		mapa.put("internalCrane10Chk", "Set up the voltage supply again. - Checkbox");
+		mapa.put("internalCrane11Chk", "Check that the motor brake is working. - Checkbox");
+		mapa.put("internalCrane12Chk", "Check the rope for mechanical damage such as breaks - Checkbox");
+		mapa.put("internalCrane13Chk", "Check the load hook for mechanical damage - Checkbox");
+		mapa.put("internalCrane14Chk", "Carry out a visual inspection of the drive unit for damage and leaks. - Checkbox");
+		mapa.put("internalCrane15Chk", "Use a feeler gauge to check the brake gap, it has to be 0.3 - 0.8 mm. - Checkbox");
+		mapa.put("internalCrane16Chk", "Check the  limit switch rockers to make sure they are present and move easily. - Checkbox");
+		mapa.put("internalCrane17Chk", "Check that the crane bridge is safely locked in place and that the locking lever is a firm fit - Checkbox");
+		mapa.put("internalCrane18Chk", "Check that the crab is safely locked in place and that the locking lever is a firm fit - Checkbox");
+		mapa.put("internalCrane19Chk", "Check the deflection rollers and the respective components - Checkbox");
+		mapa.put("internalCrane20Chk", "Check all the screw joints to make sure they are in position and a firm fit - Checkbox");
+		mapa.put("internalCrane21Chk", "Check all the rollers on the bridge and on the crab for mechanical damage - Checkbox");
+		mapa.put("internalCrane22Chk", "Check all the stop buffers to make sure they are in position and have no mechanical damage - Checkbox");
+		mapa.put("internalCrane23Chk", "Check all the components to make sure the coating - Checkbox");
+		mapa.put("internalCrane24Chk", "Load test - Checkbox");
 		
 		mapa.put("internalCrane1Txt", "Reading of the operating hours ");
 		mapa.put("internalCrane2Txt", "Interrupt the voltage supply to the crane by removing the CEE plug from the top box in the powerhouse.");
@@ -306,7 +381,55 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		
 		
 		
-		
+		mapa.put("inspectionReportLadder1Chk", "Is ladder secure and tight to structure - Checkbox");
+		mapa.put("inspectionReportLadder2Chk", "Are ladder brackets attached - Checkbox");
+		mapa.put("inspectionReportLadder3Chk", "Are all fasteners in place - Checkbox");
+		mapa.put("inspectionReportLadder4Chk", "Are all welds in good condition - Checkbox");
+		mapa.put("inspectionReportLadder5Chk", "Are connections between rais ok - Checkbox");
+		mapa.put("inspectionReportLadder6Chk", "Any bent rails/rungs - Checkbox");
+		mapa.put("inspectionReportLadder7Chk", "Any cracked rails/rungs - Checkbox");
+		mapa.put("inspectionReportLadder8Chk", "Is red rust/corrosion present - Checkbox");
+		mapa.put("inspectionReportLadder9Chk", "Unobstucted climb path - Checkbox");
+		mapa.put("inspectionReportLadder10Chk", "Is the overall condition safe - Checkbox");
+		mapa.put("inspectionReportLadder11Chk", "Is assembly secure and tight to Double-T - Checkbox");
+		mapa.put("inspectionReportLadder12Chk", "Are attachment fasteners in place - Checkbox");
+		mapa.put("inspectionReportLadder13Chk", "Is red rust/corrosion present - Checkbox");
+		mapa.put("inspectionReportLadder14Chk", "Are swaged fittings in good condition - Checkbox");
+		mapa.put("inspectionReportLadder15Chk", "Is eye bolt worn/cracked - Checkbox");
+		mapa.put("inspectionReportLadder16Chk", "Are welds in good condition - Checkbox");
+		mapa.put("inspectionReportLadder17Chk", "Any sign of wear or damage - Checkbox");
+		mapa.put("inspectionReportLadder18Chk", "Is cable termination in good condition - Checkbox");
+		mapa.put("inspectionReportLadder19Chk", "Does the overall condition appear safe - Checkbox");
+		mapa.put("inspectionReportLadder20Chk", "Is assembly secure and tight to the structure - Checkbox");
+		mapa.put("inspectionReportLadder21Chk", "Are channels secure to rungs - Checkbox");
+		mapa.put("inspectionReportLadder22Chk", "Are all fasteners present and secure - Checkbox");
+		mapa.put("inspectionReportLadder23Chk", "Is head anchor attachment secured - Checkbox");
+		mapa.put("inspectionReportLadder24Chk", "Are welds free of cracks - Checkbox");
+		mapa.put("inspectionReportLadder25Chk", "Are rungs bent or worn - Checkbox");
+		mapa.put("inspectionReportLadder26Chk", "Is any red rust/corrosion present - Checkbox");
+		mapa.put("inspectionReportLadder27Chk", "Does the overall condition appear safe - Checkbox");
+		mapa.put("inspectionReportLadder28Chk", "Does the cable show any flattened,frayed or kinked section/areas along the overall length - Checkbox");
+		mapa.put("inspectionReportLadder29Chk", "Is the assembly secure to the head assembly - Checkbox");
+		mapa.put("inspectionReportLadder30Chk", "Is the cable tight to the tower face - Checkbox");
+		mapa.put("inspectionReportLadder31Chk", "Is the climb path free of obstuction - Checkbox");
+		mapa.put("inspectionReportLadder32Chk", "Is the cable attached through the cable guides - Checkbox");
+		mapa.put("inspectionReportLadder33Chk", "Does the cable show signs of red rust - Checkbox");
+		mapa.put("inspectionReportLadder34Chk", "Does the cable show signs of electrical arcing/burns - Checkbox");
+		mapa.put("inspectionReportLadder35Chk", "Does the overall condition appear safe - Checkbox");
+		mapa.put("inspectionReportLadder36Chk", "Are cable guides provided every 20 to 40 ft - Checkbox");
+		mapa.put("inspectionReportLadder37Chk", "Are all fasteners present - Checkbox");
+		mapa.put("inspectionReportLadder38Chk", "Are cable guides secure to the structure - Checkbox");
+		mapa.put("inspectionReportLadder39Chk", "Are ladder rungs in good condition - Checkbox");
+		mapa.put("inspectionReportLadder40Chk", "Are rubber grommets in good condition - Checkbox");
+		mapa.put("inspectionReportLadder41Chk", "Is there any sign of red rust/corrosion - Checkbox");
+		mapa.put("inspectionReportLadder42Chk", "Is assembly secure to the structure - Checkbox");
+		mapa.put("inspectionReportLadder43Chk", "Are all clamp brackets/fasteners present - Checkbox");
+		mapa.put("inspectionReportLadder44Chk", "Are the cable clips present and secure - Checkbox");
+		mapa.put("inspectionReportLadder45Chk", "Is the cable taut at the assembly - Checkbox");
+		mapa.put("inspectionReportLadder46Chk", "Is any rust/corrosion present - Checkbox");
+		mapa.put("inspectionReportLadder47Chk", "Does the overall condition appear safe - Checkbox");
+		mapa.put("inspectionReportLadder48Chk", "Is the cable safe climb system secure - Checkbox");
+		mapa.put("inspectionReportLadder49Chk", "Does the overall condition appear safe - Checkbox");
 		
 		mapa.put("inspectionReportLadder1Txt", "Is ladder secure and tight to structure");
 		mapa.put("inspectionReportLadder2Txt", "Are ladder brackets attached");
@@ -386,6 +509,13 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		mapa.put("inspectionDescenderDeviceResultOfInspection", "Result of inspection");
 		mapa.put("inspectionDescenderDeviceRepairRequired", "Repair required");
 		mapa.put("inspectionDescenderDeviceNextInspection", "Next inspection");
+		
+		mapa.put("inspectionDescenderDevice1Chk", "Visual check of descender device - Checkbox");
+		mapa.put("inspectionDescenderDevice2Chk", "Visual check rope - Checkbox");
+		mapa.put("inspectionDescenderDevice3Chk", "Visual check sling and carabiner - Checkbox");
+		mapa.put("inspectionDescenderDevice4Chk", "Do function test - Checkbox");
+		mapa.put("inspectionDescenderDevice5Chk", "Fill document - Checkbox");
+		mapa.put("inspectionDescenderDevice6Chk", "Seal back and put sticker on - Checkbox");		
 
 		mapa.put("inspectionDescenderDevice1Txt", "Visual check of descender device");
 		mapa.put("inspectionDescenderDevice2Txt", "Visual check rope");
@@ -406,6 +536,36 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		
 		
 		
+		mapa.put("inspectionAnchorPoints1Chk", "Inspect the anchorage device for legible serial - Checkbox");
+		mapa.put("inspectionAnchorPoints2Chk", "Check that the anchorage device is tight in position - Checkbox");
+		mapa.put("inspectionAnchorPoints3Chk", "Check that the bolt is going all way through the threaded hole of eye nut - Checkbox");
+		mapa.put("inspectionAnchorPoints4Chk", "Inspect the steel surface for cracks and corrosion - Checkbox");
+		mapa.put("inspectionAnchorPoints5Chk", "Record inspection - Checkbox");
+		mapa.put("inspectionAnchorPoints6Chk", "List serial numbers.If anchoage device has no serial number - Checkbox");
+		mapa.put("inspectionAnchorPoints7Chk",  "Anchorage point serial number - Serial no/position: 1 - Checkbox ");
+		mapa.put("inspectionAnchorPoints8Chk",  "Anchorage point serial number - Serial no/position: 2 - Checkbox ");
+		mapa.put("inspectionAnchorPoints9Chk",  "Anchorage point serial number - Serial no/position: 3 - Checkbox ");
+		mapa.put("inspectionAnchorPoints10Chk", "Anchorage point serial number - Serial no/position: 4 - Checkbox ");
+		mapa.put("inspectionAnchorPoints11Chk", "Anchorage point serial number - Serial no/position: 5 - Checkbox ");
+		mapa.put("inspectionAnchorPoints12Chk", "Anchorage point serial number - Serial no/position: 6 - Checkbox ");
+		mapa.put("inspectionAnchorPoints13Chk", "Anchorage point serial number - Serial no/position: 7 - Checkbox ");
+		mapa.put("inspectionAnchorPoints14Chk", "Anchorage point serial number - Serial no/position: 8 - Checkbox ");
+		mapa.put("inspectionAnchorPoints15Chk", "Anchorage point serial number - Serial no/position: 9 - Checkbox ");
+		mapa.put("inspectionAnchorPoints16Chk", "Anchorage point serial number - Serial no/position: 10 - Checkbox");
+		mapa.put("inspectionAnchorPoints17Chk", "Anchorage point serial number - Serial no/position: 11 - Checkbox");
+		mapa.put("inspectionAnchorPoints18Chk", "Anchorage point serial number - Serial no/position: 12 - Checkbox");
+		mapa.put("inspectionAnchorPoints19Chk", "Anchorage point serial number - Serial no/position: 13 - Checkbox");
+		mapa.put("inspectionAnchorPoints20Chk", "Anchorage point serial number - Serial no/position: 14 - Checkbox");
+		mapa.put("inspectionAnchorPoints21Chk", "Anchorage point serial number - Serial no/position: 15 - Checkbox");
+		mapa.put("inspectionAnchorPoints22Chk", "Anchorage point serial number - Serial no/position: 16 - Checkbox");
+		mapa.put("inspectionAnchorPoints23Chk", "Anchorage point serial number - Serial no/position: 17 - Checkbox");
+		mapa.put("inspectionAnchorPoints24Chk", "Anchorage point serial number - Serial no/position: 18 - Checkbox");
+		mapa.put("inspectionAnchorPoints25Chk", "Anchorage point serial number - Serial no/position: 19 - Checkbox");
+		mapa.put("inspectionAnchorPoints26Chk", "Anchorage point serial number - Serial no/position: 20 - Checkbox");
+		mapa.put("inspectionAnchorPoints27Chk", "Anchorage point serial number - Serial no/position: 21 - Checkbox");
+		mapa.put("inspectionAnchorPoints28Chk", "Anchorage point serial number - Serial no/position: 22 - Checkbox");
+		mapa.put("inspectionAnchorPoints29Chk", "Anchorage point serial number - Serial no/position: 23 - Checkbox");
+		mapa.put("inspectionAnchorPoints30Chk", "Anchorage point serial number - Serial no/position: 24 - Checkbox");
 		
 		mapa.put("inspectionAnchorPoints1Txt", "Inspect the anchorage device for legible serial");
 		mapa.put("inspectionAnchorPoints2Txt", "Check that the anchorage device is tight in position");

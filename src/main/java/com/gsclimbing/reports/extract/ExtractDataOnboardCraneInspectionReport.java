@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.gsclimbing.commons.enums.ReportEnum;
 import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.OnboardCraneInspectionReport;
+import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.HistoricReport;
 import com.gsclimbing.database.entity.OnboardCraneInspectionReport;
@@ -459,7 +460,7 @@ public class ExtractDataOnboardCraneInspectionReport {
 
 		if (fileSize(file) != fileData.getSize()) {
 			Alteration alteration = new Alteration();
-			alteration.setField(imageFieldName);
+			alteration.setField(new Report().mapeamento().get(imageFieldName));
 			alteration.setFieldOld(null);
 			alteration.setFieldNew(null);
 			alteration.setImage(true);

@@ -130,6 +130,17 @@ public class Report {
 		mapa.put("typeReport", "Type of Report");
 		mapa.put("projectoId", "Project Id");
 		mapa.put("turbinaId", "Turbine Id");
+
+		mapa.put("photoOne", "Photo one");
+		mapa.put("photoTwo", "Photo two");
+		mapa.put("photoThree", "Photo three");
+		mapa.put("photoFour", "Photo four");
+		mapa.put("photoFive", "Photo five");
+		mapa.put("photoSix", "Photo six");
+		mapa.put("photoSeven", "Photo seven");
+		mapa.put("photoEight", "Photo eight");
+		
+		
 		return mapa;
 	}
 	

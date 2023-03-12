@@ -170,6 +170,18 @@ public class ProjectController {
 		return null;
 	}
 	
+	@RequestMapping(method = RequestMethod.POST, value = "/update-turbine-name")
+	public ResponseEntity<?> updateTurbineName(@RequestParam("turbineId") String turbineId, @RequestParam("name") String name) {
+		try {
+			Turbine turbine = turbineService.getTurbine(Integer.parseInt(turbineId));
+			turbine.setName(name);
+			turbineService.updateTurbine(turbine);
+		} catch (Exception e) {
+			return new ResponseEntity<>("Turbine not updated", HttpStatus.EXPECTATION_FAILED);
+		}
+		return null;
+	}
+	
 	@RequestMapping(method = RequestMethod.GET, value = "/turbine-by-id/{id}")
 	public TurbineDto getTurbine(@PathVariable int id) {
 		TurbineDto turbineDto = turbineService.getTurbine(id) != null ? turbineService.getTurbine(id).mapper() : null;

@@ -30,7 +30,7 @@ public class Turbine {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
-	
+	private String name;
 	private boolean defectsInspectionReport;
 	private boolean examinationTransformer;
 	private boolean measurements6KV;	
@@ -56,6 +56,7 @@ public class Turbine {
 	public TurbineDto mapper() {
 		return TurbineDto.builder()
 			.id(id)
+			.name(name)
 			.defectsInspectionReport(this.defectsInspectionReport)
 			.examinationTransformer(this.examinationTransformer)
 			.measurements6KV(this.measurements6KV)

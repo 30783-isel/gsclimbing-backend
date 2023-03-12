@@ -34,6 +34,7 @@ import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.HistoricReport;
 import com.gsclimbing.database.entity.Medidas690V400V;
+import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.repository.UserRepository;
@@ -525,7 +526,7 @@ public class ExtractDataMedidas690V400V {
 		fileData.addImageChange();
 		if (fileSize(file) != fileData.getSize()) {
 			Alteration alteration = new Alteration();
-			alteration.setField(imageFieldName);
+			alteration.setField(new Report().mapeamento().get(imageFieldName));
 			alteration.setFieldOld(null);
 			alteration.setFieldNew(null);
 			alteration.setImage(true);
