@@ -60,53 +60,52 @@ public class ProjectController {
 
 	@Autowired
 	private EntityManager entityManager;
-	
-	
+
 	@PostMapping(value = "/search")
 	public List<QProject> searchProjects(@RequestBody FilterProjectDTO filter) {
 		QProject project = QProject.project;
 		JPAQuery<QProject> query = new JPAQuery<>(entityManager);
-		if(filter.getName() != null) {
+		if (filter.getName() != null) {
 			query.from(project).where(project.name.contains(filter.getName()));
 		}
-		if(filter.getCountry() != null) {
+		if (filter.getCountry() != null) {
 			query.from(project).where(project.country.contains(filter.getCountry()));
 		}
-		if(filter.getLocation() != null) {
+		if (filter.getLocation() != null) {
 			query.from(project).where(project.location.contains(filter.getLocation()));
 		}
-		if(filter.getSite() != null) {
+		if (filter.getSite() != null) {
 			query.from(project).where(project.site.contains(filter.getSite()));
 		}
 		List<QProject> lista = query.fetch();
-		
+
 		return lista;
 	}
-	
-	
+
 	@RequestMapping(method = RequestMethod.POST, value = "/create")
 	public ResponseEntity<?> createProject(@RequestBody Project project) {
 		if (projectService.getProjectByName(project.getName()) == null) {
 			List<Turbine> turbinas = getListTurbines(project.getNumberTurbines(), project);
+			turbinas.forEach(turbina -> {
+				turbina.setName(Integer.toString(turbinas.indexOf(turbina)+1));
+			});
 			project.setTurbines(turbinas);
 			projectService.createProject(project);
 			return new ResponseEntity<>(HttpStatus.OK);
-		}else {
+		} else {
 			return new ResponseEntity<>("There is already a project with that name.", HttpStatus.EXPECTATION_FAILED);
 		}
 	}
 
-	List<Turbine> getListTurbines(int numOfElements, Project project){
-	     return IntStream.range(0, numOfElements)
-	              .mapToObj(i -> new Turbine(project))  
-	              .collect(Collectors.toList()); 
+	List<Turbine> getListTurbines(int numOfElements, Project project) {
+		return IntStream.range(0, numOfElements).mapToObj(i -> new Turbine(project)).collect(Collectors.toList());
 	}
-	
+
 	@RequestMapping(method = RequestMethod.GET, value = "/all")
 	public List<ProjectDto> getProjects() {
 		return projectService.getAllProjects().stream().map(project -> project.mapper()).collect(Collectors.toList());
 	}
-	
+
 	@RequestMapping(method = RequestMethod.GET, value = "/project-by-id/{idProject}")
 	public ProjectDto getProjectByName(@PathVariable Integer idProject) {
 		return projectService.getProjectById(idProject).mapper();
@@ -134,9 +133,10 @@ public class ProjectController {
 	public ResponseEntity<?> addTurbine(@PathVariable final Integer id) {
 		String message = null;
 		Project project = projectService.getProjectById(id);
-		if (project!= null) {
+		if (project != null) {
 			Turbine turbine = new Turbine(project);
 			project.setNumberTurbines(project.getNumberTurbines() + 1);
+			turbine.setName(Integer.toString(project.getTurbines().size() + 1));
 			turbineService.createTurbine(turbine);
 			project.getTurbines().add(turbine);
 			return null;
@@ -152,7 +152,7 @@ public class ProjectController {
 			@RequestParam("performanceReportRepairElevator") boolean performanceReportRepairElevator, @RequestParam("statutoryInspectionReport") boolean statutoryInspectionReport) {
 		try {
 			Turbine turbine = turbineService.getTurbine(Integer.parseInt(turbineId));
-			
+
 			turbine.setDefectsInspectionReport(defectsInspectionReport);
 			turbine.setDefectsInspectionReport(defectsInspectionReport);
 			turbine.setExaminationTransformer(examinationTransformer);
@@ -162,14 +162,14 @@ public class ProjectController {
 			turbine.setOnboardCraneInspectionReport(onboardCraneInspectionReport);
 			turbine.setPerformanceReportRepairElevator(performanceReportRepairElevator);
 			turbine.setStatutoryInspectionReport(statutoryInspectionReport);
-			
+
 			turbineService.updateTurbine(turbine);
 		} catch (Exception e) {
 			return new ResponseEntity<>("Turbine not updated", HttpStatus.EXPECTATION_FAILED);
 		}
 		return null;
 	}
-	
+
 	@RequestMapping(method = RequestMethod.POST, value = "/update-turbine-name")
 	public ResponseEntity<?> updateTurbineName(@RequestParam("turbineId") String turbineId, @RequestParam("name") String name) {
 		try {
@@ -181,7 +181,7 @@ public class ProjectController {
 		}
 		return null;
 	}
-	
+
 	@RequestMapping(method = RequestMethod.GET, value = "/turbine-by-id/{id}")
 	public TurbineDto getTurbine(@PathVariable int id) {
 		TurbineDto turbineDto = turbineService.getTurbine(id) != null ? turbineService.getTurbine(id).mapper() : null;
@@ -190,7 +190,9 @@ public class ProjectController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/turbines/{idProject}")
 	public List<TurbineDto> getTurbine(@PathVariable final Integer idProject) {
-		return turbineService.getTurbinesByProject(projectService.getProject(idProject) )  != null ? turbineService.getTurbinesByProject(projectService.getProject(idProject)).stream().map(turbine -> turbine.mapper()).collect(Collectors.toList()) : null;
+		return turbineService.getTurbinesByProject(projectService.getProject(idProject)) != null
+				? turbineService.getTurbinesByProject(projectService.getProject(idProject)).stream().map(turbine -> turbine.mapper()).collect(Collectors.toList())
+				: null;
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete-turbine/{id}")
@@ -214,15 +216,15 @@ public class ProjectController {
 		projectService.updateProject(project);
 		return null;
 	}
-	
+
 	@RequestMapping(method = RequestMethod.GET, value = "/update-users-project/{projectId}/{users}")
 	public void updateUserData(@PathVariable("projectId") final String projectId, @PathVariable("users") final String users) {
-		
+
 		Project project = projectService.getProjectById(Integer.valueOf(projectId));
 		if (project != null) {
 			Set<User> listaUsers = null;
 			if (!ObjectUtils.isEmpty(users)) {
-				listaUsers = Arrays.asList(users.split("-")).stream().map( id -> userService.getUserById(Integer.valueOf(id)) .orElse(null)).collect(Collectors.toSet());
+				listaUsers = Arrays.asList(users.split("-")).stream().map(id -> userService.getUserById(Integer.valueOf(id)).orElse(null)).collect(Collectors.toSet());
 				project.setUsers(listaUsers);
 			} else {
 				project.setUsers(null);
@@ -230,5 +232,5 @@ public class ProjectController {
 			projectService.updateProject(project);
 		}
 	}
-	
+
 }
