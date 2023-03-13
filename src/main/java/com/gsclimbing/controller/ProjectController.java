@@ -2,9 +2,8 @@ package com.gsclimbing.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,39 +23,35 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.Project;
 import com.gsclimbing.database.entity.QProject;
-import com.gsclimbing.database.entity.QReport;
 import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.service.DefectsInspectionReportService;
+import com.gsclimbing.database.service.FileService;
 import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.TurbineService;
 import com.gsclimbing.database.service.UserService;
 import com.gsclimbing.dto.FilterProjectDTO;
 import com.gsclimbing.dto.ProjectDto;
 import com.gsclimbing.dto.TurbineDto;
-import com.querydsl.core.BooleanBuilder;
+import com.gsclimbing.ftp.FTPDownloadFiles;
 import com.querydsl.jpa.impl.JPAQuery;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
 @RequestMapping(path = "/api/project")
 public class ProjectController {
-
 	@Autowired
 	private ProjectService projectService;
-
 	@Autowired
 	private TurbineService turbineService;
-
 	@Autowired
 	private UserService userService;
-
 	@Autowired
-	private DefectsInspectionReportService defectsInspectionReportService;
-
+	private FileService fileService;
 	@Autowired
 	private EntityManager entityManager;
 
@@ -205,6 +199,7 @@ public class ProjectController {
 		}
 		try {
 			if (turbine != null) {
+				deleteFiles(turbine);
 				turbineService.deleteTurbine(turbine);
 			}
 		} catch (Exception e) {
@@ -215,6 +210,19 @@ public class ProjectController {
 		project.setNumberTurbines(numberTurbines - 1);
 		projectService.updateProject(project);
 		return null;
+	}
+	
+	private void deleteFiles(Turbine turbine) {
+		List<Report> listaReports = turbine.getListReports();
+		List<FileData> listFileData = listaReports.stream().map(report->report.getListaFileData()).flatMap(Collection::stream).collect(Collectors.toList());
+		listFileData.stream().forEach(fileData -> {
+			fileService.deleteFile(fileData.getFileId());
+			FTPDownloadFiles.deleteFile2FTPServer(fileData.getHash());
+			for (int i = 0; i <= 5; i++) {
+				String path = "/oldImages/" + i + "/" + fileData.getHash();
+				FTPDownloadFiles.deleteFile2FTPServer(path);
+			}
+		});
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/update-users-project/{projectId}/{users}")
