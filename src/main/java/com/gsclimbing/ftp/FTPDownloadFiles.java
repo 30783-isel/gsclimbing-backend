@@ -211,7 +211,6 @@ public class FTPDownloadFiles {
 		} finally {
 			try {
 				if (ftpClient.isConnected()) {
-					ftpClient.logout();
 					ftpClient.disconnect();
 				}
 			} catch (IOException ex) {

@@ -93,42 +93,25 @@ public class DefectsInspectionPopulater {
 		
 		List<FileData> listFileData = null;
 		byte[] bytes = null;
-
 		if (report != null) {
 			List<FileData> list = fileService.readFile(report.getUuid());
 			listFileData = list.stream().filter(file -> file.getMimeType().equals("JPG")).collect(Collectors.toList());
 		}
-
-		int i = 0;
-
 		for (FileData fileData : listFileData) {
-
-			if (fileData != null)
+			if (fileData != null) {
 				bytes = FTPDownloadFiles.downloadFile2FTPServer(fileData.getHash());
-
+			}
 			InputStream is = new ByteArrayInputStream(bytes);
 			BufferedImage bufferedImage = ImageIO.read(is);
-
 			setImageField((String) fileData.getName(), bufferedImage);
-
 			setField(fileData.getNameField(), fileData.getDescription());
-
-			i++;
-
 		}
-		if (i < 3) {
-			_pdfDocument.removePage(1);
-		}
-
 		byte[] data = null;
-
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		_pdfDocument.save(byteArrayOutputStream);
 		_pdfDocument.close();
 		InputStream inputStream_ = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-
 		data = IOUtils.toByteArray(inputStream_);
-
 		return data;
 	}
 

@@ -233,15 +233,6 @@ public class FileReportsController {
 			outStream.write(bytesPerformanceReportRepairElevator);
 		}
 		
-		if (statutoryInspectionReportBool) {
-			String folder = "/statutoryInspectionReport/";
-			String filenameStatutoryInspectionReport = "Statutory Inspection Report.pdf";
-			bytesStatutoryInspectionReport = populateAndCopy(folder, filenameStatutoryInspectionReport, project.getSite(), project.getNumber(), project.getType());
-			//bytesStatutoryInspectionReport = FTPDownloadFiles.downloadPdfReportFromFTPServer(filenameStatutoryInspectionReport, "8", "statutoryInspectionReport/");
-			statutoryInspectionReportTemp = new File(tmpDirOrig.toString(), filenameStatutoryInspectionReport);
-			OutputStream outStream = new FileOutputStream(statutoryInspectionReportTemp);
-			outStream.write(bytesStatutoryInspectionReport);
-		}
 		
 		if (measurementsMVSwitchgearStatorCabinetBool) {
 			String folder = "/measurementsMVSwitchgearStatorCabinet/";
@@ -284,6 +275,15 @@ public class FileReportsController {
 			outStream.write(bytesMeasurements690V400V);
 		}
 
+		if (statutoryInspectionReportBool) {
+			String folder = "/statutoryInspectionReport/";
+			String filenameStatutoryInspectionReport = "Statutory Inspection Report.pdf";
+			bytesStatutoryInspectionReport = populateAndCopy(folder, filenameStatutoryInspectionReport, project.getSite(), project.getNumber(), project.getType());
+			//bytesStatutoryInspectionReport = FTPDownloadFiles.downloadPdfReportFromFTPServer(filenameStatutoryInspectionReport, "8", "statutoryInspectionReport/");
+			statutoryInspectionReportTemp = new File(tmpDirOrig.toString(), filenameStatutoryInspectionReport);
+			OutputStream outStream = new FileOutputStream(statutoryInspectionReportTemp);
+			outStream.write(bytesStatutoryInspectionReport);
+		}
 		String filename = project.getName() + ".zip";
 
 		String pathZipFile = ZipUtils.ZipDirectory(tmpDirOrig.toString(), project.getName());

@@ -190,7 +190,7 @@ public class ExtractDefectsInspection {
 				if (nameField.equals("additionalField7Text"))
 					getDefectsInspectionReport().setAdditionalField7Text(valueField);
 
-				if (nameField.contains("description") && imageInsertion) {
+				if ((nameField.contains("description")) && imageInsertion) {
 					setNameField(nameField);
 					setDescription(valueField);
 				}
@@ -218,6 +218,7 @@ public class ExtractDefectsInspection {
 								fileData.setImageChange(0);
 								fileData.setNameField(getNameField());
 								fileData.setDescription(getDescription());
+								defectsInspectionReport.addImgOnListImages(fileData);
 								extractAnnotationImages(pDimage, nameField, fileData);
 							}
 						} catch (IOException e) {
