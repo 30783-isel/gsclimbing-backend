@@ -353,12 +353,18 @@ public class ExtractDataOnboardCraneInspectionReport {
 				if (nameField.equals("checkLimitSwitchRockersChkn"))
 					getOnboardCraneInspectionReport().setCheckLimitSwitchRockersChkn(valueField == "Yes" ? true : false);
 				
+				if (nameField.equals("checkCraneBridgeChkn"))
+					getOnboardCraneInspectionReport().setCheckCraneBridgeChkn(valueField == "Yes" ? true : false);
 				if (nameField.equals("checkCraneBridgeChk"))
 					getOnboardCraneInspectionReport().setCheckCraneBridgeChk(valueField == "Yes" ? true : false);
 				if (nameField.equals("checkCrabChk"))
 					getOnboardCraneInspectionReport().setCheckCrabChk(valueField == "Yes" ? true : false);
+				if (nameField.equals("checkCrabChkn"))
+					getOnboardCraneInspectionReport().setCheckCrabChkn(valueField == "Yes" ? true : false);
 				if (nameField.equals("checkDeflectionRollersChk"))
 					getOnboardCraneInspectionReport().setCheckDeflectionRollersChk(valueField == "Yes" ? true : false);
+				if (nameField.equals("checkDeflectionRollersChkn"))
+					getOnboardCraneInspectionReport().setCheckDeflectionRollersChkn(valueField == "Yes" ? true : false);
 				
 				if (nameField.equals("checkScrewJointsChk"))
 					getOnboardCraneInspectionReport().setCheckScrewJointsChk(valueField == "Yes" ? true : false);

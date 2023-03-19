@@ -189,6 +189,7 @@ public class OnboardCraneInspectionReportElevatorPopulater {
 		setField("ancorPointSafetyEquipmentChkn",report.isAncorPointSafetyEquipmentChkn() ? "Yes" : "Off");
 		
 		setField("loadTestChk",report.isLoadTestChk() ? "Yes" : "Off");
+		setField("loadTestChkn",report.isLoadTestChkn() ? "Yes" : "Off");
 		
 		setField("additionalField1Label", report.getAdditionalField1Label());
 		setField("additionalField1Text", report.getAdditionalField1Text());

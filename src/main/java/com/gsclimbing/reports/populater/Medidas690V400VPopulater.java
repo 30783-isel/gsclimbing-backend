@@ -97,7 +97,7 @@ public class Medidas690V400VPopulater {
 		setField("box1_9", report.getBox1_9());
 
 		setField("type2", report.getType2());
-		setField("voltage2", report.getBox1_1());
+		setField("voltage2", report.getVoltage2());
 		setField("length2", report.getLength2());
 		setField("visual2", report.getVisual2());
 
