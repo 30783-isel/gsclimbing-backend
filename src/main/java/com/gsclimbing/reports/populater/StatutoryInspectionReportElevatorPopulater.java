@@ -166,6 +166,7 @@ public class StatutoryInspectionReportElevatorPopulater {
 		setField("inspectionReportServiceCabinResultOfInspection", statutoryInspectionReportServiceCabin.getInspectionReportServiceCabinResultOfInspection());
 		setField("inspectionReportServiceCabinRepairRequired", statutoryInspectionReportServiceCabin.getInspectionReportServiceCabinRepairRequired());
 		setField("inspectionReportServiceCabinNextInspection", statutoryInspectionReportServiceCabin.getInspectionReportServiceCabinNextInspection());
+		setField("inspectionReportServiceCabinNextInspectionSticker", statutoryInspectionReportServiceCabin.getInspectionReportServiceCabinNextInspectionSticker());
 		
 		setField("inspectionReportServiceCabin1Txt", statutoryInspectionReportServiceCabin.getInspectionReportServiceCabin1Txt());
 		setField("inspectionReportServiceCabin2Txt", statutoryInspectionReportServiceCabin.getInspectionReportServiceCabin2Txt());
@@ -227,10 +228,10 @@ public class StatutoryInspectionReportElevatorPopulater {
 
 		StatutoryInspectionReportInternalCrane statutoryInspectionReportInternalCrane = report.getStatutoryInspectionReportInternalCrane();
 
-		setField("internalCraneManufacturer", statutoryInspectionReportInternalCrane.getInternalCraneManufacturer());
-		setField("internalCraneType", statutoryInspectionReportInternalCrane.getInternalCraneType());
+		setField("internalCraneManufacturerPage", statutoryInspectionReportInternalCrane.getInternalCraneManufacturerPage());
+		setField("internalCraneTypePage", statutoryInspectionReportInternalCrane.getInternalCraneTypePage());
 		setField("internalCraneYearBuild", statutoryInspectionReportInternalCrane.getInternalCraneYearBuild());
-		setField("internalCraneSerialNumber", statutoryInspectionReportInternalCrane.getInternalCraneSerialNumber());
+		setField("internalCraneSerialNumberPage", statutoryInspectionReportInternalCrane.getInternalCraneSerialNumberPage());
 
 		setField("internalCraneTypePlateTestBadge", statutoryInspectionReportInternalCrane.getInternalCraneTypePlateTestBadge());
 

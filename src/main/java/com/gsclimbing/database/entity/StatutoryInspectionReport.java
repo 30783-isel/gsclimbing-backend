@@ -160,6 +160,10 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		mapa.put("internalCraneManufacturer", "Internal crane / Manufacturer");
 		mapa.put("internalCraneType", "Internal crane / Type");
 		mapa.put("internalCraneSerialNumber", "Internal crane / Serial number");
+		mapa.put("internalCraneManufacturerPage", "Internal crane / Manufacturer");
+		mapa.put("internalCraneTypePage", "Internal crane / Type");
+		
+		mapa.put("internalCraneSerialNumberPage", "Internal crane / Serial number");
 		mapa.put("internalCraneInspectionPassedWithoutDefects", "Internal crane / Inspection passed without defects");
 		mapa.put("internalCraneInspectionPassedWithSmallDefects", "Internal crane / Inspection passed with small defects");
 		mapa.put("internalCraneInspectionNotPassed", "Internal crane / Inspection not passed");

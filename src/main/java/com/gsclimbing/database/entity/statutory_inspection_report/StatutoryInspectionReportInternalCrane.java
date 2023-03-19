@@ -33,12 +33,12 @@ public class StatutoryInspectionReportInternalCrane  implements StatutoryInspect
     @OneToOne(mappedBy = "statutoryInspectionReportInternalCrane")
     private StatutoryInspectionReport statutoryInspectionReport;
 
-	private String internalCraneManufacturer;
-	private String internalCraneType;
-	private String internalCraneSerialNumber;
+	private String internalCraneManufacturerPage;
+	private String internalCraneTypePage;
+	private String internalCraneSerialNumberPage;
 	private String internalCraneYearBuild;
 	private String internalCraneTypePlateTestBadge;
-
+	
 	private String internalCraneInspectors;
 	private String internalCraneDate;
 	private String internalCraneResultInspection;

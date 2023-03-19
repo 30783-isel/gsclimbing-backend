@@ -68,6 +68,9 @@ public class StatutoryInspectionReportServiceCabin implements StatutoryInspectio
 	
 	@Column(length = 100)
 	private String inspectionReportServiceCabinNextInspection;
+	@Column(length = 100)
+	private String inspectionReportServiceCabinNextInspectionSticker;
+	
 	private boolean inspectionReportServiceCabin1Chk ;
 	private boolean inspectionReportServiceCabin1Chkn ;
 	
