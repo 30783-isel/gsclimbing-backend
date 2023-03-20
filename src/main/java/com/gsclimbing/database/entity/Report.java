@@ -139,7 +139,26 @@ public class Report {
 		mapa.put("photoSix", "Photo six");
 		mapa.put("photoSeven", "Photo seven");
 		mapa.put("photoEight", "Photo eight");
+		mapa.put("photoSeven", "Photo seven");
+		mapa.put("photoEight", "Photo eight");
+		mapa.put("photoNine", "Photo nine");
+		mapa.put("photoTen", "Photo ten");
 		
+		mapa.put("additionalField1Label", "Additional Field Label 1");
+		mapa.put("additionalField2Label", "Additional Field Label 2");
+		mapa.put("additionalField3Label", "Additional Field Label 3");
+		mapa.put("additionalField4Label", "Additional Field Label 4");
+		mapa.put("additionalField5Label", "Additional Field Label 5");
+		mapa.put("additionalField6Label", "Additional Field Label 6");
+		mapa.put("additionalField7Label", "Additional Field Label 7");
+
+		mapa.put("additionalField1Text", "Additional Field Value 1");
+		mapa.put("additionalField2Text", "Additional Field Value 2");
+		mapa.put("additionalField3Text", "Additional Field Value 3");
+		mapa.put("additionalField4Text", "Additional Field Value 4");
+		mapa.put("additionalField5Text", "Additional Field Value 5");
+		mapa.put("additionalField6Text", "Additional Field Value 6");
+		mapa.put("additionalField7Text", "Additional Field Value 7");
 		
 		return mapa;
 	}
