@@ -99,6 +99,7 @@ public class AlterationService {
 				for (Field newField : newReport.getClass().getDeclaredFields()) {
 					newField.setAccessible(true);
 					if (oldField.getName().equals(newField.getName())) {
+						System.out.println(newField.getName());
 						if (oldField.get(oldReport) != null && newField.get(newReport) != null && !oldField.get(oldReport).equals(newField.get(newReport)) && !"locked".equals(newField.getName()) && !(oldField.get(oldReport) instanceof StatutoryInspectionReportInt)) {
 							System.out.println(newField.getName());
 							Alteration alteration = new Alteration();

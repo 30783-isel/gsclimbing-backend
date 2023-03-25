@@ -127,30 +127,95 @@ public class OnboardCraneInspectionReport extends Report implements Cloneable {
 		mapa.put("nextInspection", "Next Inspection");
 		mapa.put("notes", "Notes");
 		mapa.put("readingOperatingBusTxt", "Reading of the operating hours");
+		mapa.put("readingOperatingBusChk", "Reading of the operating hours <Checkbox>");
+		
+		mapa.put("additionalField1Label", "Additional Field Label 1");
+		mapa.put("additionalField2Label", "Additional Field Label 2");
+		mapa.put("additionalField3Label", "Additional Field Label 3");
+		mapa.put("additionalField4Label", "Additional Field Label 4");
+		mapa.put("additionalField5Label", "Additional Field Label 5");
+		mapa.put("additionalField6Label", "Additional Field Label 6");
+		mapa.put("additionalField7Label", "Additional Field Label 7");
+
+		mapa.put("additionalField1Text", "Additional Field Value 1");
+		mapa.put("additionalField2Text", "Additional Field Value 2");
+		mapa.put("additionalField3Text", "Additional Field Value 3");
+		mapa.put("additionalField4Text", "Additional Field Value 4");
+		mapa.put("additionalField5Text", "Additional Field Value 5");
+		mapa.put("additionalField6Text", "Additional Field Value 6");
+		mapa.put("additionalField7Text", "Additional Field Value 7");
+		
 		mapa.put("interruptVoltageSupplyTxt", "Interrupt the voltage supply to the crane");
+		mapa.put("interruptVoltageSupplyChk", "Interrupt the voltage supply to the crane <Checkbox>");
+		
 		mapa.put("circuitDiagramPositionTxt", "Check that the circuit diagram is in position in the switch cabinet");
+		mapa.put("circuitDiagramPositionChk", "Check that the circuit diagram is in position in the switch cabinet <Checkbox>");
+		
 		mapa.put("warningSignsTxt", "Check that the warning signs on the switch cabinet");
+		mapa.put("warningSignsChk", "Check that the warning signs on the switch cabinet <Checkbox>");
+		
 		mapa.put("cablesSignsTxt", "Check all cables for signs of outer damage");
+		mapa.put("cablesSignsChk", "Check all cables for signs of outer damage <Checkbox>");
+		
 		mapa.put("screwedCableGlandsTxt", "Check all the screwed cable glands for signs of outer damage and a firm fit");
+		mapa.put("screwedCableGlandsChk", "Check all the screwed cable glands for signs of outer damage and a firm fit <Checkbox>");
+		
 		mapa.put("openSwitchCabinetCoverTxt", "Open the switch cabinet cover and check the firm fit of the cables.");
+		mapa.put("openSwitchCabinetCoverChk", "Open the switch cabinet cover and check the firm fit of the cables. <Checkbox>");
+		
 		mapa.put("checkOperatingUnitTxt", "Check the operating unit for outer damage");
+		mapa.put("checkOperatingUnitChk", "Check the operating unit for outer damage <Checkbox>");
+		
 		mapa.put("checkLimitSwitchesTxt", "Check the limit switches for signs of outer damage");
+		mapa.put("checkLimitSwitchesChk", "Check the limit switches for signs of outer damage <Checkbox>");
+		
 		mapa.put("setVoltageSupplyTxt", "Set up the voltage supply again.");
+		mapa.put("setVoltageSupplyChk", "Set up the voltage supply again. <Checkbox>");
+		
 		mapa.put("checkMotorBrakeTxt", "Check that the motor brake is working");
+		mapa.put("checkMotorBrakeChk", "Check that the motor brake is working <Checkbox>");
+		
 		mapa.put("checkRopeMechanicalDamageTxt", "Check the rope for mechanical damage such as breaks");
+		mapa.put("checkRopeMechanicalDamageChk", "Check the rope for mechanical damage such as breaks <Checkbox>");
+		
 		mapa.put("checkLoadHookMechanicalTxt", "Check the load hook for mechanical damage");
+		mapa.put("checkLoadHookMechanicalChk", "Check the load hook for mechanical damage <Checkbox>");
+		
 		mapa.put("carryVisualInspectionTxt", "Carry out a visual inspection of the drive unit for damage and leaks.");
+		mapa.put("carryVisualInspectionChk", "Carry out a visual inspection of the drive unit for damage and leaks. <Checkbox>");
+		
 		mapa.put("usefeelerGaugeTxt", "Use a feeler gauge to check the brake gap");
+		mapa.put("usefeelerGaugeChk", "Use a feeler gauge to check the brake gap <Checkbox>");
+		
 		mapa.put("checkLimitSwitchRockersTxt", "Check the limit switch rockers to make sure they are present and move easily");
+		mapa.put("checkLimitSwitchRockersChk", "Check the limit switch rockers to make sure they are present and move easily <Checkbox>");
+		
 		mapa.put("checkCraneBridgeTxt", "Check that the crane bridge is safely locked in place and that the locking lever is a firm fit");
+		mapa.put("checkCraneBridgeChk", "Check that the crane bridge is safely locked in place and that the locking lever is a firm fit <Checkbox>");
+		
 		mapa.put("checkCrabTxt", "Check that the crab is safely locked in place and that the locking lever is a firm fit");
+		mapa.put("checkCrabChk", "Check that the crab is safely locked in place and that the locking lever is a firm fit <Checkbox>");
+		
 		mapa.put("checkDeflectionRollersTxt", "Check the deflection rollers and the respective components");
+		mapa.put("checkDeflectionRollersChk", "Check the deflection rollers and the respective components <Checkbox>");
+		
 		mapa.put("checkScrewJointsTxt", "Check all the screw joints to make sure they are in position and a firm fit");
+		mapa.put("checkScrewJointsChk", "Check all the screw joints to make sure they are in position and a firm fit <Checkbox>");
+		
 		mapa.put("checkAllRollersBridgeTxt", "Check all the rollers on the bridge and on the crab for mechanical damage");
+		mapa.put("checkAllRollersBridgeChk",  "Check all the rollers on the bridge and on the crab for mechanical damage <Checkbox>");
+		
 		mapa.put("checkAllStopBuffersTxt", "Check all the stop buffers to make sure they are in position and have no mechanical damage");
+		mapa.put("checkAllStopBuffersChk", "Check all the stop buffers to make sure they are in position and have no mechanical damage <Checkbox>");
+		
 		mapa.put("checkAllComponentsTxt", "Check all the components to make sure the coating");
+		mapa.put("checkAllComponentsChk", "Check all the components to make sure the coating <Checkbox>");
+		
 		mapa.put("ancorPointSafetyEquipmentTxt", "Ancor point safety equipment");
+		mapa.put("ancorPointSafetyEquipmentChk", "Ancor point safety equipment <Checkbox>");
+		
 		mapa.put("loadTestTxt", "Load test");
+		mapa.put("loadTestChk", "Load test <Checkbox>");
 		
 		return mapa;
 	}

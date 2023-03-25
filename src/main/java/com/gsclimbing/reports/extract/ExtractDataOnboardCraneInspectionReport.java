@@ -272,79 +272,79 @@ public class ExtractDataOnboardCraneInspectionReport {
 				String valueField = ((PDRadioButton) field).getValue();
 
 				if (nameField.equals("readingOperatingBusChk")) {
-					getOnboardCraneInspectionReport().setReadingOperatingBusChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setReadingOperatingBusChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("interruptVoltageSupplyChk")) {
-					getOnboardCraneInspectionReport().setInterruptVoltageSupplyChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setInterruptVoltageSupplyChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("circuitDiagramPositionChk")) {
-					getOnboardCraneInspectionReport().setCircuitDiagramPositionChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setCircuitDiagramPositionChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("warningSignsChk")) {
-					getOnboardCraneInspectionReport().setWarningSignsChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setWarningSignsChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("cablesSignsChk")) {
-					getOnboardCraneInspectionReport().setCablesSignsChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setCablesSignsChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("screwedCableGlandsChk")) {
-					getOnboardCraneInspectionReport().setScrewedCableGlandsChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setScrewedCableGlandsChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("openSwitchCabinetCoverChk")) {
-					getOnboardCraneInspectionReport().setOpenSwitchCabinetCoverChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setOpenSwitchCabinetCoverChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("checkOperatingUnitChk")) {
-					getOnboardCraneInspectionReport().setCheckOperatingUnitChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setCheckOperatingUnitChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("checkLimitSwitchesChk")) {
-					getOnboardCraneInspectionReport().setCheckLimitSwitchesChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setCheckLimitSwitchesChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("setVoltageSupplyChk")) {
-					getOnboardCraneInspectionReport().setSetVoltageSupplyChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setSetVoltageSupplyChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("checkMotorBrakeChk")) {
-					getOnboardCraneInspectionReport().setCheckMotorBrakeChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setCheckMotorBrakeChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("checkRopeMechanicalDamageChk")) {
-					getOnboardCraneInspectionReport().setCheckRopeMechanicalDamageChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setCheckRopeMechanicalDamageChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("checkLoadHookMechanicalChk")) {
-					getOnboardCraneInspectionReport().setCheckLoadHookMechanicalChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setCheckLoadHookMechanicalChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("carryVisualInspectionChk")) {
-					getOnboardCraneInspectionReport().setCarryVisualInspectionChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setCarryVisualInspectionChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("usefeelerGaugeChk")) {
-					getOnboardCraneInspectionReport().setUsefeelerGaugeChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setUsefeelerGaugeChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("checkLimitSwitchRockersChk")) {
-					getOnboardCraneInspectionReport().setCheckLimitSwitchRockersChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setCheckLimitSwitchRockersChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("checkCraneBridgeChk")) {
-					getOnboardCraneInspectionReport().setCheckCraneBridgeChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setCheckCraneBridgeChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("checkCrabChk")) {
-					getOnboardCraneInspectionReport().setCheckCrabChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setCheckCrabChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("checkDeflectionRollersChk")) {
-					getOnboardCraneInspectionReport().setCheckDeflectionRollersChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setCheckDeflectionRollersChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("checkScrewJointsChk")) {
-					getOnboardCraneInspectionReport().setCheckScrewJointsChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setCheckScrewJointsChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("checkAllRollersBridgeChk")) {
-					getOnboardCraneInspectionReport().setCheckAllRollersBridgeChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setCheckAllRollersBridgeChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("checkAllStopBuffersChk")) {
-					getOnboardCraneInspectionReport().setCheckAllStopBuffersChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setCheckAllStopBuffersChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("checkAllComponentsChk")) {
-					getOnboardCraneInspectionReport().setCheckAllComponentsChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setCheckAllComponentsChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("ancorPointSafetyEquipmentChk")) {
-					getOnboardCraneInspectionReport().setAncorPointSafetyEquipmentChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setAncorPointSafetyEquipmentChk(valueField.equals("true") ? true : false);
 				}
 				if (nameField.equals("loadTestChk")) {
-					getOnboardCraneInspectionReport().setLoadTestChk(valueField == "true" ? true : false);
+					getOnboardCraneInspectionReport().setLoadTestChk(valueField.equals("true") ? true : false);
 				}
 			} else if (field instanceof PDCheckBox) {
 				String nameField = field.getFullyQualifiedName();
