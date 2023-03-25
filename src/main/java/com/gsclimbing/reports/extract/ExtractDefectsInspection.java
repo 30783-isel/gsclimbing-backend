@@ -273,7 +273,6 @@ public class ExtractDefectsInspection {
 			alteration.setFieldNew(null);
 			alteration.setImage(true);
 			alteration.setHash(hash);
-			alteration.setImage(true);
 			alteration.setImageChange(fileData.getImageChange());
 			alteration.setLocalDateTime(LocalDateTime.now());
 			alteration.setHistoricReport(historicReport);

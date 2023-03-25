@@ -23,7 +23,6 @@ import com.gsclimbing.dto.ReportDto;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Entity
 @Getter
 @Setter
@@ -31,7 +30,7 @@ import lombok.Setter;
 public class Report {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer reportId;
 	private String uuid;
 	private LocalDateTime createDate;
@@ -43,80 +42,56 @@ public class Report {
 	private String wtgType;
 	private String yearConstruction;
 	private Integer typeReport;
-    private Integer projectoId;
-    private Integer turbinaId;
-    private String insertImagesChk;
-    private String additionalField1Label;
-    private String additionalField1Text;
-    private String additionalField2Label;
-    private String additionalField2Text;
-    private String additionalField3Label;
-    private String additionalField3Text;
-    private String additionalField4Label;
-    private String additionalField4Text;
-    private String additionalField5Label;
-    private String additionalField5Text;
-    private String additionalField6Label;
-    private String additionalField6Text;
-    private String additionalField7Label;
-    private String additionalField7Text;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "turbineId", nullable=true)
-    @JsonIgnore
+	private Integer projectoId;
+	private Integer turbinaId;
+	private String insertImagesChk;
+	private String additionalField1Label;
+	private String additionalField1Text;
+	private String additionalField2Label;
+	private String additionalField2Text;
+	private String additionalField3Label;
+	private String additionalField3Text;
+	private String additionalField4Label;
+	private String additionalField4Text;
+	private String additionalField5Label;
+	private String additionalField5Text;
+	private String additionalField6Label;
+	private String additionalField6Text;
+	private String additionalField7Label;
+	private String additionalField7Text;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "turbineId", nullable = true)
+	@JsonIgnore
 	private Turbine turbine;
-	
-    @OneToMany(mappedBy = "report", cascade = { CascadeType.ALL } )
-    @JsonIgnore
+
+	@OneToMany(mappedBy = "report", cascade = { CascadeType.ALL })
+	@JsonIgnore
 	private List<HistoricReport> listHistoric = new ArrayList<>();
-    
-	@OneToMany(mappedBy = "report", cascade = { CascadeType.ALL } )
+
+	@OneToMany(mappedBy = "report", cascade = { CascadeType.ALL })
 	@JsonIgnore
 	private List<FileData> listaFileData = new ArrayList<>();
-	
+
 	public void addImgOnListImages(FileData fileData) {
 		this.listaFileData.add(fileData);
 	}
-	
+
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
-	
+
 	public ReportDto mapper() {
-		return ReportDto.builder()
-			.reportId(reportId)
-			.uuid(uuid)
-			.createDate(createDate)
-			.modifiedDate(modifiedDate)
-			.locked(locked)
-			.permission2Edit(permission2Edit)
-			.site(site)
-			.wtgNumber(wtgNumber)
-			.wtgType(wtgType)
-			.yearConstruction(yearConstruction)
-			.typeReport(typeReport)
-			.projectoId(projectoId)
-			.turbinaId(turbinaId)
-			.insertImagesChk(insertImagesChk)
-		    .additionalField1Label(additionalField1Label)
-		    .additionalField1Text(additionalField1Text)
-		    .additionalField2Label(additionalField2Label)
-		    .additionalField2Text(additionalField2Text)
-		    .additionalField3Label(additionalField3Label)
-		    .additionalField3Text(additionalField3Text)
-		    .additionalField4Label(additionalField4Label)
-		    .additionalField4Text(additionalField4Text)
-		    .additionalField5Label(additionalField5Label)
-		    .additionalField5Text(additionalField5Text)
-		    .additionalField6Label(additionalField6Label)
-		    .additionalField6Text(additionalField6Text)
-		    .additionalField7Label(additionalField7Label)
-		    .additionalField7Text(additionalField7Text)
-			.build();
+		return ReportDto.builder().reportId(reportId).uuid(uuid).createDate(createDate).modifiedDate(modifiedDate).locked(locked).permission2Edit(permission2Edit).site(site).wtgNumber(wtgNumber).wtgType(wtgType)
+				.yearConstruction(yearConstruction).typeReport(typeReport).projectoId(projectoId).turbinaId(turbinaId).insertImagesChk(insertImagesChk).additionalField1Label(additionalField1Label)
+				.additionalField1Text(additionalField1Text).additionalField2Label(additionalField2Label).additionalField2Text(additionalField2Text).additionalField3Label(additionalField3Label)
+				.additionalField3Text(additionalField3Text).additionalField4Label(additionalField4Label).additionalField4Text(additionalField4Text).additionalField5Label(additionalField5Label)
+				.additionalField5Text(additionalField5Text).additionalField6Label(additionalField6Label).additionalField6Text(additionalField6Text).additionalField7Label(additionalField7Label)
+				.additionalField7Text(additionalField7Text).build();
 	}
-	
-	public HashMap<String, String> mapeamento(){
-		HashMap<String, String> mapa = new HashMap<String, String>();	
+
+	public HashMap<String, String> mapeamento() {
+		HashMap<String, String> mapa = new HashMap<String, String>();
 		mapa.put("reportId", "Id");
 		mapa.put("uuid", "UUID");
 		mapa.put("createDate", "Creation Date");
@@ -139,11 +114,9 @@ public class Report {
 		mapa.put("photoSix", "Photo six");
 		mapa.put("photoSeven", "Photo seven");
 		mapa.put("photoEight", "Photo eight");
-		mapa.put("photoSeven", "Photo seven");
-		mapa.put("photoEight", "Photo eight");
 		mapa.put("photoNine", "Photo nine");
 		mapa.put("photoTen", "Photo ten");
-		
+
 		mapa.put("additionalField1Label", "Additional Field Label 1");
 		mapa.put("additionalField2Label", "Additional Field Label 2");
 		mapa.put("additionalField3Label", "Additional Field Label 3");
@@ -159,8 +132,8 @@ public class Report {
 		mapa.put("additionalField5Text", "Additional Field Value 5");
 		mapa.put("additionalField6Text", "Additional Field Value 6");
 		mapa.put("additionalField7Text", "Additional Field Value 7");
-		
+
 		return mapa;
 	}
-	
+
 }

@@ -398,7 +398,6 @@ public class ExtractDataExaminationTransformer {
 			alteration.setField(new Report().mapeamento().get(imageFieldName));
 			alteration.setFieldOld(null);
 			alteration.setFieldNew(null);
-			alteration.setImage(true);
 			alteration.setHash(hash);
 			alteration.setImage(true);
 			alteration.setImageChange(fileData.getImageChange());

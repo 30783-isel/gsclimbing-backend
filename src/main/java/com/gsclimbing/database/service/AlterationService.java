@@ -34,6 +34,7 @@ public class AlterationService {
 
 	public List<Alteration> saveAlterationReport(Report oldReport, Report newReport, HistoricReport historicReport) {
 		List<Alteration> listAlternation = new ArrayList<>();
+		List<String> listNamesToInsertOnMapping = new ArrayList<>();
 		try {
 			if (newReport instanceof StatutoryInspectionReport) {
 				for (Field oldField : oldReport.getClass().getDeclaredFields()) {
@@ -48,6 +49,9 @@ public class AlterationService {
 									if (oldStatutoryInspectionReportField.getName().equals(newStaturoryInspectionReportField.getName()) && !(oldStatutoryInspectionReportField.get(oldField.get(oldReport)) instanceof StatutoryInspectionReport) && !(newStaturoryInspectionReportField.get(newField.get(newReport)) instanceof StatutoryInspectionReport)) {
 										if (oldStatutoryInspectionReportField.get(oldField.get(oldReport)) != null && newStaturoryInspectionReportField.get(newField.get(newReport)) != null && !oldStatutoryInspectionReportField.get(oldField.get(oldReport)).equals(newStaturoryInspectionReportField.get(newField.get(newReport)))) {											
 											System.out.println(newStaturoryInspectionReportField.getName());
+											if(oldReport.mapeamento().get(newStaturoryInspectionReportField.getName()) ==  null){
+												listNamesToInsertOnMapping.add(newStaturoryInspectionReportField.getName());
+											}
 											Alteration alteration = new Alteration();
 											alteration.setField(oldReport.mapeamento().get(newStaturoryInspectionReportField.getName()));
 											alteration.setFieldOld(String.valueOf(oldStatutoryInspectionReportField.get(oldField.get(oldReport))));
@@ -74,6 +78,7 @@ public class AlterationService {
 					newField.setAccessible(true);
 					if (oldField.getName().equals(newField.getName()) && newField.getName() != "modifiedDate") {
 						if (oldField.get(oldReport) != null && newField.get(newReport) != null && !oldField.get(oldReport).equals(newField.get(newReport)) && !"locked".equals(newField.getName())) {
+							System.out.println(newField.getName());
 							Alteration alteration = new Alteration();
 							alteration.setField( oldReport.mapeamento().get(newField.getName()) );
 							alteration.setFieldOld(String.valueOf(oldField.get(oldReport)));
@@ -95,6 +100,7 @@ public class AlterationService {
 					newField.setAccessible(true);
 					if (oldField.getName().equals(newField.getName())) {
 						if (oldField.get(oldReport) != null && newField.get(newReport) != null && !oldField.get(oldReport).equals(newField.get(newReport)) && !"locked".equals(newField.getName()) && !(oldField.get(oldReport) instanceof StatutoryInspectionReportInt)) {
+							System.out.println(newField.getName());
 							Alteration alteration = new Alteration();
 							alteration.setField(oldReport.mapeamento().get(newField.getName()));
 							alteration.setFieldOld(String.valueOf(oldField.get(oldReport)));
