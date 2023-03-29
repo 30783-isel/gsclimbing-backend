@@ -118,7 +118,7 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 			statutoryInspectionReport.statutoryInspectionReportInternalCrane = (StatutoryInspectionReportInternalCrane) this.statutoryInspectionReportInternalCrane.clone();
 			statutoryInspectionReport.statutoryInspectionReportServiceCabin = (StatutoryInspectionReportServiceCabin) this.statutoryInspectionReportServiceCabin.clone();
 		} catch (CloneNotSupportedException e) {
-			System.out.println(e.getMessage());
+
 		}
 		return statutoryInspectionReport;
 	}
@@ -162,7 +162,7 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		mapa.put("internalCraneSerialNumber", "Internal crane / Serial number");
 		mapa.put("internalCraneManufacturerPage", "Internal crane / Manufacturer");
 		mapa.put("internalCraneTypePage", "Internal crane / Type");
-		
+
 		mapa.put("internalCraneSerialNumberPage", "Internal crane / Serial number");
 		mapa.put("internalCraneInspectionPassedWithoutDefects", "Internal crane / Inspection passed without defects");
 		mapa.put("internalCraneInspectionPassedWithSmallDefects", "Internal crane / Inspection passed with small defects");
@@ -190,14 +190,7 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 
 		mapa.put("siteDate", "Site, date");
 		mapa.put("responsibleTechnician", "Responsible technician");
-		
-		
-		
-		
-		
-		
-		
-		
+
 		mapa.put("inspectionReportServiceCabin1Chk", "Visual inspection of Service lift. Visual Damage? - Checkbox");
 		mapa.put("inspectionReportServiceCabin2Chk", "Connection Hoist and Stirrup is secured with nylock-nuts - Checkbox");
 		mapa.put("inspectionReportServiceCabin3Chk", "All bolts and nylock nuts are fit and secured - Checkbox");
@@ -251,7 +244,7 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		mapa.put("inspectionReportServiceCabin51Chk", "Connection of 8.4mm steel wires. (min. 2Ton Shackle and lock pins facing to the front) - Checkbox");
 		mapa.put("inspectionReportServiceCabin52Chk", "Condition of Shackles and check for wear. - Checkbox");
 		mapa.put("inspectionReportServiceCabin53Chk", "When replacing the Steel-wires check hole in Suspension beam for damage - Checkbox");
-		
+
 		mapa.put("inspectionReportServiceCabin1Txt", "Visual inspection of Service lift. Visual Damage?");
 		mapa.put("inspectionReportServiceCabin2Txt", "Connection Hoist and Stirrup is secured with nylock-nuts");
 		mapa.put("inspectionReportServiceCabin3Txt", "All bolts and nylock nuts are fit and secured");
@@ -305,21 +298,7 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		mapa.put("inspectionReportServiceCabin51Txt", "Connection of 8.4mm steel wires. (min. 2Ton Shackle and lock pins facing to the front)");
 		mapa.put("inspectionReportServiceCabin52Txt", "Condition of Shackles and check for wear.");
 		mapa.put("inspectionReportServiceCabin53Txt", "When replacing the Steel-wires check hole in Suspension beam for damage");
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		mapa.put("internalCrane1Chk", "Reading of the operating hours  - Checkbox");
 		mapa.put("internalCrane2Chk", "Interrupt the voltage supply to the crane by removing the CEE plug from the top box in the powerhouse. - Checkbox");
 		mapa.put("internalCrane3Chk", "Check that the circuit diagram is in position in the switch cabinet and is still legible - Checkbox");
@@ -344,7 +323,7 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		mapa.put("internalCrane22Chk", "Check all the stop buffers to make sure they are in position and have no mechanical damage - Checkbox");
 		mapa.put("internalCrane23Chk", "Check all the components to make sure the coating - Checkbox");
 		mapa.put("internalCrane24Chk", "Load test - Checkbox");
-		
+
 		mapa.put("internalCrane1Txt", "Reading of the operating hours ");
 		mapa.put("internalCrane2Txt", "Interrupt the voltage supply to the crane by removing the CEE plug from the top box in the powerhouse.");
 		mapa.put("internalCrane3Txt", "Check that the circuit diagram is in position in the switch cabinet and is still legible");
@@ -369,22 +348,7 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		mapa.put("internalCrane22Txt", "Check all the stop buffers to make sure they are in position and have no mechanical damage");
 		mapa.put("internalCrane23Txt", "Check all the components to make sure the coating");
 		mapa.put("internalCrane24Txt", "Load test");
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		mapa.put("inspectionReportLadder1Chk", "Is ladder secure and tight to structure - Checkbox");
 		mapa.put("inspectionReportLadder2Chk", "Are ladder brackets attached - Checkbox");
 		mapa.put("inspectionReportLadder3Chk", "Are all fasteners in place - Checkbox");
@@ -434,7 +398,7 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		mapa.put("inspectionReportLadder47Chk", "Does the overall condition appear safe - Checkbox");
 		mapa.put("inspectionReportLadder48Chk", "Is the cable safe climb system secure - Checkbox");
 		mapa.put("inspectionReportLadder49Chk", "Does the overall condition appear safe - Checkbox");
-		
+
 		mapa.put("inspectionReportLadder1Txt", "Is ladder secure and tight to structure");
 		mapa.put("inspectionReportLadder2Txt", "Are ladder brackets attached");
 		mapa.put("inspectionReportLadder3Txt", "Are all fasteners in place");
@@ -484,22 +448,7 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		mapa.put("inspectionReportLadder47Txt", "Does the overall condition appear safe");
 		mapa.put("inspectionReportLadder48Txt", "Is the cable safe climb system secure");
 		mapa.put("inspectionReportLadder49Txt", "Does the overall condition appear safe");
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		mapa.put("reportNumber", "");
 
 		mapa.put("inspectionDescenderDeviceManufacturer", "Manufacturer descender device");
@@ -513,13 +462,13 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		mapa.put("inspectionDescenderDeviceResultOfInspection", "Result of inspection");
 		mapa.put("inspectionDescenderDeviceRepairRequired", "Repair required");
 		mapa.put("inspectionDescenderDeviceNextInspection", "Next inspection");
-		
+
 		mapa.put("inspectionDescenderDevice1Chk", "Visual check of descender device - Checkbox");
 		mapa.put("inspectionDescenderDevice2Chk", "Visual check rope - Checkbox");
 		mapa.put("inspectionDescenderDevice3Chk", "Visual check sling and carabiner - Checkbox");
 		mapa.put("inspectionDescenderDevice4Chk", "Do function test - Checkbox");
 		mapa.put("inspectionDescenderDevice5Chk", "Fill document - Checkbox");
-		mapa.put("inspectionDescenderDevice6Chk", "Seal back and put sticker on - Checkbox");		
+		mapa.put("inspectionDescenderDevice6Chk", "Seal back and put sticker on - Checkbox");
 
 		mapa.put("inspectionDescenderDevice1Txt", "Visual check of descender device");
 		mapa.put("inspectionDescenderDevice2Txt", "Visual check rope");
@@ -529,26 +478,16 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		mapa.put("inspectionDescenderDevice6Txt", "Seal back and put sticker on");
 
 		mapa.put("inspectionDescenderDeviceNotes", "Notes");
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		mapa.put("inspectionAnchorPoints1Chk", "Inspect the anchorage device for legible serial - Checkbox");
 		mapa.put("inspectionAnchorPoints2Chk", "Check that the anchorage device is tight in position - Checkbox");
 		mapa.put("inspectionAnchorPoints3Chk", "Check that the bolt is going all way through the threaded hole of eye nut - Checkbox");
 		mapa.put("inspectionAnchorPoints4Chk", "Inspect the steel surface for cracks and corrosion - Checkbox");
 		mapa.put("inspectionAnchorPoints5Chk", "Record inspection - Checkbox");
 		mapa.put("inspectionAnchorPoints6Chk", "List serial numbers.If anchoage device has no serial number - Checkbox");
-		mapa.put("inspectionAnchorPoints7Chk",  "Anchorage point serial number - Serial no/position: 1 - Checkbox ");
-		mapa.put("inspectionAnchorPoints8Chk",  "Anchorage point serial number - Serial no/position: 2 - Checkbox ");
-		mapa.put("inspectionAnchorPoints9Chk",  "Anchorage point serial number - Serial no/position: 3 - Checkbox ");
+		mapa.put("inspectionAnchorPoints7Chk", "Anchorage point serial number - Serial no/position: 1 - Checkbox ");
+		mapa.put("inspectionAnchorPoints8Chk", "Anchorage point serial number - Serial no/position: 2 - Checkbox ");
+		mapa.put("inspectionAnchorPoints9Chk", "Anchorage point serial number - Serial no/position: 3 - Checkbox ");
 		mapa.put("inspectionAnchorPoints10Chk", "Anchorage point serial number - Serial no/position: 4 - Checkbox ");
 		mapa.put("inspectionAnchorPoints11Chk", "Anchorage point serial number - Serial no/position: 5 - Checkbox ");
 		mapa.put("inspectionAnchorPoints12Chk", "Anchorage point serial number - Serial no/position: 6 - Checkbox ");
@@ -570,16 +509,16 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		mapa.put("inspectionAnchorPoints28Chk", "Anchorage point serial number - Serial no/position: 22 - Checkbox");
 		mapa.put("inspectionAnchorPoints29Chk", "Anchorage point serial number - Serial no/position: 23 - Checkbox");
 		mapa.put("inspectionAnchorPoints30Chk", "Anchorage point serial number - Serial no/position: 24 - Checkbox");
-		
+
 		mapa.put("inspectionAnchorPoints1Txt", "Inspect the anchorage device for legible serial");
 		mapa.put("inspectionAnchorPoints2Txt", "Check that the anchorage device is tight in position");
 		mapa.put("inspectionAnchorPoints3Txt", "Check that the bolt is going all way through the threaded hole of eye nut");
 		mapa.put("inspectionAnchorPoints4Txt", "Inspect the steel surface for cracks and corrosion");
 		mapa.put("inspectionAnchorPoints5Txt", "Record inspection");
 		mapa.put("inspectionAnchorPoints6Txt", "List serial numbers.If anchoage device has no serial number");
-		mapa.put("inspectionAnchorPoints7Txt",  "Anchorage point serial number - Serial no/position: 1 ");
-		mapa.put("inspectionAnchorPoints8Txt",  "Anchorage point serial number - Serial no/position: 2 ");
-		mapa.put("inspectionAnchorPoints9Txt",  "Anchorage point serial number - Serial no/position: 3 ");
+		mapa.put("inspectionAnchorPoints7Txt", "Anchorage point serial number - Serial no/position: 1 ");
+		mapa.put("inspectionAnchorPoints8Txt", "Anchorage point serial number - Serial no/position: 2 ");
+		mapa.put("inspectionAnchorPoints9Txt", "Anchorage point serial number - Serial no/position: 3 ");
 		mapa.put("inspectionAnchorPoints10Txt", "Anchorage point serial number - Serial no/position: 4 ");
 		mapa.put("inspectionAnchorPoints11Txt", "Anchorage point serial number - Serial no/position: 5 ");
 		mapa.put("inspectionAnchorPoints12Txt", "Anchorage point serial number - Serial no/position: 6 ");
@@ -602,6 +541,67 @@ public class StatutoryInspectionReport extends Report implements Cloneable, Seri
 		mapa.put("inspectionAnchorPoints29Txt", "Anchorage point serial number - Serial no/position: 23");
 		mapa.put("inspectionAnchorPoints30Txt", "Anchorage point serial number - Serial no/position: 24");
 
+		mapa.put("inspectionReportLadderManufacturer", "Inspection Report Ladder Manufacturer");
+		mapa.put("inspectionReportLadderType", "Inspection Report Ladder Type");
+		mapa.put("inspectionReportLadderSerialNumber", "Inspection Report Ladder ");
+		mapa.put("inspectionReportLadderManufacturerFallArrestSystem", "Inspection Report Ladder ");
+		mapa.put("inspectionReportLadderType2", "Inspection Report Ladder ");
+		mapa.put("inspectionReportLadderSerialNumber2", "Inspection Report Ladder Serial Number");
+		mapa.put("inspectionReportLadderTypePlateTestBadge", "Inspection Report Ladder Type Plate Test Badge");
+		mapa.put("inspectionReportLadderInspectors", "Inspection Report Ladder Inspectors");
+		mapa.put("inspectionReportLadderDate", "Inspection Report Ladder Date");
+		mapa.put("inspectionReportLadderResultInspection", "Inspection Report Ladder Result Inspection");
+		mapa.put("inspectionReportLadderRepairRequired", "Inspection Report Ladder Repair Required");
+		mapa.put("inspectionReportLadderNextInspection", "Inspection Report Ladder Next Inspection");
+		mapa.put("inspectionReportLadderNotes", "Inspection Report Ladder Notes");
+		mapa.put("internalCraneYearBuild", "Internal Crane Year Build");
+		mapa.put("internalCraneTypePlateTestBadge", "Internal Crane Type Plate Test Badge");
+		mapa.put("internalCraneInspectors", "Internal Crane Inspectors");
+		mapa.put("internalCraneDate", "Internal Crane Date");
+		mapa.put("internalCraneResultInspection", "Internal Crane Inspection");
+		mapa.put("internalCraneRepairRequired", "Internal Crane Repair Required");
+		mapa.put("internalCraneNextInspection", "Internal Crane Next Inspection");
+		mapa.put("internalCraneNotes", "Internal Crane Notes");
+		mapa.put("inspectionReportServiceCabinManufacturer", "Inspection Report Service Cabin Manufacturer");
+		mapa.put("inspectionReportServiceCabinType", "Inspection Report Service Cabin Type");
+		mapa.put("inspectionReportServiceCabinSerialNumber", "Inspection Report Service Cabin Serial Number");
+		mapa.put("inspectionReportServiceCabinSerialNumberHoist", "Inspection Report Service Cabin Serial Number Hoist");
+		mapa.put("inspectionReportServiceCabinYearBuild", "Inspection Report Service Cabin Year Build");
+		mapa.put("inspectionReportServiceCabin5yearInspectionRequired", "Inspection Report Service Cabin 5 year Inspection Required");
+		mapa.put("inspectionReportServiceCabinHourMeterReading", "Inspection Report Service Cabin Hour Meter Reading");
+		mapa.put("inspectionReportServiceCabinInspectors", "Inspection Report Service Cabin Inspectors");
+		mapa.put("inspectionReportServiceCabinDate", "Inspection Report Service Cabin Date");
+		mapa.put("inspectionReportServiceCabinResultOfInspection", "Inspection Report Service Cabin Result Of Inspection");
+		mapa.put("inspectionReportServiceCabinRepairRequired", "Inspection Report Service Cabin Repair Required");
+		mapa.put("inspectionReportServiceCabinNextInspection", "Inspection Report Service Cabin Next Inspection");
+		mapa.put("inspectionReportServiceCabinNextInspectionSticker", "Inspection Report Service Cabin Next Inspection Sticker");
+		mapa.put("inspectionReportServiceCabinNotes", "Inspection Report Service Cabin Notes");
+		mapa.put("inspectionAnchorPointsManufacturer", "Inspection Anchor Points Manufacturer");
+		mapa.put("inspectionAnchorPointsType", "Inspection Anchor Points Type");
+		mapa.put("inspectionAnchorPointsTypePlateTestBadge", "Inspection Anchor Points Type Plate Test Badge");
+		mapa.put("inspectionAnchorPointsInspectors", "Inspection Anchor Points Inspectors");
+		mapa.put("inspectionAnchorPointsDate", "Inspection Anchor Points Date");
+		mapa.put("inspectionAnchorPointsResultOfInspection", "Inspection Anchor Points Result Of Inspection");
+		mapa.put("inspectionAnchorPointsRepairRequired", "Inspection Anchor Points Repair Required");
+		mapa.put("inspectionAnchorPointsNextInspection", "Inspection Anchor Points Next Inspection");
+		mapa.put("inspectionAnchorPointsNotes", "Inspection Anchor Points Notes");
+
+		mapa.put("additionalField1Label", "Additional Field Label 1");
+		mapa.put("additionalField2Label", "Additional Field Label 2");
+		mapa.put("additionalField3Label", "Additional Field Label 3");
+		mapa.put("additionalField4Label", "Additional Field Label 4");
+		mapa.put("additionalField5Label", "Additional Field Label 5");
+		mapa.put("additionalField6Label", "Additional Field Label 6");
+		mapa.put("additionalField7Label", "Additional Field Label 7");
+
+		mapa.put("additionalField1Text", "Additional Field Value 1");
+		mapa.put("additionalField2Text", "Additional Field Value 2");
+		mapa.put("additionalField3Text", "Additional Field Value 3");
+		mapa.put("additionalField4Text", "Additional Field Value 4");
+		mapa.put("additionalField5Text", "Additional Field Value 5");
+		mapa.put("additionalField6Text", "Additional Field Value 6");
+		mapa.put("additionalField7Text", "Additional Field Value 7");
+		
 		return mapa;
 	}
 }

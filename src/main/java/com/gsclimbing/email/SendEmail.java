@@ -82,7 +82,6 @@ public class SendEmail implements Runnable {
 			}
 			mail.setContent(multipart);
 			Transport.send(mail);
-			System.out.println("Mail enviado");
 		} catch (MessagingException ex) {
 			ex.printStackTrace();
 		}

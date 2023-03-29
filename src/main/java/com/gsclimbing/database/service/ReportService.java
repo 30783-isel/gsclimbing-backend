@@ -179,7 +179,6 @@ public class ReportService {
 
 						String str = listaChkTrue.stream().filter(chkc -> (chkc + "Txt").equals(field.getName())).findAny().orElse(null);
 						if (str != null) {
-							System.out.println(field.getName() + " - " + object);
 //							if ((object != null || ObjectUtils.isEmpty(object.toString()))) {
 //								String fieldName = report.mapeamento().get(field.getName());
 //								if (fieldName != null) {
