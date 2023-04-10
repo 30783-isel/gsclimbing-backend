@@ -133,7 +133,29 @@ public class FileReportsController {
 	
 	@RequestMapping("/download_zip/{projectId}")
 	public ResponseEntity<byte[]> getZipFile(@PathVariable int projectId) throws IOException {
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + projectService.getProject(projectId).getName() + ".zip" + "\"").body(getReportsOnZip(projectId));
+		//return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + projectService.getProject(projectId).getName() + ".zip" + "\"").body(getCleanReportsOnZip(projectId));
+	}
+	private byte[] getReportsOnZip(int projectId) throws IOException {
+		Path tmpDirOrig = Files.createTempDirectory(null);
+		for (Turbine turbine : turbineService.getTurbinesByProject(projectService.getProject(projectId))) {
+			Path path = Files.createTempDirectory(tmpDirOrig, turbine.getName() + " - ");
+			turbine.getListReports().stream().forEach(report -> {
+				byte[] byteArrayPDF = donwloadPdf(report.getTypeReport(), report.getReportId(), ReportEnum.values()[report.getTypeReport()].name() );
+				File file = new File(path.toString(), ReportEnum.values()[report.getTypeReport()].getLabel() + ".pdf");
+				try {
+					OutputStream outStream = new FileOutputStream(file);
+					outStream.write(byteArrayPDF);
+				} catch (IOException e) {
 
+					e.printStackTrace();
+				}
+			});
+		}
+		return FileUtils.readFileToByteArray(new File(ZipUtils.ZipDirectory(tmpDirOrig.toString(), projectService.getProject(projectId).getName())));
+	}
+	
+	private byte[] getCleanReportsOnZip(int projectId) throws IOException {
 		boolean defectInspectionReportBool = false;
 		byte[] bytesDefectInspectionReport = null;
 		File defectInspectionReportTemp = null;
@@ -198,17 +220,10 @@ public class FileReportsController {
 			if (turbine.isMeasurements690V400V())
 				measurements690V400VBool = true;
 		}
-			
-
 		Path tmpDirOrig = Files.createTempDirectory(null);
-
 		if (defectInspectionReportBool) {
-			String folder = "/defectInspectionReport/";
-			String filenameDefectInspectionReport = "/Defect Inspection Report.pdf";
-			
-			bytesDefectInspectionReport = populateAndCopy(folder, filenameDefectInspectionReport, project.getSite(), project.getNumber(), project.getType());
-			//bytesDefectInspectionReport = FTPDownloadFiles.downloadPdfReportFromFTPServer(filenameDefectInspectionReport, "10", "defectInspectionReport/");
-			defectInspectionReportTemp = new File(tmpDirOrig.toString(), filenameDefectInspectionReport);
+			bytesDefectInspectionReport = populateAndCopy("/defectInspectionReport/", "/Defect Inspection Report.pdf", project.getSite(), project.getNumber(), project.getType());
+			defectInspectionReportTemp = new File(tmpDirOrig.toString(), "/Defect Inspection Report.pdf");
 			OutputStream outStream = new FileOutputStream(defectInspectionReportTemp);
 			outStream.write(bytesDefectInspectionReport);
 		}
@@ -217,7 +232,6 @@ public class FileReportsController {
 			String folder = "/onboardCraneInspectionReport/";
 			String filenameOnboardCraneInspectionReport = "Onboard crane Inspection Report.pdf";
 			bytesOnboardCraneInspectionReport = populateAndCopy(folder, filenameOnboardCraneInspectionReport, project.getSite(), project.getNumber(), project.getType());
-			//bytesOnboardCraneInspectionReport = FTPDownloadFiles.downloadPdfReportFromFTPServer(filenameOnboardCraneInspectionReport, "4", "onboardCraneInspectionReport/");
 			onboardCraneInspectionReportTemp = new File(tmpDirOrig.toString(), filenameOnboardCraneInspectionReport);
 			OutputStream outStream = new FileOutputStream(onboardCraneInspectionReportTemp);
 			outStream.write(bytesOnboardCraneInspectionReport);
@@ -227,7 +241,6 @@ public class FileReportsController {
 			String folder = "/performanceReportRepairElevator/";
 			String filenamePerformanceReportRepairElevator = "Performance Report Repair Elevator.pdf";
 			bytesPerformanceReportRepairElevator = populateAndCopy(folder, filenamePerformanceReportRepairElevator, project.getSite(), project.getNumber(), project.getType());
-			//bytesPerformanceReportRepairElevator = FTPDownloadFiles.downloadPdfReportFromFTPServer(filenamePerformanceReportRepairElevator, "4", "performanceReportRepairElevator/");
 			performanceReportRepairElevatorTemp = new File(tmpDirOrig.toString(), filenamePerformanceReportRepairElevator);
 			OutputStream outStream = new FileOutputStream(performanceReportRepairElevatorTemp);
 			outStream.write(bytesPerformanceReportRepairElevator);
@@ -238,7 +251,6 @@ public class FileReportsController {
 			String folder = "/measurementsMVSwitchgearStatorCabinet/";
 			String filenameMeasurementsMVSwitchgearStatorCabinet = "Measurements of MV Switchgear and Stator Cabinet.pdf";
 			bytesMeasurementsMVSwitchgearStatorCabinet = populateAndCopy(folder, filenameMeasurementsMVSwitchgearStatorCabinet, project.getSite(), project.getNumber(), project.getType());
-			//bytesMeasurementsMVSwitchgearStatorCabinet = FTPDownloadFiles.downloadPdfReportFromFTPServer(filenameMeasurementsMVSwitchgearStatorCabinet, "0", "measurementsMVSwitchgearStatorCabinet/");
 			measurementsMVSwitchgearStatorCabinetTemp = new File(tmpDirOrig.toString(), filenameMeasurementsMVSwitchgearStatorCabinet);
 			OutputStream outStream = new FileOutputStream(measurementsMVSwitchgearStatorCabinetTemp);
 			outStream.write(bytesMeasurementsMVSwitchgearStatorCabinet);
@@ -249,7 +261,6 @@ public class FileReportsController {
 			String folder = "/examinationTransformer/";
 			String filenameExaminationTransformer = "Examination Transformer.pdf";
 			bytesExaminationTransformer = populateAndCopy(folder, filenameExaminationTransformer, project.getSite(), project.getNumber(), project.getType());
-			//bytesExaminationTransformer = FTPDownloadFiles.downloadPdfReportFromFTPServer(filenameExaminationTransformer, "0", "ExaminationTransformer/");
 			measurementsExaminationTransformerTemp = new File(tmpDirOrig.toString(), filenameExaminationTransformer);
 			OutputStream outStream = new FileOutputStream(measurementsExaminationTransformerTemp);
 			outStream.write(bytesExaminationTransformer);
@@ -259,7 +270,6 @@ public class FileReportsController {
 			String folder = "/medidas6Kv/";
 			String filenameMeasurementsMV6Kv = "Medidas 6Kv.pdf";
 			bytesMeasurementsMV6Kv = populateAndCopy(folder, filenameMeasurementsMV6Kv, project.getSite(), project.getNumber(), project.getType());
-			//bytesMeasurementsMV6Kv = FTPDownloadFiles.downloadPdfReportFromFTPServer(filenameMeasurementsMV6Kv, "0", "medidas6Kv/");
 			measurementsMV6KvTemp = new File(tmpDirOrig.toString(), filenameMeasurementsMV6Kv);
 			OutputStream outStream = new FileOutputStream(measurementsMV6KvTemp);
 			outStream.write(bytesMeasurementsMV6Kv);
@@ -269,7 +279,6 @@ public class FileReportsController {
 			String folder = "/medidas690V400V/";
 			String filenameMeasurements690V400V = "Medidas 690V400V.pdf";
 			bytesMeasurements690V400V = populateAndCopy(folder, filenameMeasurements690V400V, project.getSite(), project.getNumber(), project.getType());
-			//bytesMeasurements690V400V = FTPDownloadFiles.downloadPdfReportFromFTPServer(filenameMeasurements690V400V, "0", "medidas690V400V/");
 			measurements690V400VTemp = new File(tmpDirOrig.toString(), filenameMeasurements690V400V);
 			OutputStream outStream = new FileOutputStream(measurements690V400VTemp);
 			outStream.write(bytesMeasurements690V400V);
@@ -279,20 +288,12 @@ public class FileReportsController {
 			String folder = "/statutoryInspectionReport/";
 			String filenameStatutoryInspectionReport = "Statutory Inspection Report.pdf";
 			bytesStatutoryInspectionReport = populateAndCopy(folder, filenameStatutoryInspectionReport, project.getSite(), project.getNumber(), project.getType());
-			//bytesStatutoryInspectionReport = FTPDownloadFiles.downloadPdfReportFromFTPServer(filenameStatutoryInspectionReport, "8", "statutoryInspectionReport/");
 			statutoryInspectionReportTemp = new File(tmpDirOrig.toString(), filenameStatutoryInspectionReport);
 			OutputStream outStream = new FileOutputStream(statutoryInspectionReportTemp);
 			outStream.write(bytesStatutoryInspectionReport);
 		}
-		String filename = project.getName() + ".zip";
-
-		String pathZipFile = ZipUtils.ZipDirectory(tmpDirOrig.toString(), project.getName());
-
-		byte[] data = FileUtils.readFileToByteArray(new File(pathZipFile));
-
-		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"").body(data);
+		return FileUtils.readFileToByteArray(new File(ZipUtils.ZipDirectory(tmpDirOrig.toString(), project.getName())));
 	}
-	
 	
 	private byte[] populateAndCopy(String folder, String filename, String site, String number, String type) throws IOException {
 		
@@ -330,5 +331,4 @@ public class FileReportsController {
 			System.err.println("No field found with name:" + name);
 		}
 	}
-	
 }
