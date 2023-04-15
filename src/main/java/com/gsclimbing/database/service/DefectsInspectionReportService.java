@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.repository.DefectsInspectionReportRepository;
-import com.gsclimbing.database.repository.UserRepository;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 
 @Service
@@ -28,15 +27,6 @@ public class DefectsInspectionReportService {
 
 	@Autowired
 	private DefectsInspectionReportService defectsInspectionReportService;
-
-	@Autowired
-	private HistoricReportService historicReportService;
-
-	@Autowired
-	private AlterationService alterationService;
-
-	@Autowired
-	private UserRepository userService;
 
 	@Autowired
 	private DefectsInspectionReportRepository defectsInspectionReportRepository;

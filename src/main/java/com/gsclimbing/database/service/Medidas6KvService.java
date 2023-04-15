@@ -3,7 +3,6 @@ package com.gsclimbing.database.service;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
@@ -14,16 +13,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 //import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import com.gsclimbing.database.entity.Alteration;
-import com.gsclimbing.database.entity.Medidas6Kv;
 import com.gsclimbing.database.entity.FileData;
-import com.gsclimbing.database.entity.HistoricReport;
-import com.gsclimbing.database.entity.Medidas6Kv;
 import com.gsclimbing.database.entity.Medidas6Kv;
 import com.gsclimbing.database.repository.Medidas6KvRepository;
-import com.gsclimbing.database.repository.Medidas6KvRepository;
-import com.gsclimbing.database.repository.Medidas6KvRepository;
-import com.gsclimbing.database.repository.UserRepository;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 
 @Service
@@ -36,15 +28,6 @@ public class Medidas6KvService {
 
 	@Autowired
 	private Medidas6KvService medidas6KvService;
-
-	@Autowired
-	private HistoricReportService historicReportService;
-
-	@Autowired
-	private AlterationService alterationService;
-
-	@Autowired
-	private UserRepository userService;
 
 	@Autowired
 	private Medidas6KvRepository medidas6KvRepository;

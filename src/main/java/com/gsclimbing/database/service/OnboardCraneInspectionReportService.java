@@ -3,7 +3,6 @@ package com.gsclimbing.database.service;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.OnboardCraneInspectionReport;
 import com.gsclimbing.database.repository.OnboardCraneInspectionReportRepository;
-import com.gsclimbing.database.repository.UserRepository;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 
 @Service
@@ -29,15 +27,6 @@ public class OnboardCraneInspectionReportService {
 
 	@Autowired
 	private OnboardCraneInspectionReportService onboardCraneInspectionReportService;
-
-	@Autowired
-	private HistoricReportService historicReportService;
-
-	@Autowired
-	private AlterationService alterationService;
-
-	@Autowired
-	private UserRepository userService;
 
 	@Autowired
 	private OnboardCraneInspectionReportRepository onboardCraneInspectionReportRepository;

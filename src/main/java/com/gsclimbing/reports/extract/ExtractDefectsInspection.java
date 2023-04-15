@@ -231,7 +231,7 @@ public class ExtractDefectsInspection {
 		return true;
 	}
 
-	public void extractAnnotationImages(PDImage image, String nameFile, FileData fileData) throws IOException {
+	private void extractAnnotationImages(PDImage image, String nameFile, FileData fileData) throws IOException {
 		List<FileData> listFileData = fileService.readFile(getDefectsInspectionReport().getUuid()).stream().filter(filex -> filex.getMimeType().equals("JPG")).collect(Collectors.toList());
 		Optional<FileData> fileDataFiltered = listFileData.stream().filter(fileD -> nameFile.equals(fileD.getName())).findAny();
 		if (!fileDataFiltered.isPresent()) {
