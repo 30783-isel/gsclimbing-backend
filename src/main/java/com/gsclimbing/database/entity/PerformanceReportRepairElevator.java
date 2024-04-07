@@ -1,11 +1,10 @@
 package com.gsclimbing.database.entity;
 
-import java.util.HashMap;
-
-import javax.persistence.Entity;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.persistence.Entity;
+import java.util.HashMap;
 
 @Getter
 @Setter

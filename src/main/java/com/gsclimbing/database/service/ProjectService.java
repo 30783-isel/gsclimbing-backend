@@ -1,20 +1,19 @@
 package com.gsclimbing.database.service;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.Project;
 import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.repository.ProjectRepository;
 import com.gsclimbing.ftp.FTPDownloadFiles;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectService {

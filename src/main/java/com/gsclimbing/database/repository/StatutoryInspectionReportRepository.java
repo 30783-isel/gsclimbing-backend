@@ -1,12 +1,11 @@
 package com.gsclimbing.database.repository;
 
-import java.util.List;
-
+import com.gsclimbing.database.entity.StatutoryInspectionReport;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import com.gsclimbing.database.entity.StatutoryInspectionReport;
+import java.util.List;
 
 public interface StatutoryInspectionReportRepository extends CrudRepository<StatutoryInspectionReport, Integer>{
 	

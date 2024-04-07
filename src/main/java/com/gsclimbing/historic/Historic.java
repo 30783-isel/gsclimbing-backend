@@ -1,8 +1,9 @@
 package com.gsclimbing.historic;
 
-import java.util.List;
 import com.gsclimbing.database.entity.Alteration;
 import com.gsclimbing.database.entity.HistoricReport;
+
+import java.util.List;
 
 public class Historic implements Comparable<Historic> {
 

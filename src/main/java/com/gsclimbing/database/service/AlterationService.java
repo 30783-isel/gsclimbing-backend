@@ -1,21 +1,16 @@
 package com.gsclimbing.database.service;
 
-import java.lang.reflect.Field;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.gsclimbing.database.entity.*;
+import com.gsclimbing.database.repository.AlterationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.gsclimbing.database.entity.Alteration;
-import com.gsclimbing.database.entity.HistoricReport;
-import com.gsclimbing.database.entity.Report;
-import com.gsclimbing.database.entity.StatutoryInspectionReport;
-import com.gsclimbing.database.entity.StatutoryInspectionReportInt;
-import com.gsclimbing.database.repository.AlterationRepository;
+import java.lang.reflect.Field;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class AlterationService {

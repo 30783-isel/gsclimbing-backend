@@ -1,22 +1,16 @@
 package com.gsclimbing.database.entity;
 
-import java.io.Serializable;
-import java.util.HashMap;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.gsclimbing.database.entity.statutory_inspection_report.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspectionReportInspectionAnchorPoints;
-import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspectionReportInspectionDescenderDevice;
-import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspectionReportInspectionReportLadder;
-import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspectionReportInternalCrane;
-import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspectionReportServiceCabin;
-
-import lombok.Getter;
-import lombok.Setter;
+import java.io.Serializable;
+import java.util.HashMap;
 
 @Getter
 @Setter

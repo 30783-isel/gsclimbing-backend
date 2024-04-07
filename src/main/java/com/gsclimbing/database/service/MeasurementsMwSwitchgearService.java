@@ -1,17 +1,16 @@
 package com.gsclimbing.database.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.gsclimbing.database.entity.FileData;
+import com.gsclimbing.database.entity.MeasurementsMwSwitchgear;
+import com.gsclimbing.database.repository.MeasurementsMwSwitchgearRepository;
+import com.gsclimbing.ftp.FTPDownloadFiles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import com.gsclimbing.database.entity.FileData;
-import com.gsclimbing.database.entity.MeasurementsMwSwitchgear;
-import com.gsclimbing.database.repository.MeasurementsMwSwitchgearRepository;
-import com.gsclimbing.ftp.FTPDownloadFiles;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class MeasurementsMwSwitchgearService {

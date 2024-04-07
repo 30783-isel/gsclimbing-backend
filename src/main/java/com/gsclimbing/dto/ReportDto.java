@@ -1,11 +1,10 @@
 package com.gsclimbing.dto;
 
-import java.time.LocalDateTime;
-
 import com.gsclimbing.database.entity.Turbine;
-
 import lombok.Builder;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder

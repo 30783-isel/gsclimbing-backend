@@ -1,40 +1,27 @@
 package com.gsclimbing.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-
-import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.gsclimbing.commons.PasswordGenerator;
 import com.gsclimbing.database.entity.Project;
 import com.gsclimbing.database.entity.QProject;
 import com.gsclimbing.database.entity.QUser;
-import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.UserService;
 import com.gsclimbing.dto.FilterUserDTO;
 import com.gsclimbing.email.SendEmail;
 import com.querydsl.jpa.impl.JPAQuery;
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
@@ -93,7 +80,7 @@ public class UserController {
 					message = "<h3>Welcome to GS-Climbing team.</h3>";
 					message += "<span><b>Username - </b>" + user.getUsername() + "</span>";
 					message += "<p style=\"line-height:.10px;\"><span><b>Password - </b>" + password + "<span></p>";
-					message += "<p><a href=\"http://31.171.250.208/\">Go to portal</a></p>";
+					message += "<p><a href=\"http://31.171.241.89/\">Go to portal</a></p>";
 					byte[] bytes = null;
 					SendEmail runnable = new SendEmail(user.getEmail(), subject, message, "Defects Inspection Report.pdf", bytes);
 					Thread t = new Thread(runnable);

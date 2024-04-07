@@ -1,10 +1,9 @@
 package com.gsclimbing.database.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.gsclimbing.database.entity.HistoricReport;
 import com.gsclimbing.database.repository.HistoricReportRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class HistoricReportService {

@@ -1,16 +1,12 @@
 package com.gsclimbing.controller;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-
+import com.gsclimbing.commons.enums.ReportEnum;
+import com.gsclimbing.database.entity.Project;
+import com.gsclimbing.database.entity.Turbine;
+import com.gsclimbing.database.service.*;
+import com.gsclimbing.ftp.FTPDownloadFiles;
+import com.gsclimbing.reports.populater.*;
+import com.gsclimbing.zip.ZipUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -20,36 +16,12 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.gsclimbing.commons.enums.ReportEnum;
-import com.gsclimbing.database.entity.Project;
-import com.gsclimbing.database.entity.Turbine;
-import com.gsclimbing.database.service.DefectsInspectionReportService;
-import com.gsclimbing.database.service.ExaminationTransformerService;
-import com.gsclimbing.database.service.FileService;
-import com.gsclimbing.database.service.MeasurementsMwSwitchgearService;
-import com.gsclimbing.database.service.Medidas690V400VService;
-import com.gsclimbing.database.service.Medidas6KvService;
-import com.gsclimbing.database.service.OnboardCraneInspectionReportService;
-import com.gsclimbing.database.service.PerformanceReportRepairElevatorService;
-import com.gsclimbing.database.service.ProjectService;
-import com.gsclimbing.database.service.StatutoryInspectionReportReportService;
-import com.gsclimbing.database.service.TurbineService;
-import com.gsclimbing.ftp.FTPDownloadFiles;
-import com.gsclimbing.reports.populater.DefectsInspectionPopulater;
-import com.gsclimbing.reports.populater.ExaminationTransformerPopulater;
-import com.gsclimbing.reports.populater.MeasurementsMwSwitchgearPopulater;
-import com.gsclimbing.reports.populater.Medidas690V400VPopulater;
-import com.gsclimbing.reports.populater.Medidas6KvPopulater;
-import com.gsclimbing.reports.populater.OnboardCraneInspectionReportElevatorPopulater;
-import com.gsclimbing.reports.populater.PerformanceReportRepairElevatorPopulater;
-import com.gsclimbing.reports.populater.StatutoryInspectionReportElevatorPopulater;
-import com.gsclimbing.zip.ZipUtils;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 
@@ -154,7 +126,11 @@ public class FileReportsController {
 		}
 		return FileUtils.readFileToByteArray(new File(ZipUtils.ZipDirectory(tmpDirOrig.toString(), projectService.getProject(projectId).getName())));
 	}
-	
+
+	@RequestMapping("/download_clean_zip/{projectId}")
+	public ResponseEntity<byte[]> getCleanZipFile(@PathVariable int projectId) throws IOException {
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + projectService.getProject(projectId).getName() + ".zip" + "\"").body(getCleanReportsOnZip(projectId));
+	}
 	private byte[] getCleanReportsOnZip(int projectId) throws IOException {
 		boolean defectInspectionReportBool = false;
 		byte[] bytesDefectInspectionReport = null;

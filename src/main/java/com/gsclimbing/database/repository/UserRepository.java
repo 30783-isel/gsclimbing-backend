@@ -1,10 +1,9 @@
 package com.gsclimbing.database.repository;
 
-import java.util.Optional;
-
+import com.gsclimbing.database.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.gsclimbing.database.entity.User;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer>{
 

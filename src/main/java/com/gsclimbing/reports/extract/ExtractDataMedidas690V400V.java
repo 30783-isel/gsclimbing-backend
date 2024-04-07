@@ -1,5 +1,26 @@
 package com.gsclimbing.reports.extract;
 
+import com.gsclimbing.commons.enums.ReportEnum;
+import com.gsclimbing.database.entity.*;
+import com.gsclimbing.database.repository.UserRepository;
+import com.gsclimbing.database.service.AlterationService;
+import com.gsclimbing.database.service.HistoricReportService;
+import com.gsclimbing.database.service.Medidas690V400VService;
+import com.gsclimbing.database.service.TurbineService;
+import com.gsclimbing.ftp.FTPUploadFile;
+import lombok.Data;
+import org.apache.pdfbox.contentstream.PDFGraphicsStreamEngine;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
+import org.apache.pdfbox.pdmodel.interactive.form.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.imageio.ImageIO;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
@@ -10,41 +31,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import javax.imageio.ImageIO;
-
-import org.apache.pdfbox.contentstream.PDFGraphicsStreamEngine;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
-import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox;
-import org.apache.pdfbox.pdmodel.interactive.form.PDField;
-import org.apache.pdfbox.pdmodel.interactive.form.PDPushButton;
-import org.apache.pdfbox.pdmodel.interactive.form.PDRadioButton;
-import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.gsclimbing.commons.enums.ReportEnum;
-import com.gsclimbing.database.entity.Alteration;
-import com.gsclimbing.database.entity.FileData;
-import com.gsclimbing.database.entity.HistoricReport;
-import com.gsclimbing.database.entity.Medidas690V400V;
-import com.gsclimbing.database.entity.Report;
-import com.gsclimbing.database.entity.Turbine;
-import com.gsclimbing.database.entity.User;
-import com.gsclimbing.database.repository.UserRepository;
-import com.gsclimbing.database.service.AlterationService;
-import com.gsclimbing.database.service.HistoricReportService;
-import com.gsclimbing.database.service.Medidas690V400VService;
-import com.gsclimbing.database.service.TurbineService;
-import com.gsclimbing.ftp.FTPUploadFile;
-
-import lombok.Data;
 
 @Data
 @Service

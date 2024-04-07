@@ -1,9 +1,8 @@
 package com.gsclimbing.dto;
 
+import lombok.Data;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
-import lombok.Data;
 
 @Data
 public class FilterProjectDTO {

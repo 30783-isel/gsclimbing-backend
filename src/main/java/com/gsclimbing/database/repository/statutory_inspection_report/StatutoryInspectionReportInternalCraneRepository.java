@@ -1,7 +1,6 @@
 package com.gsclimbing.database.repository.statutory_inspection_report;
 
-import org.springframework.data.repository.CrudRepository;
-
 import com.gsclimbing.database.entity.statutory_inspection_report.StatutoryInspectionReportInternalCrane;
+import org.springframework.data.repository.CrudRepository;
 
 public interface StatutoryInspectionReportInternalCraneRepository extends CrudRepository<StatutoryInspectionReportInternalCrane, Integer>{}

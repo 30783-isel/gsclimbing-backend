@@ -1,12 +1,11 @@
 package com.gsclimbing.dto;
 
-import java.time.LocalDateTime;
-
+import lombok.Data;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.Data;
+import java.time.LocalDateTime;
 
 @Data
 public class FilterDTO {

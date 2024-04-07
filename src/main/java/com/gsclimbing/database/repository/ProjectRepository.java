@@ -1,8 +1,7 @@
 package com.gsclimbing.database.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.gsclimbing.database.entity.Project;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProjectRepository extends JpaRepository<Project, Integer>{
 

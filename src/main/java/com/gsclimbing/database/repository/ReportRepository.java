@@ -1,14 +1,12 @@
 package com.gsclimbing.database.repository;
 
-import java.util.List;
-
+import com.gsclimbing.database.entity.Report;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import com.gsclimbing.database.entity.DefectsInspectionReport;
-import com.gsclimbing.database.entity.Report;
+import java.util.List;
 
 public interface ReportRepository extends CrudRepository<Report, Integer>, QuerydslPredicateExecutor<Report>{
 	

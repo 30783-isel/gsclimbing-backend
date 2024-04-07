@@ -1,9 +1,9 @@
 package com.gsclimbing.database.service;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.gsclimbing.database.entity.FileData;
+import com.gsclimbing.database.entity.StatutoryInspectionReport;
+import com.gsclimbing.database.repository.StatutoryInspectionReportRepository;
+import com.gsclimbing.ftp.FTPDownloadFiles;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,10 +12,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import com.gsclimbing.database.entity.FileData;
-import com.gsclimbing.database.entity.StatutoryInspectionReport;
-import com.gsclimbing.database.repository.StatutoryInspectionReportRepository;
-import com.gsclimbing.ftp.FTPDownloadFiles;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class StatutoryInspectionReportReportService {

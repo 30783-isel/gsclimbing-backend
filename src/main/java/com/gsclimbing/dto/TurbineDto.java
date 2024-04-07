@@ -1,15 +1,12 @@
 package com.gsclimbing.dto;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.gsclimbing.database.entity.Project;
-import com.gsclimbing.database.entity.Report;
-
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Data;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder

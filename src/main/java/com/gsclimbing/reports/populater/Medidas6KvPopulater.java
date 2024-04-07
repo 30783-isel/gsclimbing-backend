@@ -1,15 +1,12 @@
 package com.gsclimbing.reports.populater;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.imageio.ImageIO;
-
+import com.gsclimbing.database.entity.FileData;
+import com.gsclimbing.database.entity.Medidas6Kv;
+import com.gsclimbing.database.entity.Report;
+import com.gsclimbing.database.repository.UserRepository;
+import com.gsclimbing.database.service.FileService;
+import com.gsclimbing.database.service.Medidas6KvService;
+import com.gsclimbing.ftp.FTPDownloadFiles;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSDictionary;
@@ -29,13 +26,14 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDPushButton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.gsclimbing.database.entity.FileData;
-import com.gsclimbing.database.entity.Medidas6Kv;
-import com.gsclimbing.database.entity.Report;
-import com.gsclimbing.database.repository.UserRepository;
-import com.gsclimbing.database.service.FileService;
-import com.gsclimbing.database.service.Medidas6KvService;
-import com.gsclimbing.ftp.FTPDownloadFiles;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class Medidas6KvPopulater {

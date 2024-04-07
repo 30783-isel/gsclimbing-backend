@@ -1,10 +1,9 @@
 package com.gsclimbing.database.repository;
 
-import java.util.List;
-
+import com.gsclimbing.database.entity.FileData;
 import org.springframework.data.repository.CrudRepository;
 
-import com.gsclimbing.database.entity.FileData;
+import java.util.List;
 
 public interface FileRepository  extends CrudRepository<FileData, Integer>{
 

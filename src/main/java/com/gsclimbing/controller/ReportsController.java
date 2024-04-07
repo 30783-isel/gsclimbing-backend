@@ -1,76 +1,31 @@
 package com.gsclimbing.controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
+import com.gsclimbing.commons.enums.ReportEnum;
+import com.gsclimbing.database.entity.*;
+import com.gsclimbing.database.service.*;
+import com.gsclimbing.dto.FilterDTO;
+import com.gsclimbing.dto.ReportDto;
+import com.gsclimbing.email.SendEmail;
+import com.gsclimbing.ftp.FTPDownloadFiles;
+import com.gsclimbing.historic.Historic;
+import com.gsclimbing.reports.extract.*;
+import com.gsclimbing.reports.populater.*;
+import com.querydsl.jpa.impl.JPAQuery;
+import lombok.Data;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.gsclimbing.commons.enums.ReportEnum;
-import com.gsclimbing.database.entity.Alteration;
-import com.gsclimbing.database.entity.DefectsInspectionReport;
-import com.gsclimbing.database.entity.ExaminationTransformer;
-import com.gsclimbing.database.entity.FileData;
-import com.gsclimbing.database.entity.HistoricReport;
-import com.gsclimbing.database.entity.MeasurementsMwSwitchgear;
-import com.gsclimbing.database.entity.Medidas690V400V;
-import com.gsclimbing.database.entity.Medidas6Kv;
-import com.gsclimbing.database.entity.OnboardCraneInspectionReport;
-import com.gsclimbing.database.entity.PerformanceReportRepairElevator;
-import com.gsclimbing.database.entity.Project;
-import com.gsclimbing.database.entity.QReport;
-import com.gsclimbing.database.entity.Report;
-import com.gsclimbing.database.entity.StatutoryInspectionReport;
-import com.gsclimbing.database.entity.Turbine;
-import com.gsclimbing.database.entity.User;
-import com.gsclimbing.database.service.AlterationService;
-import com.gsclimbing.database.service.FileService;
-import com.gsclimbing.database.service.ProjectService;
-import com.gsclimbing.database.service.ReportService;
-import com.gsclimbing.database.service.TurbineService;
-import com.gsclimbing.database.service.UserService;
-import com.gsclimbing.dto.FilterDTO;
-import com.gsclimbing.dto.ReportDto;
-import com.gsclimbing.email.SendEmail;
-import com.gsclimbing.ftp.FTPDownloadFiles;
-import com.gsclimbing.historic.Historic;
-import com.gsclimbing.reports.extract.ExtractDataExaminationTransformer;
-import com.gsclimbing.reports.extract.ExtractDataMeasurementsMwSwitchgear;
-import com.gsclimbing.reports.extract.ExtractDataMedidas690V400V;
-import com.gsclimbing.reports.extract.ExtractDataMedidas6Kv;
-import com.gsclimbing.reports.extract.ExtractDataOnboardCraneInspectionReport;
-import com.gsclimbing.reports.extract.ExtractDataPrre;
-import com.gsclimbing.reports.extract.ExtractDataStatutoryInspectionReport;
-import com.gsclimbing.reports.extract.ExtractDefectsInspection;
-import com.gsclimbing.reports.populater.DefectsInspectionPopulater;
-import com.gsclimbing.reports.populater.ExaminationTransformerPopulater;
-import com.gsclimbing.reports.populater.MeasurementsMwSwitchgearPopulater;
-import com.gsclimbing.reports.populater.Medidas690V400VPopulater;
-import com.gsclimbing.reports.populater.Medidas6KvPopulater;
-import com.gsclimbing.reports.populater.OnboardCraneInspectionReportElevatorPopulater;
-import com.gsclimbing.reports.populater.PerformanceReportRepairElevatorPopulater;
-import com.gsclimbing.reports.populater.StatutoryInspectionReportElevatorPopulater;
-import com.querydsl.jpa.impl.JPAQuery;
-
-import antlr.StringUtils;
-import lombok.Data;
+import javax.persistence.EntityManager;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @Data
