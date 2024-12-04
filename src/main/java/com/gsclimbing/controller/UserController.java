@@ -80,7 +80,7 @@ public class UserController {
 					message = "<h3>Welcome to GS-Climbing team.</h3>";
 					message += "<span><b>Username - </b>" + user.getUsername() + "</span>";
 					message += "<p style=\"line-height:.10px;\"><span><b>Password - </b>" + password + "<span></p>";
-					message += "<p><a href=\"http://31.171.241.89/\">Go to portal</a></p>";
+					message += "<p><a href=\"http://40.82.181.186/\">Go to portal</a></p>";
 					byte[] bytes = null;
 					SendEmail runnable = new SendEmail(user.getEmail(), subject, message, "Defects Inspection Report.pdf", bytes);
 					Thread t = new Thread(runnable);

@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @Data
@@ -125,7 +126,12 @@ public class ReportsController {
 			}
 			return ResponseEntity.status(HttpStatus.OK).body(turbineService.getTurbine(turbineId));
 		} catch (Exception e) {
-			message = "Could not upload the file: " + file.getOriginalFilename() + "!!!\n" + "Empty fields:\n" + convertEmptyListToString(lista);
+			message = "Could not upload the file: " + file.getOriginalFilename() + "!!!\n";
+			String emptyFields = "Empty fields:\n" + convertEmptyListToString(lista);
+			if(!(Objects.isNull(lista) || lista.isEmpty())){
+				message.concat(emptyFields);
+			}
+			log.error(message, e);
 			if (report != null) {
 				String uuid = report.getUuid();
 				List<FileData> listFileData = fileService.readFile(uuid);
@@ -162,6 +168,7 @@ public class ReportsController {
 			return new ResponseEntity<>(message, HttpStatus.OK);
 		} catch (Exception e) {
 			message = "Could not update the file: " + file.getOriginalFilename() + "!!!\n" + validateString;
+			log.error(message);
 			return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
 		}
 	}

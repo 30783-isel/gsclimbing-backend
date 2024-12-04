@@ -184,7 +184,7 @@ public class FTPDownloadFiles {
 		try {
 
 			ftpClient.connect(server, port);
-			ftpClient.login(user, pass);
+			Boolean login = ftpClient.login(user, pass);
 			ftpClient.enterLocalPassiveMode();
 			ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 

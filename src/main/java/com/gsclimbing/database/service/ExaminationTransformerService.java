@@ -44,7 +44,12 @@ public class ExaminationTransformerService {
 	}
 
 	public ExaminationTransformer updateExaminationTransformer(ExaminationTransformer examinationTransformer) {
-		return examinationTransformerRepository.save(examinationTransformer);
+		try {
+			return examinationTransformerRepository.save(examinationTransformer);
+		}catch(Exception e){
+			System.out.println(e);
+		}
+		return null;
 	}
 
 	public List<ExaminationTransformer> searchExaminationTransformer(String site, String wtgNumber, String wtgType) {
