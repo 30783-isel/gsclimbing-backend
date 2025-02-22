@@ -14,6 +14,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
@@ -23,6 +24,7 @@ import java.util.stream.IntStream;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
+@Transactional
 @RequestMapping(path = "/api/project")
 public class ProjectController {
 	@Autowired
@@ -75,6 +77,7 @@ public class ProjectController {
 	List<Turbine> getListTurbines(int numOfElements, Project project) {
 		return IntStream.range(0, numOfElements).mapToObj(i -> new Turbine(project)).collect(Collectors.toList());
 	}
+
 
 	@RequestMapping(method = RequestMethod.GET, value = "/all")
 	public List<ProjectDto> getProjects() {

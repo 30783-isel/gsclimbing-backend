@@ -102,7 +102,9 @@ public class ReportService {
 				if (object == null || ObjectUtils.isEmpty(object.toString())) {
 					String fieldName = report.mapeamento().get(field.getName());
 					if (fieldName != null) {
-						lista.add(report.mapeamento().get(field.getName()));
+						if(!field.getName().startsWith("additionalField")) {
+							lista.add(report.mapeamento().get(field.getName()));
+						}
 					}
 				}
 //				Method method = report.getClass().getSuperclass().getDeclaredMethod("mapeamento", null);

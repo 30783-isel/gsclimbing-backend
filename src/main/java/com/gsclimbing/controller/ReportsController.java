@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +32,7 @@ import java.util.Objects;
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @Data
 @RestController
+@Transactional
 @RequestMapping(path = "/api/reports")
 public class ReportsController {
 
@@ -128,8 +130,8 @@ public class ReportsController {
 		} catch (Exception e) {
 			message = "Could not upload the file: " + file.getOriginalFilename() + "!!!\n";
 			String emptyFields = "Empty fields:\n" + convertEmptyListToString(lista);
-			if(!(Objects.isNull(lista) || lista.isEmpty())){
-				message.concat(emptyFields);
+			if(lista != null && !lista.isEmpty()){
+				message = message.concat(emptyFields);
 			}
 			log.error(message, e);
 			if (report != null) {

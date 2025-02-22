@@ -16,6 +16,7 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
@@ -24,7 +25,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
-
+@Transactional
 @RestController
 @RequestMapping(path = "/api/reports/files")
 public class FileReportsController {
