@@ -117,21 +117,27 @@ public class ProjectController {
 			turbine.setName(Integer.toString(project.getTurbines().size() + 1));
 			turbineService.createTurbine(turbine);
 			project.getTurbines().add(turbine);
-			return null;
+			return ResponseEntity.ok(turbine);
 		}
 		message = "Cannot insert the turbine.";
 		return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/update-turbine")
-	public ResponseEntity<?> updateTurbine(@RequestParam("turbineId") String turbineId, @RequestParam("defectsInspectionReport") boolean defectsInspectionReport,
-			@RequestParam("examinationTransformer") boolean examinationTransformer, @RequestParam("measurements6KV") boolean measurements6KV, @RequestParam("measurements690V400V") boolean measurements690V400V,
-			@RequestParam("measurementsMwSwitchgear") boolean measurementsMwSwitchgear, @RequestParam("onboardCraneInspectionReport") boolean onboardCraneInspectionReport,
-			@RequestParam("performanceReportRepairElevator") boolean performanceReportRepairElevator, @RequestParam("statutoryInspectionReport") boolean statutoryInspectionReport) {
+	public ResponseEntity<?> updateTurbine(
+			@RequestParam("turbineId") String turbineId,
+			@RequestParam("defectsInspectionReport") boolean defectsInspectionReport,
+			@RequestParam("examinationTransformer") boolean examinationTransformer,
+			@RequestParam("measurements6KV") boolean measurements6KV,
+			@RequestParam("measurements690V400V") boolean measurements690V400V,
+			@RequestParam("measurementsMwSwitchgear") boolean measurementsMwSwitchgear,
+			@RequestParam("onboardCraneInspectionReport") boolean onboardCraneInspectionReport,
+			@RequestParam("performanceReportRepairElevator") boolean performanceReportRepairElevator,
+			@RequestParam("statutoryInspectionReport") boolean statutoryInspectionReport) {
+
 		try {
 			Turbine turbine = turbineService.getTurbine(Integer.parseInt(turbineId));
 
-			turbine.setDefectsInspectionReport(defectsInspectionReport);
 			turbine.setDefectsInspectionReport(defectsInspectionReport);
 			turbine.setExaminationTransformer(examinationTransformer);
 			turbine.setMeasurements6KV(measurements6KV);
@@ -142,10 +148,12 @@ public class ProjectController {
 			turbine.setStatutoryInspectionReport(statutoryInspectionReport);
 
 			turbineService.updateTurbine(turbine);
+
+			return ResponseEntity.ok(turbine);
+
 		} catch (Exception e) {
 			return new ResponseEntity<>("Turbine not updated", HttpStatus.EXPECTATION_FAILED);
 		}
-		return null;
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/update-turbine-name")

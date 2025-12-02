@@ -1,0 +1,12 @@
+Nos empty fields a descrição das fotos aparece repetida:
+Description from description1 empty
+Description from description1 empty
+Description from description2 empty
+Description from description2 empty
+--------------------------------------------------------
+Está a bastar colocar 2 fotos no measurements 6k
+--------------------------------------------------------
+Está a bastar colocar 2 fotos no measurements 690
+--------------------------------------------------------
+Não está a fazer as validações no statutory inspectin report
+--------------------------------------------------------

@@ -81,7 +81,7 @@ public class SendEmail implements Runnable {
 
 	@Override
 	public void run() {
-		//sendEmailTLS();
+		sendEmailTLS();
 	}
 
 	public File createPDFFile(String filename, byte[] bytes) {
