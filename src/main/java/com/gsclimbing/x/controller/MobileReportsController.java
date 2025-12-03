@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -274,6 +275,49 @@ public class MobileReportsController {
         if (dto.getAdditionalField7() != null) {
             report.setAdditionalField7Label(dto.getAdditionalField7().getLabel());
             report.setAdditionalField7Text(dto.getAdditionalField7().getValue());
+        }
+    }
+
+    /**
+     * Obter lista de relatórios de uma turbina
+     *
+     * @param turbineId ID da turbina
+     * @return Lista de relatórios
+     */
+    @GetMapping("/defect-inspection/turbine/{turbineId}")
+    public ResponseEntity<?> getDefectInspectionReportsByTurbine(
+            @PathVariable String turbineId) {
+
+        try {
+            logger.info("Getting Defect Inspection Reports for turbine: {}", turbineId);
+
+            // Buscar relatórios da turbina
+            List<DefectsInspectionReport> reports =
+                    defectsInspectionReportService.readDefectsInspectionReportByTurbineId(turbineId);
+
+            // Converter para DTOs
+            List<DefectInspectionReportResponseDTO> responseDTOs = new ArrayList<>();
+
+            for (DefectsInspectionReport report : reports) {
+                // Contar fotos usando o UUID do relatório
+                List<FileData> photos = fileService.readFile(report.getUuid());
+                int numberPictures = photos != null ? photos.size() : 0;
+
+                // Criar response DTO
+                DefectInspectionReportResponseDTO responseDTO =
+                        adapter.toResponseDTO(report, numberPictures);
+
+                responseDTOs.add(responseDTO);
+            }
+
+            logger.info("Found {} reports for turbine {}", responseDTOs.size(), turbineId);
+
+            return ResponseEntity.ok(responseDTOs);
+
+        } catch (Exception e) {
+            logger.error("Error getting reports for turbine", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error getting reports: " + e.getMessage());
         }
     }
 }
