@@ -1,5 +1,6 @@
 package com.gsclimbing.x.controller;
 
+import com.gsclimbing.ftp.FTPDownloadFiles;
 import com.gsclimbing.x.adapter.DefectInspectionReportAdapter;
 import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.FileData;
@@ -12,14 +13,13 @@ import com.gsclimbing.x.dto.DefectInspectionReportResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Controller para receber relatórios do mobile
@@ -320,4 +320,107 @@ public class MobileReportsController {
                     .body("Error getting reports: " + e.getMessage());
         }
     }
+
+    /**
+     * Obter fotos de um relatório (para o mobile)
+     *
+     * Endpoint: GET /api/reports/mobile/defect-inspection/{reportId}/photos
+     *
+     * @param reportId ID do relatório
+     * @return Lista de fotos com URLs para download
+     */
+    @GetMapping("/defect-inspection/{reportId}/photos")
+    public ResponseEntity<?> getReportPhotos(@PathVariable Integer reportId) {
+        try {
+            logger.info("📸 Getting photos for report ID: {}", reportId);
+
+            // Buscar relatório
+            DefectsInspectionReport report =
+                    defectsInspectionReportService.readDefectsInspectionReport(reportId);
+
+            if (report == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Report not found with ID: " + reportId);
+            }
+
+            // Buscar fotos usando o UUID do relatório
+            List<FileData> photos = fileService.readFile(report.getUuid());
+
+            if (photos == null || photos.isEmpty()) {
+                logger.info("No photos found for report {}", reportId);
+                return ResponseEntity.ok(new ArrayList<>());
+            }
+
+            // Converter para DTOs com URLs de download
+            List<Map<String, Object>> photoList = new ArrayList<>();
+
+            for (FileData photo : photos) {
+                Map<String, Object> photoData = new HashMap<>();
+                photoData.put("fileId", photo.getFileId());
+                photoData.put("hash", photo.getHash());
+                photoData.put("name", photo.getName());
+                photoData.put("description", photo.getDescription());
+                photoData.put("mimeType", photo.getMimeType());
+                photoData.put("size", photo.getSize());
+                photoData.put("createDate", photo.getCreateDate());
+
+                // URL para download da foto
+                // O frontend pode usar este hash para fazer download via /api/reports/files/download/{hash}
+                photoData.put("downloadUrl", "/api/reports/files/download/" + photo.getHash());
+
+                photoList.add(photoData);
+            }
+
+            logger.info("✅ Returning {} photos for report {}", photoList.size(), reportId);
+            return ResponseEntity.ok(photoList);
+
+        } catch (Exception e) {
+            logger.error("❌ Error getting photos for report {}", reportId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error getting photos: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Download de uma foto específica pelo hash
+     *
+     * Endpoint: GET /api/reports/files/download/{hash}
+     *
+     * @param hash Hash da foto no FTP
+     * @return Bytes da imagem
+     */
+    @GetMapping("/files/download/{hash}")
+    public ResponseEntity<byte[]> downloadPhoto(@PathVariable String hash) {
+        try {
+            logger.info("📥 Downloading photo with hash: {}", hash);
+
+            // Download do FTP
+            byte[] photoBytes = FTPDownloadFiles.downloadFile2FTPServer(hash);
+
+            if (photoBytes == null) {
+                logger.error("❌ Photo not found with hash: {}", hash);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            // Determinar o tipo de conteúdo (mime type)
+            FileData fileData = fileService.readFileByHash(hash);
+            String contentType = "image/jpeg"; // default
+
+            if (fileData != null && fileData.getMimeType() != null) {
+                contentType = fileData.getMimeType();
+            }
+
+            logger.info("✅ Photo downloaded successfully, size: {} bytes", photoBytes.length);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_TYPE, contentType)
+                    .header(HttpHeaders.CACHE_CONTROL, "max-age=3600")
+                    .body(photoBytes);
+
+        } catch (Exception e) {
+            logger.error("❌ Error downloading photo with hash: {}", hash, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 }
