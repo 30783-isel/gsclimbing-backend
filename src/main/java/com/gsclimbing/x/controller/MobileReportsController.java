@@ -286,7 +286,7 @@ public class MobileReportsController {
      */
     @GetMapping("/defect-inspection/turbine/{turbineId}")
     public ResponseEntity<?> getDefectInspectionReportsByTurbine(
-            @PathVariable String turbineId) {
+            @PathVariable Integer turbineId) {
 
         try {
             logger.info("Getting Defect Inspection Reports for turbine: {}", turbineId);

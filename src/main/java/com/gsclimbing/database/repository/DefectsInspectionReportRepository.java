@@ -13,6 +13,6 @@ public interface DefectsInspectionReportRepository extends CrudRepository<Defect
 	@Query("SELECT c FROM DefectsInspectionReport c WHERE (:site is null or c.site = :site) and (:wtgNumber is null or c.wtgNumber = :wtgNumber)  and (:wtgType is null or c.wtgType = :wtgType)  and (:yearConstruction is null or c.yearConstruction = :yearConstruction)")
 	List<DefectsInspectionReport> findBySiteAndWtgNumberAndWtgTypeAndYearConstruction(@Param(value = "site") String site, @Param(value = "wtgNumber") String wtgNumber, @Param(value = "wtgType") String wtgType, @Param(value = "yearConstruction") String yearConstruction);
 
-	List<DefectsInspectionReport> findByTurbineId(String turbineId);
+	List<DefectsInspectionReport> findByTurbineId(Integer turbineId);
 	
 }

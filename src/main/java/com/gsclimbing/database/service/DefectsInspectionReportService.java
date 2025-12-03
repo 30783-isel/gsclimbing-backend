@@ -38,7 +38,7 @@ public class DefectsInspectionReportService {
 		return defectsInspectionReportRepository.findById(id).orElse(null);
 	}
 
-	public List<DefectsInspectionReport> readDefectsInspectionReportByTurbineId(String turbineId) {
+	public List<DefectsInspectionReport> readDefectsInspectionReportByTurbineId(Integer turbineId) {
 		return defectsInspectionReportRepository.findByTurbineId(turbineId);
 	}
 
@@ -62,7 +62,7 @@ public class DefectsInspectionReportService {
 	}
 
 	public void deleteDefectsInspectionReportByTurbineId(String turbineId) {
-		List<DefectsInspectionReport> lista = defectsInspectionReportRepository.findByTurbineId(turbineId);
+		List<DefectsInspectionReport> lista = defectsInspectionReportRepository.findByTurbineId(Integer.parseInt(turbineId));
 		lista.stream().forEach(report -> deleteDefectsInspectionReport(report.getReportId()));
 	}
 
