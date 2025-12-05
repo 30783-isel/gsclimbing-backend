@@ -38,6 +38,7 @@ public class ProjectController {
 	@Autowired
 	private EntityManager entityManager;
 
+	/*
 	@PostMapping(value = "/search")
 	public List<QProject> searchProjects(@RequestBody FilterProjectDTO filter) {
 		QProject project = QProject.project;
@@ -58,7 +59,7 @@ public class ProjectController {
 
 		return lista;
 	}
-
+	*/
 	@RequestMapping(method = RequestMethod.POST, value = "/create")
 	public ResponseEntity<?> createProject(@RequestBody Project project) {
 		if (projectService.getProjectByName(project.getName()) == null) {
