@@ -423,4 +423,72 @@ public class MobileReportsController {
         }
     }
 
+    /**
+     * Eliminar Defect Inspection Report
+     *
+     * @param reportId ID do relatório a eliminar
+     * @return Status da operação
+     */
+    @DeleteMapping("/defect-inspection/{reportId}")
+    public ResponseEntity<?> deleteDefectInspectionReport(@PathVariable Integer reportId) {
+        try {
+            logger.info("🗑️ Deleting Defect Inspection Report: {}", reportId);
+
+            // Buscar relatório
+            DefectsInspectionReport report =
+                    defectsInspectionReportService.readDefectsInspectionReport(reportId);
+
+            if (report == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Report not found with ID: " + reportId);
+            }
+
+            // Verificar se está bloqueado
+            if ("Y".equals(report.getLocked())) {
+                return ResponseEntity.status(HttpStatus.LOCKED)
+                        .body("Report is locked and cannot be deleted");
+            }
+
+            String uuid = report.getUuid();
+
+            // Eliminar fotos associadas ao relatório
+            try {
+                List<FileData> photos = fileService.readFile(uuid);
+                if (photos != null && !photos.isEmpty()) {
+                    logger.info("📸 Deleting {} photos for report {}", photos.size(), reportId);
+                    for (FileData photo : photos) {
+                        try {
+                            // Eliminar ficheiro físico (FTP ou local)
+                            fileService.deleteFile(photo.getFileId());
+                            logger.info("   ✅ Photo deleted: {}", photo.getHash());
+                        } catch (Exception e) {
+                            logger.error("   ❌ Error deleting photo: {}", photo.getHash(), e);
+                            // Continuar a eliminar outras fotos mesmo se uma falhar
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("❌ Error deleting photos for report {}", reportId, e);
+                // Continuar com a eliminação do relatório
+            }
+
+            // Eliminar relatório da base de dados
+            defectsInspectionReportService.deleteDefectsInspectionReport(reportId);
+
+            logger.info("✅ Report {} deleted successfully", reportId);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Report deleted successfully");
+            response.put("reportId", reportId);
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            logger.error("❌ Error deleting report {}", reportId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting report: " + e.getMessage());
+        }
+    }
+
 }

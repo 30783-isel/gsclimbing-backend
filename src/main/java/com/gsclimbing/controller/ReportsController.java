@@ -89,6 +89,7 @@ public class ReportsController {
 	@Autowired
 	private EntityManager entityManager;
 
+	/*
 	@GetMapping(value = "/search")
 	public ResponseEntity<Report> searchReport(FilterDTO filter) {
 
@@ -99,6 +100,7 @@ public class ReportsController {
 
 		return new ResponseEntity<Report>(new Report(), HttpStatus.CREATED);
 	}
+	*/
 
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
 	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("project") String projectId, @RequestParam("turbineId") Integer turbineId, @RequestParam("typeReport") Integer typeReport) {
