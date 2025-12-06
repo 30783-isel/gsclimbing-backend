@@ -29,6 +29,7 @@ public class FileData {
 	private String hash;
 	private String nameField;
 	private String description;
+	private String url;
 	private int imageChange;
 	private boolean insertedOnFtpServer;
 
@@ -49,5 +50,5 @@ public class FileData {
 		messageDigest.update(transformedName.getBytes(StandardCharsets.UTF_8));
 		this.hash = new BigInteger(1, messageDigest.digest()).toString(RADIX);
 	}
-	
+
 }

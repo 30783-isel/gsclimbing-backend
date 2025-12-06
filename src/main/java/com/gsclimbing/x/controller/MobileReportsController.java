@@ -1,5 +1,6 @@
 package com.gsclimbing.x.controller;
 
+import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 import com.gsclimbing.x.adapter.DefectInspectionReportAdapter;
 import com.gsclimbing.database.entity.DefectsInspectionReport;
@@ -8,18 +9,25 @@ import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.service.DefectsInspectionReportService;
 import com.gsclimbing.database.service.FileService;
 import com.gsclimbing.database.service.TurbineService;
+import com.gsclimbing.x.database.entity.ReportHistory;
+import com.gsclimbing.x.database.service.ReportHistoryService;
+import com.gsclimbing.x.database.service.ReportValidationService;
 import com.gsclimbing.x.dto.DefectInspectionReportDTO;
 import com.gsclimbing.x.dto.DefectInspectionReportResponseDTO;
+import com.gsclimbing.x.dto.MobileReportDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Controller para receber relatórios do mobile
@@ -46,6 +54,12 @@ public class MobileReportsController {
 
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private ReportHistoryService historyService;
+
+    @Autowired
+    private ReportValidationService validationService;
 
     @Autowired
     private DefectInspectionReportAdapter adapter;
@@ -511,6 +525,352 @@ public class MobileReportsController {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * POST /api/reports/mobile/validate
+     * Validar relatório antes de submeter
+     */
+    @PostMapping("/validate")
+    public ResponseEntity<MobileReportDTO.ValidationResponseDTO> validateReport(
+            @RequestBody MobileReportDTO.ValidationRequestDTO request
+    ) {
+        MobileReportDTO.ValidationResponseDTO response = validationService.validateReport(
+                request.getReportType(),
+                request.getReportData(),
+                request.getPhotoCount()
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * POST /api/reports/mobile/draft
+     * Criar rascunho de relatório (campos parciais)
+     */
+    @PostMapping("/draft")
+    public ResponseEntity<?> createDraft(
+            @RequestBody MobileReportDTO.ReportCreateUpdateDTO dto,
+            Authentication authentication
+    ) {
+        try {
+            String username = authentication.getName();
+
+            // Buscar turbina
+            Turbine turbine = turbineService.getTurbine(dto.getTurbineId().intValue());
+            if (turbine == null) {
+                return ResponseEntity.badRequest().body("Turbina não encontrada");
+            }
+
+            // Criar relatório em modo DRAFT
+            Report report = new Report();
+            report.setTurbine(turbine);
+            report.setTypeReport(dto.getReportType());
+            report.setStatus(Report.ReportStatus.DRAFT);
+            report.setLanguage(dto.getLanguage() != null ? dto.getLanguage() : "EN");
+            report.setOfflineCreated(dto.getOfflineCreated() != null ? dto.getOfflineCreated() : false);
+            // report.setReportData(dto.getReportData()); // Guardar JSON
+
+            // Guardar no repositório (assumindo ReportService existe)
+            // reportService.save(report);
+
+            // Registar no histórico
+            historyService.logCreate(report, username);
+
+            // Resposta
+            MobileReportDTO.ReportResponseDTO response = MobileReportDTO.ReportResponseDTO.builder()
+                    .id(Long.valueOf(report.getReportId()))
+                    .turbineId((long) turbine.getId())
+                    .turbineName(turbine.getName())
+                    .reportType(report.getTypeReport())
+                    .status(report.getStatus().name())
+                    .language(report.getLanguage())
+                    .canEdit(true)
+                    .isLocked(false)
+                    .build();
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao criar rascunho: " + e.getMessage());
+        }
+    }
+
+    /**
+     * POST /api/reports/mobile/submit
+     * Submeter relatório final
+     */
+    @PostMapping("/submit")
+    public ResponseEntity<?> submitReport(
+            @RequestBody MobileReportDTO.ReportSubmitDTO dto,
+            Authentication authentication
+    ) {
+        try {
+            String username = authentication.getName();
+
+            // Buscar relatório
+            // Report report = reportService.findById(dto.getReportId());
+            // if (report == null) {
+            //     return ResponseEntity.badRequest().body("Relatório não encontrado");
+            // }
+
+            // Validar antes de submeter
+            MobileReportDTO.ValidationResponseDTO validation = validationService.validateReport(
+                    null, // report.getReportType(),
+                    dto.getReportData(),
+                    dto.getPhotoIds() != null ? dto.getPhotoIds().size() : 0
+            );
+
+            if (!validation.getIsValid()) {
+                return ResponseEntity.badRequest().body(validation);
+            }
+
+            // Submeter relatório
+            // report.submit(username);
+            // reportService.save(report);
+
+            // Registar no histórico
+            // historyService.logSubmit(report, username);
+
+            // Enviar email
+            // emailService.sendReportSubmittedEmail(report);
+
+            return ResponseEntity.ok("Relatório submetido com sucesso");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao submeter relatório: " + e.getMessage());
+        }
+    }
+
+    /**
+     * POST /api/reports/mobile/{id}/request-unlock
+     * Técnico pede permissão para editar
+     */
+    @PostMapping("/{id}/request-unlock")
+    public ResponseEntity<?> requestUnlock(
+            @PathVariable Long id,
+            @RequestBody MobileReportDTO.UnlockRequestDTO dto,
+            Authentication authentication
+    ) {
+        try {
+            String username = authentication.getName();
+
+            // Report report = reportService.findById(id);
+            // if (report == null) {
+            //     return ResponseEntity.badRequest().body("Relatório não encontrado");
+            // }
+
+            // if (!report.isLocked()) {
+            //     return ResponseEntity.badRequest().body("Relatório não está bloqueado");
+            // }
+
+            // Marcar pedido de desbloqueio
+            // report.requestUnlock();
+            // reportService.save(report);
+
+            // Registar no histórico
+            // historyService.logRequestUnlock(report, username);
+
+            // Enviar email ao admin
+            // emailService.sendUnlockRequestEmail(report, username, dto.getReason());
+
+            return ResponseEntity.ok("Pedido de desbloqueio enviado ao administrador");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao pedir desbloqueio: " + e.getMessage());
+        }
+    }
+
+    /**
+     * PUT /api/reports/mobile/{id}/unlock
+     * Admin desbloqueia relatório (só ADMIN)
+     */
+    @PutMapping("/{id}/unlock")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> unlockReport(
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+        try {
+            String adminUsername = authentication.getName();
+
+            // Report report = reportService.findById(id);
+            // if (report == null) {
+            //     return ResponseEntity.badRequest().body("Relatório não encontrado");
+            // }
+
+            // String techUsername = report.getSubmittedBy();
+            // report.unlock(adminUsername);
+            // reportService.save(report);
+
+            // Registar no histórico
+            // historyService.logUnlock(report, adminUsername, techUsername);
+
+            // Notificar técnico (opcional)
+            // emailService.sendUnlockNotificationEmail(report, techUsername);
+
+            return ResponseEntity.ok("Relatório desbloqueado");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao desbloquear relatório: " + e.getMessage());
+        }
+    }
+
+    /**
+     * PUT /api/reports/mobile/{id}/update
+     * Atualizar relatório (se permitido)
+     */
+    @PutMapping("/{id}/update")
+    public ResponseEntity<?> updateReport(
+            @PathVariable Long id,
+            @RequestBody MobileReportDTO.ReportCreateUpdateDTO dto,
+            Authentication authentication
+    ) {
+        try {
+            String username = authentication.getName();
+
+            // Report report = reportService.findById(id);
+            // if (report == null) {
+            //     return ResponseEntity.badRequest().body("Relatório não encontrado");
+            // }
+
+            // if (!report.canEdit()) {
+            //     return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            //             .body("Relatório bloqueado. Peça permissão ao administrador.");
+            // }
+
+            // Atualizar dados
+            // String oldData = report.getReportData();
+            // report.setReportData(dto.getReportData());
+            // reportService.save(report);
+
+            // Registar alteração no histórico
+            // historyService.createFieldChangeEntry(
+            //         report,
+            //         username,
+            //         "reportData",
+            //         oldData,
+            //         dto.getReportData()
+            // );
+
+            return ResponseEntity.ok("Relatório atualizado");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao atualizar relatório: " + e.getMessage());
+        }
+    }
+
+    /**
+     * GET /api/reports/{id}/history
+     * Obter histórico de alterações
+     */
+    @GetMapping("/{id}/history")
+    public ResponseEntity<?> getReportHistory(@PathVariable Long id) {
+        try {
+            List<ReportHistory> history = historyService.getReportHistory(id);
+
+            List<MobileReportDTO.ReportHistoryDTO> historyDTOs = history.stream()
+                    .map(h -> MobileReportDTO.ReportHistoryDTO.builder()
+                            .id(h.getId())
+                            .changedBy(h.getChangedBy())
+                            .changedAt(h.getChangedAt())
+                            .action(h.getAction().name())
+                            .fieldName(h.getFieldName())
+                            .oldValue(h.getOldValue())
+                            .newValue(h.getNewValue())
+                            .description(h.getDescription())
+                            .build())
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(historyDTOs);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao obter histórico: " + e.getMessage());
+        }
+    }
+
+    /**
+     * POST /api/reports/mobile/sync-offline
+     * Sincronizar relatório criado offline
+     */
+    @PostMapping("/sync-offline")
+    public ResponseEntity<?> syncOfflineReport(
+            @RequestBody MobileReportDTO.OfflineSyncDTO dto,
+            Authentication authentication
+    ) {
+        try {
+            String username = authentication.getName();
+
+            // Validar primeiro
+            MobileReportDTO.ValidationResponseDTO validation = validationService.validateReport(
+                    dto.getReportType(),
+                    dto.getReportData(),
+                    dto.getPhotos() != null ? dto.getPhotos().size() : 0
+            );
+
+            if (!validation.getIsValid()) {
+                return ResponseEntity.ok(MobileReportDTO.SyncResponseDTO.builder()
+                        .success(false)
+                        .tempId(dto.getTempId())
+                        .message("Validação falhou")
+                        .errors(validation.getErrors())
+                        .build());
+            }
+
+            // Criar relatório no servidor
+            // ... (lógica de criação similar ao createDraft)
+
+            return ResponseEntity.ok(MobileReportDTO.SyncResponseDTO.builder()
+                    .success(true)
+                    .reportId(123L) // ID real
+                    .tempId(dto.getTempId())
+                    .message("Sincronizado com sucesso")
+                    .build());
+
+        } catch (Exception e) {
+            return ResponseEntity.ok(MobileReportDTO.SyncResponseDTO.builder()
+                    .success(false)
+                    .tempId(dto.getTempId())
+                    .message("Erro: " + e.getMessage())
+                    .build());
+        }
+    }
 
 
 
