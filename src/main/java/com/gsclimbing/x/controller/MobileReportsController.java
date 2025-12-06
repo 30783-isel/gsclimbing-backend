@@ -67,7 +67,7 @@ public class MobileReportsController {
     private DefectInspectionReportAdapter adapter;
 
 
-    @PostMapping("/defect-inspection")
+    @PostMapping("/defect-inspectionx")
     public ResponseEntity<?> createDefectInspectionReport(
             @RequestBody MobileReportDTO.ReportCreateUpdateDTO dto) {
 
@@ -207,7 +207,7 @@ public class MobileReportsController {
      * @param dto Dados do relatório
      * @return Resposta com ID do relatório criado
      */
-    @PostMapping("/defect-inspectionm")
+    @PostMapping("/defect-inspection")
     public ResponseEntity<?> createDefectInspectionReport(
             @RequestBody DefectInspectionReportDTO dto) {
 
