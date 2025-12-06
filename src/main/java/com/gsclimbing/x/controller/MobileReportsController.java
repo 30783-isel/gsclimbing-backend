@@ -52,6 +52,7 @@ public class MobileReportsController {
 
     /**
      * Criar Defect Inspection Report a partir do mobile
+     * VALIDAÇÃO: Apenas 1 relatório por turbina
      *
      * @param dto Dados do relatório
      * @return Resposta com ID do relatório criado
@@ -86,6 +87,22 @@ public class MobileReportsController {
                         .body("Turbine not found with ID: " + dto.getTurbinaId());
             }
 
+            // ⭐ VALIDAÇÃO: Verificar se já existe relatório para esta turbina
+            List<DefectsInspectionReport> existingReports =
+                    defectsInspectionReportService.readDefectsInspectionReportByTurbineId(dto.getTurbinaId());
+
+            if (existingReports != null && !existingReports.isEmpty()) {
+                logger.warn("⚠️ Turbine {} already has a Defect Inspection Report", dto.getTurbinaId());
+
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("success", false);
+                errorResponse.put("message", "Esta turbina já possui um relatório Defect Inspection. Elimine o relatório existente antes de criar um novo.");
+                errorResponse.put("existingReportId", existingReports.get(0).getReportId());
+                errorResponse.put("code", "REPORT_ALREADY_EXISTS");
+
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+            }
+
             // Converter DTO para entidade
             DefectsInspectionReport report = adapter.toEntity(dto, turbine);
 
@@ -93,7 +110,7 @@ public class MobileReportsController {
             DefectsInspectionReport savedReport =
                     defectsInspectionReportService.createDefectsInspectionReport(report);
 
-            logger.info("Report created successfully with ID: {}", savedReport.getReportId());
+            logger.info("✅ Report created successfully with ID: {}", savedReport.getReportId());
 
             // Associar fotos ao relatório (se foram enviados IDs)
             int numberPictures = 0;
@@ -111,11 +128,12 @@ public class MobileReportsController {
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
         } catch (Exception e) {
-            logger.error("Error creating report from mobile", e);
+            logger.error("❌ Error creating report from mobile", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error creating report: " + e.getMessage());
         }
     }
+
 
     /**
      * Associar fotos já carregadas ao relatório
@@ -490,5 +508,10 @@ public class MobileReportsController {
                     .body("Error deleting report: " + e.getMessage());
         }
     }
+
+
+
+
+
 
 }
