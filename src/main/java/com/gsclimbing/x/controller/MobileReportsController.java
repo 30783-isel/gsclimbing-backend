@@ -1,5 +1,7 @@
 package com.gsclimbing.x.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 import com.gsclimbing.x.adapter.DefectInspectionReportAdapter;
@@ -64,6 +66,140 @@ public class MobileReportsController {
     @Autowired
     private DefectInspectionReportAdapter adapter;
 
+
+    @PostMapping("/defect-inspection")
+    public ResponseEntity<?> createDefectInspectionReport(
+            @RequestBody MobileReportDTO.ReportCreateUpdateDTO dto) {
+
+        try {
+            logger.info("Creating Defect Inspection Report from mobile");
+
+            // Validar campos obrigatórios no reportData JSON
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode reportData = mapper.readTree(dto.getReportData());
+
+            String site = reportData.has("site") ? reportData.get("site").asText() : null;
+            String wtgNumber = reportData.has("wtgNumber") ? reportData.get("wtgNumber").asText() : null;
+
+            if (site == null || site.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Site is required");
+            }
+            if (wtgNumber == null || wtgNumber.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("WTG Number is required");
+            }
+
+            // Buscar turbina
+            Turbine turbine = turbineService.getTurbine(dto.getTurbineId().intValue());
+            if (turbine == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Turbine not found with ID: " + dto.getTurbineId());
+            }
+
+            // Validar se já existe relatório para esta turbina
+            List<DefectsInspectionReport> existingReports =
+                    defectsInspectionReportService.readDefectsInspectionReportByTurbineId(turbine.getId());
+
+            if (!existingReports.isEmpty()) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Já existe um relatório para esta turbina. " +
+                        "Elimine o relatório existente antes de criar um novo.");
+                errorResponse.put("existingReportId", existingReports.get(0).getReportId());
+                errorResponse.put("code", "REPORT_ALREADY_EXISTS");
+
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+            }
+
+            // Converter DTO para entidade
+            DefectsInspectionReport report = adapter.toEntity(dto, turbine);
+
+            // Salvar relatório
+            DefectsInspectionReport savedReport =
+                    defectsInspectionReportService.createDefectsInspectionReport(report);
+
+            logger.info("✅ Report created successfully with ID: {}", savedReport.getReportId());
+
+            // Associar fotos ao relatório
+            int numberPictures = 0;
+            if (dto.getPhotoIds() != null && !dto.getPhotoIds().isEmpty()) {
+                numberPictures = associatePhotosToReport(
+                        savedReport.getReportId(),
+                        dto.getPhotoIds().stream()
+                                .map(String::valueOf)
+                                .collect(Collectors.toList())
+                );
+            }
+
+            // Criar resposta
+            DefectInspectionReportResponseDTO response =
+                    adapter.toResponseDTO(savedReport, numberPictures);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+        } catch (Exception e) {
+            logger.error("❌ Error creating report from mobile", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error creating report: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Mapear dados do MobileReportDTO para DefectInspectionReportDTO
+     */
+    private DefectInspectionReportDTO mapToDefectInspectionDTO(
+            JsonNode reportData,
+            MobileReportDTO.ReportCreateUpdateDTO mobileDto) {
+
+        DefectInspectionReportDTO dto = new DefectInspectionReportDTO();
+
+        // Campos obrigatórios
+        dto.setSite(reportData.get("site").asText());
+        dto.setWtgNumber(reportData.get("wtgNumber").asText());
+
+        // Campos opcionais
+        if (reportData.has("wtgType")) {
+            dto.setWtgType(reportData.get("wtgType").asText());
+        }
+        if (reportData.has("yearConstruction")) {
+            dto.setYearConstruction(reportData.get("yearConstruction").asText());
+        }
+
+        // Mapear campos adicionais (additionalField1-7)
+        for (int i = 1; i <= 7; i++) {
+            String fieldKey = "additionalField" + i;
+            if (reportData.has(fieldKey)) {
+                JsonNode field = reportData.get(fieldKey);
+                DefectInspectionReportDTO.AdditionalFieldDTO additionalField =
+                        new DefectInspectionReportDTO.AdditionalFieldDTO();
+
+                if (field.has("label")) {
+                    additionalField.setLabel(field.get("label").asText());
+                }
+                if (field.has("value")) {
+                    additionalField.setValue(field.get("value").asText());
+                }
+
+                // Usar reflection ou switch para setar o campo correto
+                setAdditionalField(dto, i, additionalField);
+            }
+        }
+
+        return dto;
+    }
+
+    private void setAdditionalField(DefectInspectionReportDTO dto, int index,
+                                    DefectInspectionReportDTO.AdditionalFieldDTO field) {
+        switch (index) {
+            case 1: dto.setAdditionalField1(field); break;
+            case 2: dto.setAdditionalField2(field); break;
+            case 3: dto.setAdditionalField3(field); break;
+            case 4: dto.setAdditionalField4(field); break;
+            case 5: dto.setAdditionalField5(field); break;
+            case 6: dto.setAdditionalField6(field); break;
+            case 7: dto.setAdditionalField7(field); break;
+        }
+    }
+
+
     /**
      * Criar Defect Inspection Report a partir do mobile
      * VALIDAÇÃO: Apenas 1 relatório por turbina
@@ -71,7 +207,7 @@ public class MobileReportsController {
      * @param dto Dados do relatório
      * @return Resposta com ID do relatório criado
      */
-    @PostMapping("/defect-inspection")
+    @PostMapping("/defect-inspectionm")
     public ResponseEntity<?> createDefectInspectionReport(
             @RequestBody DefectInspectionReportDTO dto) {
 
