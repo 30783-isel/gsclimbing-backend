@@ -175,6 +175,7 @@ public class MobileReportDTO {
         private String reportData;
         private List<PhotoUploadDTO> photos; // Fotos em base64
         private LocalDateTime createdAtDevice;
+        private LocalDateTime inspectedBy;
     }
 
     /**

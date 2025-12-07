@@ -35,7 +35,7 @@ public class ReportValidationService {
             validateRequiredField(reportData, "wtgType", "WTG Type", errors);
             validateRequiredField(reportData, "yearConstruction", "Year of Construction", errors);
             validateRequiredField(reportData, "dateInspection", "Date of Inspection", errors);
-            validateRequiredField(reportData, "inspectedBy", "Inspected By", errors);
+            //validateRequiredField(reportData, "inspectedBy", "Inspected By", errors);
 
             // Validar fotos
             if (photoCount == null || photoCount < 1) {
