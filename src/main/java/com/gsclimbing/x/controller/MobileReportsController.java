@@ -253,6 +253,10 @@ public class MobileReportsController {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
             }
 
+
+            dto.setReportType(Report.ReportStatus.DRAFT.ordinal());
+
+
             // Converter DTO para entidade
             DefectsInspectionReport report = adapter.toEntity(dto, turbine);
 

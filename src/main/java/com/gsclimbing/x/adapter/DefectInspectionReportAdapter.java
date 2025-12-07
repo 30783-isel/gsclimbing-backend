@@ -169,7 +169,8 @@ public class DefectInspectionReportAdapter {
         report.setTurbine(turbine);
 
         // Tipo de relatório (0 = Defect Inspection Report)
-        report.setTypeReport(0);
+        report.setTypeReport(dto.getReportType());
+        report.setReportType(dto.getReportType());
 
         // Flags de controlo
         report.setLocked("N"); // Não bloqueado por padrão
