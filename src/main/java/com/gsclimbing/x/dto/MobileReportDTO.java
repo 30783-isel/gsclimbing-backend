@@ -31,6 +31,8 @@ public class MobileReportDTO {
         
         // IDs das fotos já carregadas
         private List<Long> photoIds;
+        private LocalDateTime inspectedBy;
+
     }
 
     /**
@@ -204,5 +206,19 @@ public class MobileReportDTO {
         private String tempId; // ID temporário do mobile
         private String message;
         private List<ValidationErrorDTO> errors;
+    }
+
+
+    public static ReportCreateUpdateDTO mapToReportCreateUpdateDTO(OfflineSyncDTO offlineSync, List<Long> uploadedPhotoIds) {
+        ReportCreateUpdateDTO dto = new ReportCreateUpdateDTO();
+
+        dto.setTurbineId(offlineSync.getTurbineId());
+        dto.setReportType(offlineSync.getReportType());
+        dto.setLanguage(offlineSync.getLanguage());
+        dto.setReportData(offlineSync.getReportData());
+        dto.setOfflineCreated(true); // Marca como criado offline
+        dto.setPhotoIds(uploadedPhotoIds); // IDs das fotos já carregadas previamente
+        dto.setInspectedBy(offlineSync.getInspectedBy());
+        return dto;
     }
 }

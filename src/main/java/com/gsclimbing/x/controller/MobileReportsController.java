@@ -71,6 +71,13 @@ public class MobileReportsController {
     public ResponseEntity<?> createDefectInspectionReport(
             @RequestBody MobileReportDTO.ReportCreateUpdateDTO dto) {
 
+        return createReport(dto);
+    }
+
+
+
+
+    private ResponseEntity<?> createReport(MobileReportDTO.ReportCreateUpdateDTO dto){
         try {
             logger.info("Creating Defect Inspection Report from mobile");
 
@@ -971,7 +978,7 @@ public class MobileReportsController {
      */
     @PostMapping("/sync-offline")
     public ResponseEntity<?> syncOfflineReport(
-            @RequestBody MobileReportDTO.OfflineSyncDTO dto,
+            @RequestBody MobileReportDTO.OfflineSyncDTO offlineSync,
             Authentication authentication
     ) {
         try {
@@ -979,34 +986,52 @@ public class MobileReportsController {
 
             // Validar primeiro
             MobileReportDTO.ValidationResponseDTO validation = validationService.validateReport(
-                    dto.getReportType(),
-                    dto.getReportData(),
-                    dto.getPhotos() != null ? dto.getPhotos().size() : 0
+                    offlineSync.getReportType(),
+                    offlineSync.getReportData(),
+                    offlineSync.getPhotos() != null ? offlineSync.getPhotos().size() : 0
             );
 
             if (!validation.getIsValid()) {
                 return ResponseEntity.ok(MobileReportDTO.SyncResponseDTO.builder()
                         .success(false)
-                        .tempId(dto.getTempId())
+                        .tempId(offlineSync.getTempId())
                         .message("Validação falhou")
                         .errors(validation.getErrors())
                         .build());
             }
 
-            // Criar relatório no servidor
-            // ... (lógica de criação similar ao createDraft)
+
+
+
+
+
+            // 1. Primeiro fazer upload das fotos e obter os IDs
+            List<Long> photoIds = new ArrayList<>();
+            if (offlineSync.getPhotos() != null) {
+                for (MobileReportDTO.PhotoUploadDTO photo : offlineSync.getPhotos()) {
+                    Long photoId = 1L;
+                    //Long photoId = photoService.uploadPhoto(photo);
+                    photoIds.add(photoId);
+                }
+            }
+
+            // 2. Mapear para o DTO de criação
+            MobileReportDTO.ReportCreateUpdateDTO reportDTO = MobileReportDTO.mapToReportCreateUpdateDTO(offlineSync, photoIds);
+
+            // 3. Criar o relatório
+            createReport(reportDTO);
 
             return ResponseEntity.ok(MobileReportDTO.SyncResponseDTO.builder()
                     .success(true)
                     .reportId(123L) // ID real
-                    .tempId(dto.getTempId())
+                    .tempId(offlineSync.getTempId())
                     .message("Sincronizado com sucesso")
                     .build());
 
         } catch (Exception e) {
             return ResponseEntity.ok(MobileReportDTO.SyncResponseDTO.builder()
                     .success(false)
-                    .tempId(dto.getTempId())
+                    .tempId(offlineSync.getTempId())
                     .message("Erro: " + e.getMessage())
                     .build());
         }

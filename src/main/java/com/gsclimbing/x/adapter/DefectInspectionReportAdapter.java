@@ -57,6 +57,7 @@ public class DefectInspectionReportAdapter {
 
             // Tipo de relatório (0 = Defect Inspection Report)
             report.setTypeReport(dto.getReportType() != null ? dto.getReportType() : 0);
+            report.setReportType(dto.getReportType() != null ? dto.getReportType() : 0);
 
             // Flags de controlo
             report.setLocked("N"); // Não bloqueado por padrão
