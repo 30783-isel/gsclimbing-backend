@@ -2,8 +2,6 @@ package com.gsclimbing.controller;
 
 import com.gsclimbing.commons.PasswordGenerator;
 import com.gsclimbing.database.entity.Project;
-import com.gsclimbing.database.entity.QProject;
-import com.gsclimbing.database.entity.QUser;
 import com.gsclimbing.database.entity.User;
 import com.gsclimbing.database.service.ProjectService;
 import com.gsclimbing.database.service.UserService;
@@ -161,6 +159,7 @@ public class UserController {
 		return projectService.updateProject(project);
 	}
 
+	/*
 	@PostMapping(value = "/search")
 	public List<QProject> searchUsers(@RequestBody FilterUserDTO filter) {
 		QUser user = QUser.user;
@@ -181,5 +180,6 @@ public class UserController {
 
 		return lista;
 	}
+	 */
 
 }
