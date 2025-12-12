@@ -67,9 +67,9 @@ public class MobileReportsController {
 
     @Autowired
     private DefectInspectionReportAdapter adapter;
-	
-	@Autowired
-	private ReportComparisonService comparisonService;
+
+    @Autowired
+    private ReportComparisonService comparisonService;
 
     @PostMapping("/defect-inspectionx")
     public ResponseEntity<?> createDefectInspectionReport(
@@ -79,9 +79,7 @@ public class MobileReportsController {
     }
 
 
-
-
-    private ResponseEntity<?> createReport(MobileReportDTO.ReportCreateUpdateDTO dto){
+    private ResponseEntity<?> createReport(MobileReportDTO.ReportCreateUpdateDTO dto) {
         try {
             logger.info("Creating Defect Inspection Report from mobile");
 
@@ -200,13 +198,27 @@ public class MobileReportsController {
     private void setAdditionalField(DefectInspectionReportDTO dto, int index,
                                     DefectInspectionReportDTO.AdditionalFieldDTO field) {
         switch (index) {
-            case 1: dto.setAdditionalField1(field); break;
-            case 2: dto.setAdditionalField2(field); break;
-            case 3: dto.setAdditionalField3(field); break;
-            case 4: dto.setAdditionalField4(field); break;
-            case 5: dto.setAdditionalField5(field); break;
-            case 6: dto.setAdditionalField6(field); break;
-            case 7: dto.setAdditionalField7(field); break;
+            case 1:
+                dto.setAdditionalField1(field);
+                break;
+            case 2:
+                dto.setAdditionalField2(field);
+                break;
+            case 3:
+                dto.setAdditionalField3(field);
+                break;
+            case 4:
+                dto.setAdditionalField4(field);
+                break;
+            case 5:
+                dto.setAdditionalField5(field);
+                break;
+            case 6:
+                dto.setAdditionalField6(field);
+                break;
+            case 7:
+                dto.setAdditionalField7(field);
+                break;
         }
     }
 
@@ -302,27 +314,59 @@ public class MobileReportsController {
 
     /**
      * Associar fotos já carregadas ao relatório
+     * ✅ SUPORTA tanto IDs numéricos como hashes (UUIDs)
      *
      * @param reportId ID do relatório
-     * @param photoFileIds Lista de IDs de ficheiros de fotos
+     * @param photoFileIds Lista de IDs ou hashes de ficheiros de fotos
      * @return Número de fotos associadas
      */
     private int associatePhotosToReport(Integer reportId, List<String> photoFileIds) {
         int count = 0;
+
+        logger.info("🔗 Associando {} fotos ao relatório {}", photoFileIds.size(), reportId);
+
         for (String fileId : photoFileIds) {
             try {
-                Optional<FileData> optionalFileData = fileService.readFile(Integer.parseInt(fileId));
-                if (optionalFileData.isPresent()) {
-                    FileData fileData = optionalFileData.get();
-                    // FileData já tem relação com Report via report field
-                    // Não precisa de setReportId - a relação é gerida pela entidade Report
-                    count++;
+                FileData fileData = null;
+
+                // Tentar converter para Integer (caso seja ID numérico)
+                try {
+                    Integer numericId = Integer.parseInt(fileId);
+                    Optional<FileData> optionalFileData = fileService.readFile(numericId);
+
+                    if (optionalFileData.isPresent()) {
+                        fileData = optionalFileData.get();
+                        logger.info("   ✅ Foto encontrada por ID: {}", numericId);
+                    } else {
+                        logger.warn("   ⚠️ FileData não encontrado para ID: {}", numericId);
+                    }
+
+                } catch (NumberFormatException e) {
+                    // Não é número, tentar buscar por hash (UUID)
+                    logger.info("   🔍 '{}' não é número, buscando por hash...", fileId);
+                    fileData = fileService.readFileByHash(fileId);
+
+                    if (fileData != null) {
+                        logger.info("   ✅ Foto encontrada por hash: {} (ID: {})", fileId, fileData.getFileId());
+                    } else {
+                        logger.error("   ❌ FileData não encontrado para hash: {}", fileId);
+                    }
                 }
+
+                // Se encontrou a foto, associar ao relatório
+                if (fileData != null) {
+                    // A relação Report -> FileData já existe através do campo report em FileData
+                    // Não é necessário fazer nada extra, apenas contar
+                    count++;
+                    logger.info("   📎 Foto {} associada ao relatório {}", fileData.getFileId(), reportId);
+                }
+
             } catch (Exception e) {
-                logger.error("Error associating photo {} to report {}", fileId, reportId, e);
+                logger.error("❌ Erro ao associar foto {} ao relatório {}", fileId, reportId, e);
             }
         }
-        logger.info("Associated {} photos to report {}", count, reportId);
+
+        logger.info("✅ Total: {} fotos associadas ao relatório {}", count, reportId);
         return count;
     }
 
@@ -438,7 +482,7 @@ public class MobileReportsController {
 
     /**
      * Obter fotos de um relatório (para o mobile)
-     *
+     * <p>
      * Endpoint: GET /api/reports/mobile/defect-inspection/{reportId}/photos
      *
      * @param reportId ID do relatório
@@ -498,7 +542,7 @@ public class MobileReportsController {
 
     /**
      * Download de uma foto específica pelo hash
-     *
+     * <p>
      * Endpoint: GET /api/reports/files/download/{hash}
      *
      * @param hash Hash da foto no FTP
@@ -605,39 +649,6 @@ public class MobileReportsController {
                     .body("Error deleting report: " + e.getMessage());
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
@@ -937,10 +948,6 @@ public class MobileReportsController {
             }
 
 
-
-
-
-
             // 1. Primeiro fazer upload das fotos e obter os IDs
             List<Long> photoIds = new ArrayList<>();
             if (offlineSync.getPhotos() != null) {
@@ -974,20 +981,10 @@ public class MobileReportsController {
     }
 
 
-
-
-
-
-
-
-
-
-
-
     /**
      * PUT /api/reports/mobile/defect-inspection/{id}
      * Atualizar relatório com registo de histórico de alterações
-     * ✅ VERSÃO CORRIGIDA - Converte photoFileIds (String) para Long de forma segura
+     * ✅ VERSÃO COM LOGS DETALHADOS PARA DEBUG DE FOTOS
      */
     @PutMapping("/defect-inspection/{id}")
     public ResponseEntity<?> updateDefectInspectionReport(
@@ -1007,7 +1004,17 @@ public class MobileReportsController {
                         .body("Relatório não encontrado");
             }
 
-            // 2. Guardar estado antigo para comparação
+            // 2. Guardar IDs de fotos antigas (buscar pelo UUID do relatório)
+            List<FileData> oldPhotosFileData = fileService.readFile(report.getUuid());
+            List<Long> oldPhotoIds = oldPhotosFileData.stream()
+                    .map(FileData::getFileId)
+                    .map(Integer::longValue)
+                    .collect(Collectors.toList());
+
+            logger.info("📸 FOTOS ANTIGAS: {} fotos encontradas", oldPhotoIds.size());
+            oldPhotoIds.forEach(photoId -> logger.info("   - Foto antiga ID: {}", photoId));
+
+            // 3. Guardar estado antigo dos campos para comparação
             String oldSite = report.getSite();
             String oldWtgNumber = report.getWtgNumber();
             String oldWtgType = report.getWtgType();
@@ -1030,14 +1037,7 @@ public class MobileReportsController {
             oldAdditionalFields.put("additionalField7Label", report.getAdditionalField7Label());
             oldAdditionalFields.put("additionalField7Text", report.getAdditionalField7Text());
 
-            // Guardar IDs de fotos antigas (Integer -> Long)
-            List<Long> oldPhotoIds = fileService.readFile(report.getUuid())
-                    .stream()
-                    .map(FileData::getFileId)
-                    .map(Integer::longValue)  // ✅ Converter Integer para Long
-                    .collect(Collectors.toList());
-
-            // 3. Atualizar relatório com novos dados
+            // 4. Atualizar relatório com novos dados
             report.setSite(dto.getSite());
             report.setWtgNumber(dto.getWtgNumber());
             report.setWtgType(dto.getWtgType());
@@ -1046,7 +1046,7 @@ public class MobileReportsController {
             // Atualizar campos adicionais
             updateAdditionalFields(report, dto);
 
-            // 4. Preparar novo estado para comparação
+            // 5. Preparar novo estado para comparação
             Map<String, String> newAdditionalFields = new HashMap<>();
             newAdditionalFields.put("additionalField1Label", report.getAdditionalField1Label());
             newAdditionalFields.put("additionalField1Text", report.getAdditionalField1Text());
@@ -1063,25 +1063,18 @@ public class MobileReportsController {
             newAdditionalFields.put("additionalField7Label", report.getAdditionalField7Label());
             newAdditionalFields.put("additionalField7Text", report.getAdditionalField7Text());
 
-            // 5. Comparar campos principais e registar alterações
+            // 6. Comparar campos principais e registar alterações
             List<FieldChange> fieldChanges = new ArrayList<>();
 
-            // Site
             if (!Objects.equals(oldSite, report.getSite())) {
                 fieldChanges.add(new FieldChange("site", oldSite, report.getSite()));
             }
-
-            // WTG Number
             if (!Objects.equals(oldWtgNumber, report.getWtgNumber())) {
                 fieldChanges.add(new FieldChange("wtgNumber", oldWtgNumber, report.getWtgNumber()));
             }
-
-            // WTG Type
             if (!Objects.equals(oldWtgType, report.getWtgType())) {
                 fieldChanges.add(new FieldChange("wtgType", oldWtgType, report.getWtgType()));
             }
-
-            // Year Construction
             if (!Objects.equals(oldYearConstruction, report.getYearConstruction())) {
                 fieldChanges.add(new FieldChange("yearConstruction", oldYearConstruction, report.getYearConstruction()));
             }
@@ -1096,7 +1089,7 @@ public class MobileReportsController {
                 }
             }
 
-            // 6. Registar todas as alterações no histórico
+            // 7. Registar todas as alterações no histórico
             for (FieldChange change : fieldChanges) {
                 historyService.createFieldChangeEntry(
                         report,
@@ -1109,33 +1102,46 @@ public class MobileReportsController {
                         change.getFieldName(), change.getOldValue(), change.getNewValue());
             }
 
-            // 7. Comparar fotos (se fornecidas) - ✅ CONVERSÃO SEGURA
+            // 8. ✅ COMPARAR FOTOS COM LOGS DETALHADOS
+            logger.info("🔍 ========== COMPARAÇÃO DE FOTOS ==========");
+            logger.info("📸 DTO photoFileIds: {}", dto.getPhotoFileIds());
+
             if (dto.getPhotoFileIds() != null && !dto.getPhotoFileIds().isEmpty()) {
-                // Converter List<String> para List<Long> de forma segura
+                // Converter List<String> para List<Long>
                 List<Long> newPhotoIds = new ArrayList<>();
+
+                logger.info("📥 Processando {} photo IDs do DTO...", dto.getPhotoFileIds().size());
 
                 for (String photoId : dto.getPhotoFileIds()) {
                     try {
-                        // Tentar converter para Long (caso seja um ID numérico)
-                        newPhotoIds.add(Long.valueOf(photoId));
+                        Long photoIdLong = Long.valueOf(photoId);
+                        newPhotoIds.add(photoIdLong);
+                        logger.info("   ✅ Photo ID convertido: {}", photoIdLong);
                     } catch (NumberFormatException e) {
-                        // Se não for número, pode ser um UUID/hash
-                        // Nesse caso, buscar o FileData pelo hash
-                        logger.warn("⚠️ photoFileId não é número, tentando buscar por hash: {}", photoId);
+                        logger.warn("   ⚠️ Photo ID não é número: {} - Tentando buscar por hash", photoId);
 
                         FileData fileData = fileService.readFileByHash(photoId);
                         if (fileData != null && fileData.getFileId() != null) {
                             newPhotoIds.add(fileData.getFileId().longValue());
-                            logger.info("✅ Encontrado FileData para hash {}: ID {}", photoId, fileData.getFileId());
+                            logger.info("   ✅ Encontrado FileData para hash {}: ID {}", photoId, fileData.getFileId());
                         } else {
-                            logger.error("❌ Não foi possível encontrar FileData para: {}", photoId);
+                            logger.error("   ❌ FileData não encontrado para: {}", photoId);
                         }
                     }
                 }
 
+                logger.info("📸 FOTOS NOVAS: {} fotos válidas", newPhotoIds.size());
+                newPhotoIds.forEach(photoId -> logger.info("   - Foto nova ID: {}", photoId));
+
+                logger.info("🔍 Comparando fotos antigas vs novas...");
+                logger.info("   Antigas: {}", oldPhotoIds);
+                logger.info("   Novas: {}", newPhotoIds);
+
                 // Comparar fotos
                 if (!newPhotoIds.isEmpty()) {
                     List<FieldChange> photoChanges = comparisonService.comparePhotos(oldPhotoIds, newPhotoIds);
+
+                    logger.info("📊 Resultado da comparação: {} alterações de fotos", photoChanges.size());
 
                     for (FieldChange photoChange : photoChanges) {
                         historyService.createFieldChangeEntry(
@@ -1145,21 +1151,28 @@ public class MobileReportsController {
                                 photoChange.getOldValue(),
                                 photoChange.getNewValue()
                         );
-                        logger.info("📸 {}: {}", photoChange.getFieldName(), photoChange.getNewValue());
+                        logger.info("📸 {} | OLD: '{}' | NEW: '{}'",
+                                photoChange.getFieldName(),
+                                photoChange.getOldValue(),
+                                photoChange.getNewValue());
                     }
                 } else {
-                    logger.warn("⚠️ Nenhum photoId válido encontrado para comparação");
+                    logger.warn("⚠️ Nenhum photoId válido para comparação");
                 }
+            } else {
+                logger.info("ℹ️ Nenhum photoFileId fornecido no DTO");
             }
 
-            // 8. Guardar relatório atualizado
+            logger.info("🔍 ========================================");
+
+            // 9. Guardar relatório atualizado
             defectsInspectionReportService.updateDefectsInspectionReport(report);
 
-            // 9. Obter número de fotos atualizado
+            // 10. Obter número de fotos atualizado
             List<FileData> photos = fileService.readFile(report.getUuid());
             int numberPictures = photos != null ? photos.size() : 0;
 
-            // 10. Retornar resposta
+            // 11. Retornar resposta
             DefectInspectionReportResponseDTO response = adapter.toResponseDTO(report, numberPictures);
             response.setMessage(fieldChanges.size() + " campo(s) alterado(s)");
 
@@ -1174,41 +1187,6 @@ public class MobileReportsController {
                     .body("Erro ao atualizar relatório: " + e.getMessage());
         }
     }
-
-/**
- * GET /api/reports/mobile/defect-inspection/{id}/history
- * Obter histórico de alterações do relatório
- */
-@GetMapping("/defect-inspection/{id}/history")
-public ResponseEntity<?> getDefectInspectionReportHistory(@PathVariable Long id) {
-    try {
-        logger.info("📜 Fetching history for report {}", id);
-
-        List<ReportHistory> history = historyService.getReportHistory(id);
-
-        List<MobileReportDTO.ReportHistoryDTO> historyDTOs = history.stream()
-                .map(h -> MobileReportDTO.ReportHistoryDTO.builder()
-                        .id(h.getId())
-                        .changedBy(h.getChangedBy())
-                        .changedAt(h.getChangedAt())
-                        .action(h.getAction().name())
-                        .fieldName(h.getFieldName())
-                        .oldValue(h.getOldValue())
-                        .newValue(h.getNewValue())
-                        .description(h.getDescription())
-                        .build())
-                .collect(Collectors.toList());
-
-        logger.info("✅ Found {} history entries for report {}", historyDTOs.size(), id);
-        return ResponseEntity.ok(historyDTOs);
-
-    } catch (Exception e) {
-        logger.error("❌ Error getting history for report {}", id, e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Erro ao obter histórico: " + e.getMessage());
-    }
-}
-
 
 
 }
