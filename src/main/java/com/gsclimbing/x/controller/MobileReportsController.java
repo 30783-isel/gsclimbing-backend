@@ -890,13 +890,15 @@ public class MobileReportsController {
     }
 
     /**
-     * GET /api/reports/{id}/history
-     * Obter histórico de alterações
+     * GET /api/reports/mobile/defect-inspection/{reportId}/history
+     * Obter histórico de alterações de um Defect Inspection Report
      */
-    @GetMapping("/{id}/history")
-    public ResponseEntity<?> getReportHistory(@PathVariable Long id) {
+    @GetMapping("/defect-inspection/{reportId}/history")
+    public ResponseEntity<?> getDefectInspectionReportHistory(@PathVariable Long reportId) {
         try {
-            List<ReportHistory> history = historyService.getReportHistory(id);
+            logger.info("📜 Getting history for report {}", reportId);
+
+            List<ReportHistory> history = historyService.getReportHistory(reportId);
 
             List<MobileReportDTO.ReportHistoryDTO> historyDTOs = history.stream()
                     .map(h -> MobileReportDTO.ReportHistoryDTO.builder()
@@ -911,9 +913,11 @@ public class MobileReportsController {
                             .build())
                     .collect(Collectors.toList());
 
+            logger.info("✅ Returning {} history entries", historyDTOs.size());
             return ResponseEntity.ok(historyDTOs);
 
         } catch (Exception e) {
+            logger.error("❌ Error getting history for report {}", reportId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro ao obter histórico: " + e.getMessage());
         }
