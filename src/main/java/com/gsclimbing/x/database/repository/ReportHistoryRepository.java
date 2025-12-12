@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * Repositório para ReportHistory
+ * ✅ VERSÃO FINAL: Queries nativas + tipos corretos
  */
 @Repository
 public interface ReportHistoryRepository extends JpaRepository<ReportHistory, Long> {
@@ -22,9 +23,11 @@ public interface ReportHistoryRepository extends JpaRepository<ReportHistory, Lo
     List<ReportHistory> findByReportOrderByChangedAtDesc(Report report);
 
     /**
-     * Encontrar histórico por ID do relatório
+     * ✅ Encontrar histórico por ID do relatório (query nativa)
+     * Evita problema de tipo entre Long (API) e Integer (Report.id)
      */
-    @Query("SELECT h FROM ReportHistory h WHERE h.report.id = :reportId ORDER BY h.changedAt DESC")
+    @Query(value = "SELECT * FROM report_history WHERE report_id = :reportId ORDER BY changed_at DESC",
+            nativeQuery = true)
     List<ReportHistory> findByReportIdOrderByChangedAtDesc(@Param("reportId") Long reportId);
 
     /**
@@ -38,14 +41,18 @@ public interface ReportHistoryRepository extends JpaRepository<ReportHistory, Lo
     List<ReportHistory> findByActionOrderByChangedAtDesc(ReportHistory.HistoryAction action);
 
     /**
-     * Contar quantas alterações foram feitas num relatório
+     * ✅ Contar quantas alterações foram feitas num relatório (query nativa)
      */
-    @Query("SELECT COUNT(h) FROM ReportHistory h WHERE h.report.id = :reportId")
+    @Query(value = "SELECT COUNT(*) FROM report_history WHERE report_id = :reportId",
+            nativeQuery = true)
     Long countByReportId(@Param("reportId") Long reportId);
 
     /**
-     * Obter última alteração de um relatório
+     * ✅ Obter última alteração de um relatório (query nativa)
+     * IMPORTANTE: Devolve List porque o Service faz .get(0)
+     * Limita a 1 resultado para performance
      */
-    @Query("SELECT h FROM ReportHistory h WHERE h.report.id = :reportId ORDER BY h.changedAt DESC")
+    @Query(value = "SELECT * FROM report_history WHERE report_id = :reportId ORDER BY changed_at DESC LIMIT 1",
+            nativeQuery = true)
     List<ReportHistory> findLatestByReportId(@Param("reportId") Long reportId);
 }
