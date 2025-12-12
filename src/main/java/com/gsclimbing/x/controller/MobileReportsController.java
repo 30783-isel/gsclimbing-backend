@@ -984,177 +984,196 @@ public class MobileReportsController {
 
 
 
-/**
- * PUT /api/reports/mobile/defect-inspection/{id}
- * Atualizar relatório com registo de histórico de alterações
- */
-@PutMapping("/defect-inspection/{id}")
-public ResponseEntity<?> updateDefectInspectionReport(
-        @PathVariable Long id,
-        @RequestBody DefectInspectionReportDTO dto,
-        Authentication authentication
-) {
-    try {
-        String username = authentication.getName();
-        logger.info("📝 Updating Defect Inspection Report {} by user {}", id, username);
+    /**
+     * PUT /api/reports/mobile/defect-inspection/{id}
+     * Atualizar relatório com registo de histórico de alterações
+     * ✅ VERSÃO CORRIGIDA - Converte photoFileIds (String) para Long de forma segura
+     */
+    @PutMapping("/defect-inspection/{id}")
+    public ResponseEntity<?> updateDefectInspectionReport(
+            @PathVariable Long id,
+            @RequestBody DefectInspectionReportDTO dto,
+            Authentication authentication
+    ) {
+        try {
+            String username = authentication.getName();
+            logger.info("📝 Updating Defect Inspection Report {} by user {}", id, username);
 
-        // 1. Buscar relatório existente
-        DefectsInspectionReport report = defectsInspectionReportService.readDefectsInspectionReport(id.intValue());
-        
-        if (report == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Relatório não encontrado");
-        }
+            // 1. Buscar relatório existente
+            DefectsInspectionReport report = defectsInspectionReportService.readDefectsInspectionReport(id.intValue());
 
-        // 2. Guardar estado antigo para comparação
-        String oldSite = report.getSite();
-        String oldWtgNumber = report.getWtgNumber();
-        String oldWtgType = report.getWtgType();
-        String oldYearConstruction = report.getYearConstruction();
-        
-        // Guardar campos adicionais antigos
-        Map<String, String> oldAdditionalFields = new HashMap<>();
-        oldAdditionalFields.put("additionalField1Label", report.getAdditionalField1Label());
-        oldAdditionalFields.put("additionalField1Text", report.getAdditionalField1Text());
-        oldAdditionalFields.put("additionalField2Label", report.getAdditionalField2Label());
-        oldAdditionalFields.put("additionalField2Text", report.getAdditionalField2Text());
-        oldAdditionalFields.put("additionalField3Label", report.getAdditionalField3Label());
-        oldAdditionalFields.put("additionalField3Text", report.getAdditionalField3Text());
-        oldAdditionalFields.put("additionalField4Label", report.getAdditionalField4Label());
-        oldAdditionalFields.put("additionalField4Text", report.getAdditionalField4Text());
-        oldAdditionalFields.put("additionalField5Label", report.getAdditionalField5Label());
-        oldAdditionalFields.put("additionalField5Text", report.getAdditionalField5Text());
-        oldAdditionalFields.put("additionalField6Label", report.getAdditionalField6Label());
-        oldAdditionalFields.put("additionalField6Text", report.getAdditionalField6Text());
-        oldAdditionalFields.put("additionalField7Label", report.getAdditionalField7Label());
-        oldAdditionalFields.put("additionalField7Text", report.getAdditionalField7Text());
-
-        // Guardar IDs de fotos antigas
-        List<Long> oldPhotoIds = fileService.readFile(report.getUuid())
-                .stream()
-                .map(FileData::getFileId)
-                .map(Long::valueOf)
-                .collect(Collectors.toList());
-
-        // 3. Atualizar relatório com novos dados
-        report.setSite(dto.getSite());
-        report.setWtgNumber(dto.getWtgNumber());
-        report.setWtgType(dto.getWtgType());
-        report.setYearConstruction(dto.getYearConstruction());
-        
-        // Atualizar campos adicionais
-        updateAdditionalFields(report, dto);
-
-        // 4. Comparar e registar alterações de campos básicos
-        List<FieldChange> fieldChanges = new ArrayList<>();
-        
-        if (!Objects.equals(oldSite, dto.getSite())) {
-            fieldChanges.add(new FieldChange("site", oldSite, dto.getSite()));
-        }
-        if (!Objects.equals(oldWtgNumber, dto.getWtgNumber())) {
-            fieldChanges.add(new FieldChange("wtgNumber", oldWtgNumber, dto.getWtgNumber()));
-        }
-        if (!Objects.equals(oldWtgType, dto.getWtgType())) {
-            fieldChanges.add(new FieldChange("wtgType", oldWtgType, dto.getWtgType()));
-        }
-        if (!Objects.equals(oldYearConstruction, dto.getYearConstruction())) {
-            fieldChanges.add(new FieldChange("yearConstruction", oldYearConstruction, dto.getYearConstruction()));
-        }
-
-        // 5. Comparar campos adicionais
-        Map<String, String> newAdditionalFields = new HashMap<>();
-        if (dto.getAdditionalField1() != null) {
-            newAdditionalFields.put("additionalField1Label", dto.getAdditionalField1().getLabel());
-            newAdditionalFields.put("additionalField1Text", dto.getAdditionalField1().getValue());
-        }
-        if (dto.getAdditionalField2() != null) {
-            newAdditionalFields.put("additionalField2Label", dto.getAdditionalField2().getLabel());
-            newAdditionalFields.put("additionalField2Text", dto.getAdditionalField2().getValue());
-        }
-        if (dto.getAdditionalField3() != null) {
-            newAdditionalFields.put("additionalField3Label", dto.getAdditionalField3().getLabel());
-            newAdditionalFields.put("additionalField3Text", dto.getAdditionalField3().getValue());
-        }
-        if (dto.getAdditionalField4() != null) {
-            newAdditionalFields.put("additionalField4Label", dto.getAdditionalField4().getLabel());
-            newAdditionalFields.put("additionalField4Text", dto.getAdditionalField4().getValue());
-        }
-        if (dto.getAdditionalField5() != null) {
-            newAdditionalFields.put("additionalField5Label", dto.getAdditionalField5().getLabel());
-            newAdditionalFields.put("additionalField5Text", dto.getAdditionalField5().getValue());
-        }
-        if (dto.getAdditionalField6() != null) {
-            newAdditionalFields.put("additionalField6Label", dto.getAdditionalField6().getLabel());
-            newAdditionalFields.put("additionalField6Text", dto.getAdditionalField6().getValue());
-        }
-        if (dto.getAdditionalField7() != null) {
-            newAdditionalFields.put("additionalField7Label", dto.getAdditionalField7().getLabel());
-            newAdditionalFields.put("additionalField7Text", dto.getAdditionalField7().getValue());
-        }
-
-        // Detectar alterações em campos adicionais
-        for (Map.Entry<String, String> entry : newAdditionalFields.entrySet()) {
-            String fieldName = entry.getKey();
-            String newValue = entry.getValue();
-            String oldValue = oldAdditionalFields.get(fieldName);
-            
-            if (!Objects.equals(oldValue, newValue)) {
-                fieldChanges.add(new FieldChange(fieldName, oldValue, newValue));
+            if (report == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Relatório não encontrado");
             }
-        }
 
-        // 6. Registar todas as alterações no histórico
-        for (FieldChange change : fieldChanges) {
-            historyService.createFieldChangeEntry(
-                    report,
-                    username,
-                    change.getFieldName(),
-                    change.getOldValue(),
-                    change.getNewValue()
-            );
-            logger.info("📝 Campo alterado: {} | '{}' -> '{}'", 
-                    change.getFieldName(), change.getOldValue(), change.getNewValue());
-        }
+            // 2. Guardar estado antigo para comparação
+            String oldSite = report.getSite();
+            String oldWtgNumber = report.getWtgNumber();
+            String oldWtgType = report.getWtgType();
+            String oldYearConstruction = report.getYearConstruction();
 
-        // 7. Comparar fotos (se fornecidas)
-        if (dto.getPhotoFileIds() != null && !dto.getPhotoFileIds().isEmpty()) {
-            List<String> newPhotoIds = dto.getPhotoFileIds();
-            List<FieldChange> photoChanges = comparisonService.comparePhotos(oldPhotoIds, newPhotoIds.stream().map(Long::valueOf).collect(Collectors.toList()));
-            
-            for (FieldChange photoChange : photoChanges) {
+            // Guardar campos adicionais antigos
+            Map<String, String> oldAdditionalFields = new HashMap<>();
+            oldAdditionalFields.put("additionalField1Label", report.getAdditionalField1Label());
+            oldAdditionalFields.put("additionalField1Text", report.getAdditionalField1Text());
+            oldAdditionalFields.put("additionalField2Label", report.getAdditionalField2Label());
+            oldAdditionalFields.put("additionalField2Text", report.getAdditionalField2Text());
+            oldAdditionalFields.put("additionalField3Label", report.getAdditionalField3Label());
+            oldAdditionalFields.put("additionalField3Text", report.getAdditionalField3Text());
+            oldAdditionalFields.put("additionalField4Label", report.getAdditionalField4Label());
+            oldAdditionalFields.put("additionalField4Text", report.getAdditionalField4Text());
+            oldAdditionalFields.put("additionalField5Label", report.getAdditionalField5Label());
+            oldAdditionalFields.put("additionalField5Text", report.getAdditionalField5Text());
+            oldAdditionalFields.put("additionalField6Label", report.getAdditionalField6Label());
+            oldAdditionalFields.put("additionalField6Text", report.getAdditionalField6Text());
+            oldAdditionalFields.put("additionalField7Label", report.getAdditionalField7Label());
+            oldAdditionalFields.put("additionalField7Text", report.getAdditionalField7Text());
+
+            // Guardar IDs de fotos antigas (Integer -> Long)
+            List<Long> oldPhotoIds = fileService.readFile(report.getUuid())
+                    .stream()
+                    .map(FileData::getFileId)
+                    .map(Integer::longValue)  // ✅ Converter Integer para Long
+                    .collect(Collectors.toList());
+
+            // 3. Atualizar relatório com novos dados
+            report.setSite(dto.getSite());
+            report.setWtgNumber(dto.getWtgNumber());
+            report.setWtgType(dto.getWtgType());
+            report.setYearConstruction(dto.getYearConstruction());
+
+            // Atualizar campos adicionais
+            updateAdditionalFields(report, dto);
+
+            // 4. Preparar novo estado para comparação
+            Map<String, String> newAdditionalFields = new HashMap<>();
+            newAdditionalFields.put("additionalField1Label", report.getAdditionalField1Label());
+            newAdditionalFields.put("additionalField1Text", report.getAdditionalField1Text());
+            newAdditionalFields.put("additionalField2Label", report.getAdditionalField2Label());
+            newAdditionalFields.put("additionalField2Text", report.getAdditionalField2Text());
+            newAdditionalFields.put("additionalField3Label", report.getAdditionalField3Label());
+            newAdditionalFields.put("additionalField3Text", report.getAdditionalField3Text());
+            newAdditionalFields.put("additionalField4Label", report.getAdditionalField4Label());
+            newAdditionalFields.put("additionalField4Text", report.getAdditionalField4Text());
+            newAdditionalFields.put("additionalField5Label", report.getAdditionalField5Label());
+            newAdditionalFields.put("additionalField5Text", report.getAdditionalField5Text());
+            newAdditionalFields.put("additionalField6Label", report.getAdditionalField6Label());
+            newAdditionalFields.put("additionalField6Text", report.getAdditionalField6Text());
+            newAdditionalFields.put("additionalField7Label", report.getAdditionalField7Label());
+            newAdditionalFields.put("additionalField7Text", report.getAdditionalField7Text());
+
+            // 5. Comparar campos principais e registar alterações
+            List<FieldChange> fieldChanges = new ArrayList<>();
+
+            // Site
+            if (!Objects.equals(oldSite, report.getSite())) {
+                fieldChanges.add(new FieldChange("site", oldSite, report.getSite()));
+            }
+
+            // WTG Number
+            if (!Objects.equals(oldWtgNumber, report.getWtgNumber())) {
+                fieldChanges.add(new FieldChange("wtgNumber", oldWtgNumber, report.getWtgNumber()));
+            }
+
+            // WTG Type
+            if (!Objects.equals(oldWtgType, report.getWtgType())) {
+                fieldChanges.add(new FieldChange("wtgType", oldWtgType, report.getWtgType()));
+            }
+
+            // Year Construction
+            if (!Objects.equals(oldYearConstruction, report.getYearConstruction())) {
+                fieldChanges.add(new FieldChange("yearConstruction", oldYearConstruction, report.getYearConstruction()));
+            }
+
+            // Campos adicionais
+            for (String key : oldAdditionalFields.keySet()) {
+                String oldValue = oldAdditionalFields.get(key);
+                String newValue = newAdditionalFields.get(key);
+
+                if (!Objects.equals(oldValue, newValue)) {
+                    fieldChanges.add(new FieldChange(key, oldValue, newValue));
+                }
+            }
+
+            // 6. Registar todas as alterações no histórico
+            for (FieldChange change : fieldChanges) {
                 historyService.createFieldChangeEntry(
                         report,
                         username,
-                        photoChange.getFieldName(),
-                        photoChange.getOldValue(),
-                        photoChange.getNewValue()
+                        change.getFieldName(),
+                        change.getOldValue(),
+                        change.getNewValue()
                 );
-                logger.info("📸 {}: {}", photoChange.getFieldName(), photoChange.getNewValue());
+                logger.info("📝 Campo alterado: {} | '{}' -> '{}'",
+                        change.getFieldName(), change.getOldValue(), change.getNewValue());
             }
+
+            // 7. Comparar fotos (se fornecidas) - ✅ CONVERSÃO SEGURA
+            if (dto.getPhotoFileIds() != null && !dto.getPhotoFileIds().isEmpty()) {
+                // Converter List<String> para List<Long> de forma segura
+                List<Long> newPhotoIds = new ArrayList<>();
+
+                for (String photoId : dto.getPhotoFileIds()) {
+                    try {
+                        // Tentar converter para Long (caso seja um ID numérico)
+                        newPhotoIds.add(Long.valueOf(photoId));
+                    } catch (NumberFormatException e) {
+                        // Se não for número, pode ser um UUID/hash
+                        // Nesse caso, buscar o FileData pelo hash
+                        logger.warn("⚠️ photoFileId não é número, tentando buscar por hash: {}", photoId);
+
+                        FileData fileData = fileService.readFileByHash(photoId);
+                        if (fileData != null && fileData.getFileId() != null) {
+                            newPhotoIds.add(fileData.getFileId().longValue());
+                            logger.info("✅ Encontrado FileData para hash {}: ID {}", photoId, fileData.getFileId());
+                        } else {
+                            logger.error("❌ Não foi possível encontrar FileData para: {}", photoId);
+                        }
+                    }
+                }
+
+                // Comparar fotos
+                if (!newPhotoIds.isEmpty()) {
+                    List<FieldChange> photoChanges = comparisonService.comparePhotos(oldPhotoIds, newPhotoIds);
+
+                    for (FieldChange photoChange : photoChanges) {
+                        historyService.createFieldChangeEntry(
+                                report,
+                                username,
+                                photoChange.getFieldName(),
+                                photoChange.getOldValue(),
+                                photoChange.getNewValue()
+                        );
+                        logger.info("📸 {}: {}", photoChange.getFieldName(), photoChange.getNewValue());
+                    }
+                } else {
+                    logger.warn("⚠️ Nenhum photoId válido encontrado para comparação");
+                }
+            }
+
+            // 8. Guardar relatório atualizado
+            defectsInspectionReportService.updateDefectsInspectionReport(report);
+
+            // 9. Obter número de fotos atualizado
+            List<FileData> photos = fileService.readFile(report.getUuid());
+            int numberPictures = photos != null ? photos.size() : 0;
+
+            // 10. Retornar resposta
+            DefectInspectionReportResponseDTO response = adapter.toResponseDTO(report, numberPictures);
+            response.setMessage(fieldChanges.size() + " campo(s) alterado(s)");
+
+            logger.info("✅ Relatório {} atualizado com sucesso. {} alterações registadas",
+                    id, fieldChanges.size());
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            logger.error("❌ Erro ao atualizar relatório {}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao atualizar relatório: " + e.getMessage());
         }
-
-        // 8. Guardar relatório atualizado
-        defectsInspectionReportService.updateDefectsInspectionReport(report);
-
-        // 9. Obter número de fotos atualizado
-        List<FileData> photos = fileService.readFile(report.getUuid());
-        int numberPictures = photos != null ? photos.size() : 0;
-
-        // 10. Retornar resposta
-        DefectInspectionReportResponseDTO response = adapter.toResponseDTO(report, numberPictures);
-        response.setMessage(fieldChanges.size() + " campo(s) alterado(s)");
-
-        logger.info("✅ Relatório {} atualizado com sucesso. {} alterações registadas", 
-                id, fieldChanges.size());
-
-        return ResponseEntity.ok(response);
-
-    } catch (Exception e) {
-        logger.error("❌ Erro ao atualizar relatório {}", id, e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Erro ao atualizar relatório: " + e.getMessage());
     }
-}
 
 /**
  * GET /api/reports/mobile/defect-inspection/{id}/history
