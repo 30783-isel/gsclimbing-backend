@@ -986,6 +986,24 @@ public class MobileReportsController {
     }
 
 
+    /**
+     * SOLUÇÃO FINAL - FILTRO TEMPORAL
+     *
+     * PROBLEMA:
+     * Mesmo com a correção no mobile, a foto é carregada e associada ao relatório
+     * ANTES do update ser chamado (diferença de ~100ms).
+     *
+     * LOGS COMPROVAM:
+     * 22:46:08.134 - Upload foto 18539
+     * 22:46:08.237 - Update chamado
+     * 22:46:08.244 - ANTIGAS: [18536, 18537, 18538, 18539] ← 18539 já está!
+     *
+     * SOLUÇÃO:
+     * Adicionar filtro temporal no método updateDefectInspectionReport():
+     * - Ignorar fotos criadas há menos de 2 segundos ao buscar "fotos antigas"
+     * - Isto permite que o upload e update aconteçam em rápida sucessão
+     */
+
     @PutMapping("/defect-inspection/{id}")
     public ResponseEntity<?> updateDefectInspectionReport(
             @PathVariable Long id,
@@ -1005,16 +1023,34 @@ public class MobileReportsController {
                         .body("Relatório não encontrado");
             }
 
-            // 2. Buscar fotos antigas ANTES de qualquer alteração
-            List<FileData> oldPhotosFileData = fileService.readFile(report.getUuid());
-            List<Long> oldPhotoIds = oldPhotosFileData.stream()
+            // ✅ 2. CORREÇÃO TEMPORAL: Buscar fotos antigas EXCLUINDO as recém-carregadas
+            List<FileData> allPhotosFileData = fileService.readFile(report.getUuid());
+
+            // Calcular timestamp de 2 segundos atrás
+            LocalDateTime twoSecondsAgo = LocalDateTime.now().minusSeconds(2);
+
+            // Filtrar apenas fotos criadas HÁ MAIS de 2 segundos
+            List<Long> oldPhotoIds = allPhotosFileData.stream()
                     .filter(fd -> fd != null && fd.getFileId() != null)
+                    .filter(fd -> fd.getCreateDate() != null && fd.getCreateDate().isBefore(twoSecondsAgo))
                     .map(FileData::getFileId)
                     .map(Integer::longValue)
                     .collect(Collectors.toList());
 
-            logger.info("📸 FOTOS ANTIGAS: {} fotos encontradas", oldPhotoIds.size());
+            logger.info("📸 FOTOS ANTIGAS (>2s): {} fotos encontradas", oldPhotoIds.size());
             oldPhotoIds.forEach(photoId -> logger.info("   - Foto antiga ID: {}", photoId));
+
+            // Mostrar fotos recentes que foram ignoradas (para debug)
+            List<Long> recentPhotoIds = allPhotosFileData.stream()
+                    .filter(fd -> fd != null && fd.getFileId() != null)
+                    .filter(fd -> fd.getCreateDate() != null && !fd.getCreateDate().isBefore(twoSecondsAgo))
+                    .map(FileData::getFileId)
+                    .map(Integer::longValue)
+                    .collect(Collectors.toList());
+
+            if (!recentPhotoIds.isEmpty()) {
+                logger.info("⏱️ Fotos recentes ignoradas (<2s): {}", recentPhotoIds);
+            }
 
             // 3. Guardar estado antigo dos campos para comparação
             String oldSite = report.getSite();
@@ -1126,10 +1162,10 @@ public class MobileReportsController {
                 newPhotoIds.forEach(photoId -> logger.info("   - Foto nova ID: {}", photoId));
 
                 logger.info("🔍 Comparando fotos antigas vs novas...");
-                logger.info("   Antigas: {}", oldPhotoIds);
+                logger.info("   Antigas (>2s): {}", oldPhotoIds);
                 logger.info("   Novas: {}", newPhotoIds);
 
-                // ✅ USAR O MÉTODO CORRIGIDO que ignora ordem
+                // Usar o método corrigido que ignora ordem
                 List<FieldChange> photoChanges = comparisonService.comparePhotos(oldPhotoIds, newPhotoIds);
 
                 logger.info("📊 Resultado da comparação: {} alterações de fotos", photoChanges.size());
@@ -1178,58 +1214,45 @@ public class MobileReportsController {
 
     private String getAdditionalFieldValue(DefectsInspectionReport report, int fieldNumber, boolean isLabel) {
         switch (fieldNumber) {
-            case 1:
-                return isLabel ? report.getAdditionalField1Label() : report.getAdditionalField1Text();
-            case 2:
-                return isLabel ? report.getAdditionalField2Label() : report.getAdditionalField2Text();
-            case 3:
-                return isLabel ? report.getAdditionalField3Label() : report.getAdditionalField3Text();
-            case 4:
-                return isLabel ? report.getAdditionalField4Label() : report.getAdditionalField4Text();
-            case 5:
-                return isLabel ? report.getAdditionalField5Label() : report.getAdditionalField5Text();
-            case 6:
-                return isLabel ? report.getAdditionalField6Label() : report.getAdditionalField6Text();
-            case 7:
-                return isLabel ? report.getAdditionalField7Label() : report.getAdditionalField7Text();
-            default:
-                return null;
+            case 1: return isLabel ? report.getAdditionalField1Label() : report.getAdditionalField1Text();
+            case 2: return isLabel ? report.getAdditionalField2Label() : report.getAdditionalField2Text();
+            case 3: return isLabel ? report.getAdditionalField3Label() : report.getAdditionalField3Text();
+            case 4: return isLabel ? report.getAdditionalField4Label() : report.getAdditionalField4Text();
+            case 5: return isLabel ? report.getAdditionalField5Label() : report.getAdditionalField5Text();
+            case 6: return isLabel ? report.getAdditionalField6Label() : report.getAdditionalField6Text();
+            case 7: return isLabel ? report.getAdditionalField7Label() : report.getAdditionalField7Text();
+            default: return null;
         }
     }
 
 
 /**
- * ===== RESUMO COMPLETO DA CORREÇÃO =====
+ * ===== EXPLICAÇÃO DA SOLUÇÃO =====
  *
- * PROBLEMA ORIGINAL:
- * O FileUploadController associa fotos ao relatório imediatamente via setUuid().
- * Isto faz com que fotos recém-carregadas já apareçam nas "antigas" quando
- * updateDefectInspectionReport() é chamado milissegundos depois.
+ * O filtro temporal resolve o problema de race condition entre upload e update:
  *
- * SOLUÇÃO APLICADA:
- * 1. ✅ ReportComparisonService.comparePhotos() usa Sets em vez de Lists
- * 2. ✅ Ignora completamente a ordem das fotos
- * 3. ✅ Detecta APENAS fotos verdadeiramente adicionadas ou removidas
- * 4. ✅ Funciona mesmo quando o upload acontece antes do update
+ * ANTES (SEM FILTRO):
+ * 22:46:08.134 - Upload foto 18539 → setUuid() → foto associada
+ * 22:46:08.237 - Update chamado (103ms depois)
+ * 22:46:08.244 - Busca antigas → [18536, 18537, 18538, 18539] ← Inclui 18539!
+ * 22:46:08.245 - Compara com novas [18536, 18537, 18538, 18539]
+ * 22:46:08.245 - Resultado: 0 alterações ❌
  *
- * EXEMPLO COM OS TEUS LOGS:
- * Antigas: [18532, 18533]
- * Novas:   [18533, 18532]
+ * DEPOIS (COM FILTRO TEMPORAL):
+ * 22:46:08.134 - Upload foto 18539 → setUuid() → foto associada
+ * 22:46:08.237 - Update chamado (103ms depois)
+ * 22:46:08.244 - Busca antigas COM FILTRO >2s → [18536, 18537, 18538] ✅
+ * 22:46:08.244 - Ignora recentes <2s: [18539] (log informativo)
+ * 22:46:08.245 - Compara: antigas [18536, 18537, 18538] vs novas [18536, 18537, 18538, 18539]
+ * 22:46:08.245 - Detecta: foto 18539 adicionada! ✅
+ * 22:46:08.245 - Regista no histórico: "photo_added: Foto ID 18539" ✅
  *
- * ANTES (ERRADO):
- * - Comparava listas diretamente → ordem diferente → parecia diferente mas não registava
- *
- * DEPOIS (CORRETO):
- * - Converte para Sets: {18532, 18533} vs {18533, 18532}
- * - Remove comuns: {} (nenhuma removida) e {} (nenhuma adicionada)
- * - Resultado: 0 alterações ✅ CORRETO!
- *
- * NOVO CENÁRIO (adicionar foto 18534):
- * Antigas: {18532, 18533}
- * Novas:   {18532, 18533, 18534}
- * - Removidas: {}
- * - Adicionadas: {18534}
- * - Regista: "photo_added: Foto ID 18534" ✅
+ * VANTAGENS:
+ * 1. ✅ Não requer mudanças no mobile
+ * 2. ✅ Funciona mesmo com race conditions
+ * 3. ✅ Permite upload rápido seguido de update
+ * 4. ✅ Logs mostram fotos ignoradas para debug
+ * 5. ✅ 2 segundos é tempo suficiente mas não muito longo
  */
 
 
