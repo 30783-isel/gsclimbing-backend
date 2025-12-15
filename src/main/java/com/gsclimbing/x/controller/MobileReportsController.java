@@ -986,22 +986,53 @@ public class MobileReportsController {
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
-     * SOLUÇÃO FINAL - FILTRO TEMPORAL
+     * CORREÇÃO FINAL: APAGAR FISICAMENTE AS FOTOS REMOVIDAS
      *
-     * PROBLEMA:
-     * Mesmo com a correção no mobile, a foto é carregada e associada ao relatório
-     * ANTES do update ser chamado (diferença de ~100ms).
+     * PROBLEMA IDENTIFICADO:
+     * O método updateDefectInspectionReport() detecta que uma foto foi removida
+     * e regista no histórico "photo_removed", MAS não apaga a foto do servidor!
      *
-     * LOGS COMPROVAM:
-     * 22:46:08.134 - Upload foto 18539
-     * 22:46:08.237 - Update chamado
-     * 22:46:08.244 - ANTIGAS: [18536, 18537, 18538, 18539] ← 18539 já está!
+     * Quando voltas a abrir o relatório, o fileService.readFile(uuid) devolve
+     * TODAS as fotos associadas ao UUID, incluindo as que foram "removidas".
      *
      * SOLUÇÃO:
-     * Adicionar filtro temporal no método updateDefectInspectionReport():
-     * - Ignorar fotos criadas há menos de 2 segundos ao buscar "fotos antigas"
-     * - Isto permite que o upload e update aconteçam em rápida sucessão
+     * Depois de detectar as fotos removidas, APAGÁ-LAS FISICAMENTE do servidor.
      */
 
     @PutMapping("/defect-inspection/{id}")
@@ -1023,13 +1054,11 @@ public class MobileReportsController {
                         .body("Relatório não encontrado");
             }
 
-            // ✅ 2. CORREÇÃO TEMPORAL: Buscar fotos antigas EXCLUINDO as recém-carregadas
+            // 2. Buscar fotos antigas EXCLUINDO as recém-carregadas
             List<FileData> allPhotosFileData = fileService.readFile(report.getUuid());
 
-            // Calcular timestamp de 2 segundos atrás
             LocalDateTime twoSecondsAgo = LocalDateTime.now().minusSeconds(2);
 
-            // Filtrar apenas fotos criadas HÁ MAIS de 2 segundos
             List<Long> oldPhotoIds = allPhotosFileData.stream()
                     .filter(fd -> fd != null && fd.getFileId() != null)
                     .filter(fd -> fd.getCreateDate() != null && fd.getCreateDate().isBefore(twoSecondsAgo))
@@ -1040,7 +1069,6 @@ public class MobileReportsController {
             logger.info("📸 FOTOS ANTIGAS (>2s): {} fotos encontradas", oldPhotoIds.size());
             oldPhotoIds.forEach(photoId -> logger.info("   - Foto antiga ID: {}", photoId));
 
-            // Mostrar fotos recentes que foram ignoradas (para debug)
             List<Long> recentPhotoIds = allPhotosFileData.stream()
                     .filter(fd -> fd != null && fd.getFileId() != null)
                     .filter(fd -> fd.getCreateDate() != null && !fd.getCreateDate().isBefore(twoSecondsAgo))
@@ -1170,7 +1198,9 @@ public class MobileReportsController {
 
                 logger.info("📊 Resultado da comparação: {} alterações de fotos", photoChanges.size());
 
+                // ✅ CORREÇÃO CRÍTICA: APAGAR FISICAMENTE AS FOTOS REMOVIDAS
                 for (FieldChange photoChange : photoChanges) {
+                    // Registar no histórico
                     historyService.createFieldChangeEntry(
                             report,
                             username,
@@ -1182,6 +1212,28 @@ public class MobileReportsController {
                             photoChange.getFieldName(),
                             photoChange.getOldValue(),
                             photoChange.getNewValue());
+
+                    // ✅ SE FOI REMOVIDA, APAGAR FISICAMENTE!
+                    if ("photo_removed".equals(photoChange.getFieldName())) {
+                        try {
+                            // Extrair o ID da foto do formato "Foto ID: 12345"
+                            String oldValue = photoChange.getOldValue();
+                            if (oldValue != null && oldValue.startsWith("Foto ID: ")) {
+                                String photoIdStr = oldValue.replace("Foto ID: ", "").trim();
+                                Integer photoId = Integer.parseInt(photoIdStr);
+
+                                logger.info("🗑️ Apagando foto removida: ID {}", photoId);
+
+                                // Apagar fisicamente a foto
+                                fileService.deleteFile(photoId);
+
+                                logger.info("✅ Foto {} apagada com sucesso", photoId);
+                            }
+                        } catch (Exception e) {
+                            logger.error("❌ Erro ao apagar foto: {}", photoChange.getOldValue(), e);
+                            // Continuar mesmo se falhar - o histórico já foi registado
+                        }
+                    }
                 }
             } else {
                 logger.info("ℹ️ Nenhum photoFileId fornecido no DTO");
@@ -1227,33 +1279,28 @@ public class MobileReportsController {
 
 
 /**
- * ===== EXPLICAÇÃO DA SOLUÇÃO =====
+ * ===== RESUMO DA CORREÇÃO =====
  *
- * O filtro temporal resolve o problema de race condition entre upload e update:
+ * ANTES (ERRADO):
+ * 1. Detecta photo_removed → Regista no histórico
+ * 2. MAS a foto continua no servidor!
+ * 3. Reabrir relatório → fileService.readFile() devolve a foto removida
  *
- * ANTES (SEM FILTRO):
- * 22:46:08.134 - Upload foto 18539 → setUuid() → foto associada
- * 22:46:08.237 - Update chamado (103ms depois)
- * 22:46:08.244 - Busca antigas → [18536, 18537, 18538, 18539] ← Inclui 18539!
- * 22:46:08.245 - Compara com novas [18536, 18537, 18538, 18539]
- * 22:46:08.245 - Resultado: 0 alterações ❌
+ * DEPOIS (CORRETO):
+ * 1. Detecta photo_removed → Regista no histórico
+ * 2. ✅ APAGA FISICAMENTE a foto com fileService.deleteFile()
+ * 3. Reabrir relatório → fileService.readFile() NÃO devolve a foto ✅
  *
- * DEPOIS (COM FILTRO TEMPORAL):
- * 22:46:08.134 - Upload foto 18539 → setUuid() → foto associada
- * 22:46:08.237 - Update chamado (103ms depois)
- * 22:46:08.244 - Busca antigas COM FILTRO >2s → [18536, 18537, 18538] ✅
- * 22:46:08.244 - Ignora recentes <2s: [18539] (log informativo)
- * 22:46:08.245 - Compara: antigas [18536, 18537, 18538] vs novas [18536, 18537, 18538, 18539]
- * 22:46:08.245 - Detecta: foto 18539 adicionada! ✅
- * 22:46:08.245 - Regista no histórico: "photo_added: Foto ID 18539" ✅
- *
- * VANTAGENS:
- * 1. ✅ Não requer mudanças no mobile
- * 2. ✅ Funciona mesmo com race conditions
- * 3. ✅ Permite upload rápido seguido de update
- * 4. ✅ Logs mostram fotos ignoradas para debug
- * 5. ✅ 2 segundos é tempo suficiente mas não muito longo
+ * RESULTADO:
+ * - Remover foto → Apagada do servidor
+ * - Histórico: "photo_removed: Foto ID X"
+ * - Reabrir → Foto não aparece mais ✅
  */
+
+
+
+
+
 
 
 }
