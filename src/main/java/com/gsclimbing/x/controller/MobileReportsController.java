@@ -985,10 +985,12 @@ public class MobileReportsController {
     }
 
 
+
+
     /**
      * PUT /api/reports/mobile/defect-inspection/{id}
      * Atualizar relatório com registo de histórico de alterações
-     * ✅ VERSÃO COM LOGS DETALHADOS PARA DEBUG DE FOTOS
+     * ✅ VERSÃO CORRIGIDA: Busca fotos antigas pela relação JPA, não pelo UUID
      */
     @PutMapping("/defect-inspection/{id}")
     public ResponseEntity<?> updateDefectInspectionReport(
@@ -1008,14 +1010,33 @@ public class MobileReportsController {
                         .body("Relatório não encontrado");
             }
 
-            // 2. Guardar IDs de fotos antigas (buscar pelo UUID do relatório)
-            List<FileData> oldPhotosFileData = fileService.readFile(report.getUuid());
-            List<Long> oldPhotoIds = oldPhotosFileData.stream()
-                    .map(FileData::getFileId)
-                    .map(Integer::longValue)
-                    .collect(Collectors.toList());
+            // 2. ✅ BUSCAR FOTOS ANTIGAS PELA RELAÇÃO JPA (não pelo UUID!)
+            // Força o carregamento da lista de fotos associadas ao relatório
+            List<Long> oldPhotoIds = new ArrayList<>();
 
-            logger.info("📸 FOTOS ANTIGAS: {} fotos encontradas", oldPhotoIds.size());
+            // Se o relatório tem lista de FileData carregada
+            if (report.getListaFileData() != null && !report.getListaFileData().isEmpty()) {
+                oldPhotoIds = report.getListaFileData().stream()
+                        .map(FileData::getFileId)
+                        .map(Integer::longValue)
+                        .collect(Collectors.toList());
+
+                logger.info("📸 FOTOS ANTIGAS (da relação JPA): {} fotos encontradas", oldPhotoIds.size());
+            } else {
+                // Se a lista não está carregada, buscar pelo UUID (fallback)
+                List<FileData> oldPhotosFileData = fileService.readFile(report.getUuid());
+
+                // ✅ MAS filtrar apenas as que têm report.id == report.getId()!
+                // Isso garante que não pegamos fotos recém-carregadas que têm o UUID mas não a relação
+                oldPhotoIds = oldPhotosFileData.stream()
+                        .filter(f -> f.getReport() != null && f.getReport().getReportId().equals(report.getReportId()))
+                        .map(FileData::getFileId)
+                        .map(Integer::longValue)
+                        .collect(Collectors.toList());
+
+                logger.info("📸 FOTOS ANTIGAS (pelo UUID + filtro): {} fotos encontradas", oldPhotoIds.size());
+            }
+
             oldPhotoIds.forEach(photoId -> logger.info("   - Foto antiga ID: {}", photoId));
 
             // 3. Guardar estado antigo dos campos para comparação
@@ -1191,6 +1212,8 @@ public class MobileReportsController {
                     .body("Erro ao atualizar relatório: " + e.getMessage());
         }
     }
+
+
 
 
 }
