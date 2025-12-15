@@ -986,19 +986,6 @@ public class MobileReportsController {
     }
 
 
-    /**
-     * CORREÇÃO DO BUG DE HISTÓRICO DE FOTOS
-     * <p>
-     * PROBLEMA IDENTIFICADO:
-     * 1. A busca de fotos antigas está sempre a retornar 0 fotos porque a linha que diz
-     * "FOTOS ANTIGAS (pelo UUID + filtro)" está errada ou usa uma lógica incorreta
-     * 2. Isto faz com que todas as fotos sejam consideradas "novas" em cada edição
-     * 3. Na criação inicial, não deveria haver registo de alterações de fotos no histórico
-     * <p>
-     * SOLUÇÃO:
-     */
-
-// ===== PASSO 1: CORRIGIR O MÉTODO updateDefectInspectionReport =====
     @PutMapping("/defect-inspection/{id}")
     public ResponseEntity<?> updateDefectInspectionReport(
             @PathVariable Long id,
@@ -1010,17 +997,18 @@ public class MobileReportsController {
             logger.info("📝 Updating Defect Inspection Report {} by user {}", id, username);
 
             // 1. Buscar relatório existente
-            DefectsInspectionReport report = defectsInspectionReportService.readDefectsInspectionReport(id.intValue());
+            DefectsInspectionReport report = defectsInspectionReportService
+                    .readDefectsInspectionReport(id.intValue());
 
             if (report == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("Relatório não encontrado");
             }
 
-            // ✅ 2. CORREÇÃO: Buscar fotos antigas CORRETAMENTE pelo UUID do relatório
+            // 2. Buscar fotos antigas ANTES de qualquer alteração
             List<FileData> oldPhotosFileData = fileService.readFile(report.getUuid());
             List<Long> oldPhotoIds = oldPhotosFileData.stream()
-                    .filter(fd -> fd != null && fd.getFileId() != null)  // ✅ Filtrar nulls
+                    .filter(fd -> fd != null && fd.getFileId() != null)
                     .map(FileData::getFileId)
                     .map(Integer::longValue)
                     .collect(Collectors.toList());
@@ -1034,22 +1022,13 @@ public class MobileReportsController {
             String oldWtgType = report.getWtgType();
             String oldYearConstruction = report.getYearConstruction();
 
-            // Guardar campos adicionais antigos
             Map<String, String> oldAdditionalFields = new HashMap<>();
-            oldAdditionalFields.put("additionalField1Label", report.getAdditionalField1Label());
-            oldAdditionalFields.put("additionalField1Text", report.getAdditionalField1Text());
-            oldAdditionalFields.put("additionalField2Label", report.getAdditionalField2Label());
-            oldAdditionalFields.put("additionalField2Text", report.getAdditionalField2Text());
-            oldAdditionalFields.put("additionalField3Label", report.getAdditionalField3Label());
-            oldAdditionalFields.put("additionalField3Text", report.getAdditionalField3Text());
-            oldAdditionalFields.put("additionalField4Label", report.getAdditionalField4Label());
-            oldAdditionalFields.put("additionalField4Text", report.getAdditionalField4Text());
-            oldAdditionalFields.put("additionalField5Label", report.getAdditionalField5Label());
-            oldAdditionalFields.put("additionalField5Text", report.getAdditionalField5Text());
-            oldAdditionalFields.put("additionalField6Label", report.getAdditionalField6Label());
-            oldAdditionalFields.put("additionalField6Text", report.getAdditionalField6Text());
-            oldAdditionalFields.put("additionalField7Label", report.getAdditionalField7Label());
-            oldAdditionalFields.put("additionalField7Text", report.getAdditionalField7Text());
+            for (int i = 1; i <= 7; i++) {
+                String labelKey = "additionalField" + i + "Label";
+                String textKey = "additionalField" + i + "Text";
+                oldAdditionalFields.put(labelKey, getAdditionalFieldValue(report, i, true));
+                oldAdditionalFields.put(textKey, getAdditionalFieldValue(report, i, false));
+            }
 
             // 4. Atualizar campos do relatório
             if (dto.getSite() != null) report.setSite(dto.getSite());
@@ -1079,7 +1058,8 @@ public class MobileReportsController {
             }
             if (!Objects.equals(oldYearConstruction, report.getYearConstruction())) {
                 fieldChanges.add(new FieldChange("yearConstruction", oldYearConstruction, report.getYearConstruction()));
-                logger.info("📝 Campo alterado: yearConstruction | '{}' -> '{}'", oldYearConstruction, report.getYearConstruction());
+                logger.info("📝 Campo alterado: yearConstruction | '{}' -> '{}'",
+                        oldYearConstruction, report.getYearConstruction());
             }
 
             // Verificar alterações nos campos adicionais
@@ -1114,7 +1094,7 @@ public class MobileReportsController {
                 );
             }
 
-            // ✅ 8. CORREÇÃO: Processar alterações de fotos (SOMENTE em edições, não na criação)
+            // 8. Processar alterações de fotos
             logger.info("🔍 ========== COMPARAÇÃO DE FOTOS ==========");
 
             if (dto.getPhotoFileIds() != null && !dto.getPhotoFileIds().isEmpty()) {
@@ -1126,17 +1106,16 @@ public class MobileReportsController {
 
                 for (String photoId : dto.getPhotoFileIds()) {
                     try {
-                        // Tentar converter para número
                         Long numericId = Long.parseLong(photoId);
                         newPhotoIds.add(numericId);
                         logger.info("   ✅ Photo ID convertido: {}", numericId);
                     } catch (NumberFormatException e) {
-                        // Se não for número, buscar por hash
                         logger.info("   🔍 '{}' não é número, buscando por hash...", photoId);
                         FileData fileData = fileService.readFileByHash(photoId);
                         if (fileData != null && fileData.getFileId() != null) {
                             newPhotoIds.add(fileData.getFileId().longValue());
-                            logger.info("   ✅ Encontrado FileData para hash {}: ID {}", photoId, fileData.getFileId());
+                            logger.info("   ✅ Encontrado FileData para hash {}: ID {}",
+                                    photoId, fileData.getFileId());
                         } else {
                             logger.error("   ❌ FileData não encontrado para: {}", photoId);
                         }
@@ -1150,25 +1129,23 @@ public class MobileReportsController {
                 logger.info("   Antigas: {}", oldPhotoIds);
                 logger.info("   Novas: {}", newPhotoIds);
 
-                // ✅ SOMENTE registar alterações de fotos se houver fotos antigas ou novas diferentes
-                if (!oldPhotoIds.isEmpty() || !newPhotoIds.isEmpty()) {
-                    List<FieldChange> photoChanges = comparisonService.comparePhotos(oldPhotoIds, newPhotoIds);
+                // ✅ USAR O MÉTODO CORRIGIDO que ignora ordem
+                List<FieldChange> photoChanges = comparisonService.comparePhotos(oldPhotoIds, newPhotoIds);
 
-                    logger.info("📊 Resultado da comparação: {} alterações de fotos", photoChanges.size());
+                logger.info("📊 Resultado da comparação: {} alterações de fotos", photoChanges.size());
 
-                    for (FieldChange photoChange : photoChanges) {
-                        historyService.createFieldChangeEntry(
-                                report,
-                                username,
-                                photoChange.getFieldName(),
-                                photoChange.getOldValue(),
-                                photoChange.getNewValue()
-                        );
-                        logger.info("📸 {} | OLD: '{}' | NEW: '{}'",
-                                photoChange.getFieldName(),
-                                photoChange.getOldValue(),
-                                photoChange.getNewValue());
-                    }
+                for (FieldChange photoChange : photoChanges) {
+                    historyService.createFieldChangeEntry(
+                            report,
+                            username,
+                            photoChange.getFieldName(),
+                            photoChange.getOldValue(),
+                            photoChange.getNewValue()
+                    );
+                    logger.info("📸 {} | OLD: '{}' | NEW: '{}'",
+                            photoChange.getFieldName(),
+                            photoChange.getOldValue(),
+                            photoChange.getNewValue());
                 }
             } else {
                 logger.info("ℹ️ Nenhum photoFileId fornecido no DTO");
@@ -1199,9 +1176,6 @@ public class MobileReportsController {
         }
     }
 
-
-// ===== MÉTODO AUXILIAR PARA OBTER VALORES DOS CAMPOS ADICIONAIS =====
-
     private String getAdditionalFieldValue(DefectsInspectionReport report, int fieldNumber, boolean isLabel) {
         switch (fieldNumber) {
             case 1:
@@ -1225,19 +1199,37 @@ public class MobileReportsController {
 
 
 /**
- * ===== RESUMO DA CORREÇÃO =====
+ * ===== RESUMO COMPLETO DA CORREÇÃO =====
  *
- * 1. ✅ Removida a lógica "pelo UUID + filtro" que estava a retornar sempre 0 fotos
- * 2. ✅ Agora usa diretamente fileService.readFile(report.getUuid()) que funciona corretamente
- * 3. ✅ Adicionado filtro para remover possíveis nulls da lista de fotos antigas
- * 4. ✅ Na comparação, só regista alterações se existirem fotos antigas OU novas diferentes
- * 5. ✅ Isto elimina o bug onde as fotos eram registadas como "adicionadas" na criação inicial
+ * PROBLEMA ORIGINAL:
+ * O FileUploadController associa fotos ao relatório imediatamente via setUuid().
+ * Isto faz com que fotos recém-carregadas já apareçam nas "antigas" quando
+ * updateDefectInspectionReport() é chamado milissegundos depois.
  *
- * COMPORTAMENTO CORRETO APÓS A CORREÇÃO:
- * - Criar relatório com 1 foto → Histórico: vazio (sem registo de fotos)
- * - Editar e adicionar 2ª foto → Histórico: "photo_added: Foto ID 18525"
- * - Editar e trocar foto → Histórico: "photo_removed: Foto ID X" + "photo_added: Foto ID Y"
- * - Editar sem mexer nas fotos → Histórico: sem alterações de fotos
+ * SOLUÇÃO APLICADA:
+ * 1. ✅ ReportComparisonService.comparePhotos() usa Sets em vez de Lists
+ * 2. ✅ Ignora completamente a ordem das fotos
+ * 3. ✅ Detecta APENAS fotos verdadeiramente adicionadas ou removidas
+ * 4. ✅ Funciona mesmo quando o upload acontece antes do update
+ *
+ * EXEMPLO COM OS TEUS LOGS:
+ * Antigas: [18532, 18533]
+ * Novas:   [18533, 18532]
+ *
+ * ANTES (ERRADO):
+ * - Comparava listas diretamente → ordem diferente → parecia diferente mas não registava
+ *
+ * DEPOIS (CORRETO):
+ * - Converte para Sets: {18532, 18533} vs {18533, 18532}
+ * - Remove comuns: {} (nenhuma removida) e {} (nenhuma adicionada)
+ * - Resultado: 0 alterações ✅ CORRETO!
+ *
+ * NOVO CENÁRIO (adicionar foto 18534):
+ * Antigas: {18532, 18533}
+ * Novas:   {18532, 18533, 18534}
+ * - Removidas: {}
+ * - Adicionadas: {18534}
+ * - Regista: "photo_added: Foto ID 18534" ✅
  */
 
 

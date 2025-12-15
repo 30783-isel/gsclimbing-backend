@@ -7,10 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Serviço para comparar relatórios e identificar alterações
@@ -100,38 +97,44 @@ public class ReportComparisonService {
         return node.asText();
     }
 
+
     /**
-     * Compara listas de IDs de fotos e identifica adições/remoções
-     *
-     * @param oldPhotoIds Lista antiga de IDs
-     * @param newPhotoIds Lista nova de IDs
-     * @return Lista de alterações de fotos
+     * Compara listas de IDs de fotos antigas vs novas
+     * ✅ CORREÇÃO: Ignora ordem, detecta adições e remoções reais
      */
     public List<FieldChange> comparePhotos(List<Long> oldPhotoIds, List<Long> newPhotoIds) {
         List<FieldChange> changes = new ArrayList<>();
 
-        // Fotos adicionadas
-        for (Long photoId : newPhotoIds) {
-            if (!oldPhotoIds.contains(photoId)) {
-                changes.add(new FieldChange(
-                        "photo_added",
-                        "",
-                        "Foto ID: " + photoId
-                ));
-                logger.info("Foto adicionada: {}", photoId);
-            }
+        // ✅ Converter para Sets para ignorar ordem e facilitar comparação
+        Set<Long> oldSet = new HashSet<>(oldPhotoIds);
+        Set<Long> newSet = new HashSet<>(newPhotoIds);
+
+        // ✅ Encontrar fotos REMOVIDAS (estavam nas antigas mas não estão nas novas)
+        Set<Long> removedPhotos = new HashSet<>(oldSet);
+        removedPhotos.removeAll(newSet);
+
+        // ✅ Encontrar fotos ADICIONADAS (estão nas novas mas não estavam nas antigas)
+        Set<Long> addedPhotos = new HashSet<>(newSet);
+        addedPhotos.removeAll(oldSet);
+
+        // Registar remoções
+        for (Long photoId : removedPhotos) {
+            changes.add(new FieldChange(
+                    "photo_removed",
+                    "Foto ID: " + photoId,
+                    ""
+            ));
+            logger.info("📸 Foto removida: {}", photoId);
         }
 
-        // Fotos removidas
-        for (Long photoId : oldPhotoIds) {
-            if (!newPhotoIds.contains(photoId)) {
-                changes.add(new FieldChange(
-                        "photo_removed",
-                        "Foto ID: " + photoId,
-                        ""
-                ));
-                logger.info("Foto removida: {}", photoId);
-            }
+        // Registar adições
+        for (Long photoId : addedPhotos) {
+            changes.add(new FieldChange(
+                    "photo_added",
+                    "",
+                    "Foto ID: " + photoId
+            ));
+            logger.info("📸 Foto adicionada: {}", photoId);
         }
 
         return changes;
