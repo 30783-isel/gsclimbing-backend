@@ -85,7 +85,7 @@ public class FileUploadController {
             // Criar registo na base de dados
             FileData fileData = new FileData();
             fileData.setHash(fileHash);
-            fileData.setName(file.getOriginalFilename()); // ← Método correto
+            fileData.setName(file.getOriginalFilename());
             fileData.setMimeType(file.getContentType());
             fileData.setDescription(description != null ? description : "");
             fileData.setUuid(reportUuid); // Associar ao relatório
@@ -94,15 +94,19 @@ public class FileUploadController {
             fileData.setSize(file.getSize());
             fileData.setInsertedOnFtpServer(uploaded);
 
-            // Guardar na BD (método correto)
+            // ✅ GUARDAR NA BD PRIMEIRO para obter o fileId gerado
             fileService.createFile(fileData);
 
-            logger.info("✅ Photo uploaded successfully with hash: {}", fileHash);
+            // ✅ AGORA o fileId já foi gerado pelo @GeneratedValue
+            Integer generatedFileId = fileData.getFileId();
 
-            // Retornar resposta de sucesso
+            logger.info("✅ Photo uploaded successfully - Hash: {}, FileId: {}", fileHash, generatedFileId);
+
+            // ✅ Retornar resposta com fileId NUMÉRICO
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("fileId", fileHash);
+            response.put("fileId", generatedFileId);  // ✅ Retorna ID numérico, não hash!
+            response.put("hash", fileHash);  // Incluir hash também para referência
             response.put("fileName", file.getOriginalFilename());
             response.put("message", "Photo uploaded successfully");
 
