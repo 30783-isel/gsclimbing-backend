@@ -202,4 +202,83 @@ public class ReportValidationService {
                     .build());
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Validar Performance Report Repair Elevator
+     */
+    public MobileReportDTO.ValidationResponseDTO validatePerformanceRepairElevator(
+            String reportDataJson,
+            Integer photoCount
+    ) {
+        List<MobileReportDTO.ValidationErrorDTO> errors = new ArrayList<>();
+        List<MobileReportDTO.ValidationErrorDTO> warnings = new ArrayList<>();
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode reportData = mapper.readTree(reportDataJson);
+
+            // Validar campos obrigatórios
+            validateRequiredField(reportData, "site", "Site é obrigatório", errors);
+            validateRequiredField(reportData, "wtgNumber", "WTG Number é obrigatório", errors);
+            validateRequiredField(reportData, "wtgType", "WTG Type é obrigatório", errors);
+            validateRequiredField(reportData, "yearConstruction", "Year of Construction é obrigatório", errors);
+
+            // Validar campos específicos
+            if (reportData.has("workCompleted")) {
+                String value = reportData.get("workCompleted").asText().toLowerCase();
+                if (!value.equals("yes") && !value.equals("no")) {
+                    warnings.add(MobileReportDTO.ValidationErrorDTO.builder()
+                            .field("workCompleted")
+                            .message("Deve ser 'yes' ou 'no'")
+                            .type("warning")
+                            .build());
+                }
+            }
+
+            if (reportData.has("windturbineOperable")) {
+                String value = reportData.get("windturbineOperable").asText().toLowerCase();
+                if (!value.equals("yes") && !value.equals("no") && !value.equals("limited")) {
+                    warnings.add(MobileReportDTO.ValidationErrorDTO.builder()
+                            .field("windturbineOperable")
+                            .message("Deve ser 'yes', 'no' ou 'limited'")
+                            .type("warning")
+                            .build());
+                }
+            }
+
+            // Validar fotos
+            if (photoCount == null || photoCount == 0) {
+                warnings.add(MobileReportDTO.ValidationErrorDTO.builder()
+                        .field("photos")
+                        .message("Recomenda-se adicionar fotos ao relatório")
+                        .type("warning")
+                        .build());
+            }
+
+        } catch (Exception e) {
+            errors.add(MobileReportDTO.ValidationErrorDTO.builder()
+                    .field("reportData")
+                    .message("Formato de dados inválido")
+                    .type("invalid")
+                    .build());
+        }
+
+        return MobileReportDTO.ValidationResponseDTO.builder()
+                .isValid(errors.isEmpty())
+                .errors(errors)
+                .warnings(warnings)
+                .build();
+    }
 }
