@@ -3,6 +3,7 @@ package com.gsclimbing.x.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gsclimbing.database.entity.FileData;
+import com.gsclimbing.database.entity.PerformanceReportRepairElevator;
 import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.service.FileService;
@@ -199,15 +200,50 @@ public class PerformanceRepairElevatorController {
         try {
             logger.info("📖 Fetching Performance Report Repair Elevator: {}", id);
 
-            Report report = performanceRepairElevatorService.getById(id.intValue());
+            // ✅ USAR getCompleteById para obter entidade com dados específicos
+            PerformanceReportRepairElevator report = performanceRepairElevatorService.getCompleteById(id.intValue());
 
             if (report == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(errorResponse("Relatório não encontrado"));
             }
 
-            logger.info("✅ Report found: {}", report.getReportId());
-            return ResponseEntity.ok(report);
+            logger.info("✅ Complete report found: {}", report.getReportId());
+
+            // Mapear para os campos que o frontend espera
+            // O frontend lê: additionalField1Text, additionalField2Text, etc.
+            // Mas os dados estão em: inpectorsWorkers, workCompleted, etc.
+
+            // OPÇÃO 1: Retornar a entidade PerformanceReportRepairElevator diretamente
+            // (pode causar problemas de serialização com Hibernate)
+
+            // OPÇÃO 2: Mapear para um DTO que o frontend entende
+            Map<String, Object> response = new HashMap<>();
+            response.put("reportId", report.getReportId());
+            response.put("uuid", report.getUuid());
+            response.put("site", report.getSite());
+            response.put("wtgNumber", report.getWtgNumber());
+            response.put("wtgType", report.getWtgType());
+            response.put("yearConstruction", report.getYearConstruction());
+            response.put("projectoId", report.getProjectoId());
+            response.put("turbinaId", report.getTurbinaId());
+            response.put("createDate", report.getCreateDate());
+            response.put("modifiedDate", report.getModifiedDate());
+            response.put("locked", report.getLocked());
+
+            // ✅ Mapear dados específicos para os campos que o frontend lê
+            response.put("additionalField1Text", report.getInpectorsWorkers());  // Inspectors
+            response.put("additionalField2Text", report.getWorkCompleted());     // Work Completed
+            response.put("additionalField3Text", report.getTurbineOperable());   // Turbine Operable
+            response.put("additionalField4Text", report.getPerformanceReport()); // Performance Report
+
+            // Dados específicos adicionais (se o frontend precisar)
+            response.put("reportNumber", report.getReportNumber());
+            response.put("statementOfwork", report.getStatementOfwork());
+            response.put("placeDate", report.getPlaceDate());
+            response.put("responsibleTechnician", report.getResponsibleTechnician());
+
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             logger.error("❌ Error fetching Performance Report Repair Elevator", e);
