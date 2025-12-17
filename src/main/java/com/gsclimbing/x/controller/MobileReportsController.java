@@ -1193,53 +1193,59 @@ public class MobileReportsController {
                 logger.info("   Antigas (>2s): {}", oldPhotoIds);
                 logger.info("   Novas: {}", newPhotoIds);
 
-                // Usar o método corrigido que ignora ordem
-                List<FieldChange> photoChanges = comparisonService.comparePhotos(oldPhotoIds, newPhotoIds);
+                // ✅ ADICIONAR ESTA VERIFICAÇÃO:
 
-                logger.info("📊 Resultado da comparação: {} alterações de fotos", photoChanges.size());
+                // Se não havia fotos antigas, são as PRIMEIRAS fotos → NÃO registar no histórico
+                if (oldPhotoIds.isEmpty() && !newPhotoIds.isEmpty()) {
+                    logger.info("ℹ️ Primeiras fotos do relatório - não registar no histórico");
+                } else {
+                    // Comparar fotos APENAS se já existiam fotos antigas
+                    List<FieldChange> photoChanges = comparisonService.comparePhotos(oldPhotoIds, newPhotoIds);
 
-                // ✅ CORREÇÃO CRÍTICA: APAGAR FISICAMENTE AS FOTOS REMOVIDAS
-                for (FieldChange photoChange : photoChanges) {
-                    // Registar no histórico
-                    historyService.createFieldChangeEntry(
-                            report,
-                            username,
-                            photoChange.getFieldName(),
-                            photoChange.getOldValue(),
-                            photoChange.getNewValue()
-                    );
-                    logger.info("📸 {} | OLD: '{}' | NEW: '{}'",
-                            photoChange.getFieldName(),
-                            photoChange.getOldValue(),
-                            photoChange.getNewValue());
+                    logger.info("📊 Resultado da comparação: {} alterações de fotos", photoChanges.size());
 
-                    // ✅ SE FOI REMOVIDA, APAGAR FISICAMENTE!
-                    if ("photo_removed".equals(photoChange.getFieldName())) {
-                        try {
-                            // Extrair o ID da foto do formato "Foto ID: 12345"
-                            String oldValue = photoChange.getOldValue();
-                            if (oldValue != null && oldValue.startsWith("Foto ID: ")) {
-                                String photoIdStr = oldValue.replace("Foto ID: ", "").trim();
-                                Integer photoId = Integer.parseInt(photoIdStr);
+                    // ✅ CORREÇÃO CRÍTICA: APAGAR FISICAMENTE AS FOTOS REMOVIDAS
+                    for (FieldChange photoChange : photoChanges) {
+                        // Registar no histórico
+                        historyService.createFieldChangeEntry(
+                                report,
+                                username,
+                                photoChange.getFieldName(),
+                                photoChange.getOldValue(),
+                                photoChange.getNewValue()
+                        );
+                        logger.info("📸 {} | OLD: '{}' | NEW: '{}'",
+                                photoChange.getFieldName(),
+                                photoChange.getOldValue(),
+                                photoChange.getNewValue());
 
-                                logger.info("🗑️ Apagando foto removida: ID {}", photoId);
+                        // ✅ SE FOI REMOVIDA, APAGAR FISICAMENTE!
+                        if ("photo_removed".equals(photoChange.getFieldName())) {
+                            try {
+                                // Extrair o ID da foto do formato "Foto ID: 12345|hash"
+                                String oldValue = photoChange.getOldValue();
+                                if (oldValue != null && oldValue.startsWith("Foto ID: ")) {
+                                    // Extrair apenas o ID (antes do pipe)
+                                    String photoIdStr = oldValue.replace("Foto ID: ", "").split("\\|")[0].trim();
+                                    Integer photoId = Integer.parseInt(photoIdStr);
 
-                                // Apagar fisicamente a foto
-                                fileService.deleteFile(photoId);
+                                    logger.info("🗑️ Apagando foto removida: ID {}", photoId);
 
-                                logger.info("✅ Foto {} apagada com sucesso", photoId);
+                                    // Apagar fisicamente a foto
+                                    fileService.deleteFile(photoId);
+
+                                    logger.info("✅ Foto {} apagada com sucesso", photoId);
+                                }
+                            } catch (Exception e) {
+                                logger.error("❌ Erro ao apagar foto: {}", photoChange.getOldValue(), e);
+                                // Continuar mesmo se falhar - o histórico já foi registado
                             }
-                        } catch (Exception e) {
-                            logger.error("❌ Erro ao apagar foto: {}", photoChange.getOldValue(), e);
-                            // Continuar mesmo se falhar - o histórico já foi registado
                         }
                     }
                 }
             } else {
                 logger.info("ℹ️ Nenhum photoFileId fornecido no DTO");
             }
-
-            logger.info("🔍 ========================================");
 
             // 9. Guardar relatório atualizado
             defectsInspectionReportService.updateDefectsInspectionReport(report);
