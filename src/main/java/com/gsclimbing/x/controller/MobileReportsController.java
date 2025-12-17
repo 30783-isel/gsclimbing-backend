@@ -503,11 +503,11 @@ public class MobileReportsController {
                         .body("Report not found with ID: " + reportId);
             }
 
-            // Buscar fotos usando o UUID do relatório
-            List<FileData> photos = fileService.readFile(report.getUuid());
+            // ✅ ALTERAÇÃO: Buscar APENAS fotos ativas
+            List<FileData> photos = fileService.readActiveFilesByUuid(report.getUuid());
 
             if (photos == null || photos.isEmpty()) {
-                logger.info("No photos found for report {}", reportId);
+                logger.info("No active photos found for report {}", reportId);
                 return ResponseEntity.ok(new ArrayList<>());
             }
 
@@ -523,15 +523,12 @@ public class MobileReportsController {
                 photoData.put("mimeType", photo.getMimeType());
                 photoData.put("size", photo.getSize());
                 photoData.put("createDate", photo.getCreateDate());
-
-                // URL para download da foto
-                // O frontend pode usar este hash para fazer download via /api/reports/files/download/{hash}
                 photoData.put("downloadUrl", "/api/reports/files/download/" + photo.getHash());
 
                 photoList.add(photoData);
             }
 
-            logger.info("✅ Returning {} photos for report {}", photoList.size(), reportId);
+            logger.info("✅ Returning {} active photos for report {}", photoList.size(), reportId);
             return ResponseEntity.ok(photoList);
 
         } catch (Exception e) {
@@ -1102,17 +1099,20 @@ public class MobileReportsController {
                         .body("Relatório não encontrado");
             }
 
-            // 2. Buscar fotos antigas EXCLUINDO as recém-carregadas
+            // 2. Buscar fotos antigas EXCLUINDO as recém-carregadas E as removidas
             List<FileData> allPhotosFileData = fileService.readFile(report.getUuid());
 
             LocalDateTime twoSecondsAgo = LocalDateTime.now().minusSeconds(2);
 
             List<Long> oldPhotoIds = allPhotosFileData.stream()
                     .filter(fd -> fd != null && fd.getFileId() != null)
+                    .filter(FileData::isActive)  // ✅ NOVO: Filtrar apenas ativas
                     .filter(fd -> fd.getCreateDate() != null && fd.getCreateDate().isBefore(twoSecondsAgo))
                     .map(FileData::getFileId)
                     .map(Integer::longValue)
                     .collect(Collectors.toList());
+
+            logger.info("📸 FOTOS ANTIGAS ATIVAS (>2s): {} fotos encontradas", oldPhotoIds.size());
 
             logger.info("📸 FOTOS ANTIGAS (>2s): {} fotos encontradas", oldPhotoIds.size());
             oldPhotoIds.forEach(photoId -> logger.info("   - Foto antiga ID: {}", photoId));
@@ -1270,23 +1270,20 @@ public class MobileReportsController {
                         // ✅ SE FOI REMOVIDA, APAGAR FISICAMENTE!
                         if ("photo_removed".equals(photoChange.getFieldName())) {
                             try {
-                                // Extrair o ID da foto do formato "Foto ID: 12345|hash"
                                 String oldValue = photoChange.getOldValue();
                                 if (oldValue != null && oldValue.startsWith("Foto ID: ")) {
-                                    // Extrair apenas o ID (antes do pipe)
                                     String photoIdStr = oldValue.replace("Foto ID: ", "").split("\\|")[0].trim();
                                     Integer photoId = Integer.parseInt(photoIdStr);
 
                                     logger.info("🗑️ Apagando foto removida: ID {}", photoId);
 
                                     // Apagar fisicamente a foto
-                                    fileService.deleteFile(photoId);
+                                    fileService.deleteFile(photoId);  // ✅ Já faz soft delete
 
-                                    logger.info("✅ Foto {} apagada com sucesso", photoId);
+                                    logger.info("✅ Foto {} marcada como removida (soft delete)", photoId);
                                 }
                             } catch (Exception e) {
                                 logger.error("❌ Erro ao apagar foto: {}", photoChange.getOldValue(), e);
-                                // Continuar mesmo se falhar - o histórico já foi registado
                             }
                         }
                     }

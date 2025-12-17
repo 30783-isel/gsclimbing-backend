@@ -31,6 +31,7 @@ public class FileData {
 	private String description;
 	private String url;
 	private int imageChange;
+	private String isDeleted;
 	private boolean insertedOnFtpServer;
 
 	@ManyToOne
@@ -49,6 +50,14 @@ public class FileData {
 		MessageDigest messageDigest = MessageDigest.getInstance("MD5");
 		messageDigest.update(transformedName.getBytes(StandardCharsets.UTF_8));
 		this.hash = new BigInteger(1, messageDigest.digest()).toString(RADIX);
+	}
+
+	public boolean isActive() {
+		return !"Y".equals(isDeleted);
+	}
+
+	public void markAsDeleted() {
+		this.isDeleted = "Y";
 	}
 
 }
