@@ -452,8 +452,18 @@ public class PerformanceRepairElevatorController {
 
             List<FileData> photos = fileService.readFile(report.getUuid());
 
+            List<Map<String, Object>> photoList = new ArrayList<>();
+            for (FileData photo : photos) {
+                Map<String, Object> photoData = new HashMap<>();
+                photoData.put("fileId", photo.getFileId());
+                photoData.put("hash", photo.getHash());
+                photoData.put("downloadUrl", "reports/mobile/files/download/" + photo.getHash());
+                // ... outros campos
+                photoList.add(photoData);
+            }
+
             logger.info("✅ Found {} photos", photos.size());
-            return ResponseEntity.ok(photos);
+            return ResponseEntity.ok(photoList);
 
         } catch (Exception e) {
             logger.error("❌ Error fetching photos", e);
