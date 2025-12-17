@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service para validar relatórios antes de submeter
@@ -278,7 +279,9 @@ public class ReportValidationService {
         return MobileReportDTO.ValidationResponseDTO.builder()
                 .isValid(errors.isEmpty())
                 .errors(errors)
-                .warnings(warnings)
+                .warnings(warnings.stream()
+                        .map(MobileReportDTO.ValidationErrorDTO::getMessage)
+                        .collect(Collectors.toList()))
                 .build();
     }
 }
