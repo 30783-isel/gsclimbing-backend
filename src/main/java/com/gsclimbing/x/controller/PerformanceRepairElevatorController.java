@@ -210,15 +210,10 @@ public class PerformanceRepairElevatorController {
 
             logger.info("✅ Complete report found: {}", report.getReportId());
 
-            // Mapear para os campos que o frontend espera
-            // O frontend lê: additionalField1Text, additionalField2Text, etc.
-            // Mas os dados estão em: inpectorsWorkers, workCompleted, etc.
-
-            // OPÇÃO 1: Retornar a entidade PerformanceReportRepairElevator diretamente
-            // (pode causar problemas de serialização com Hibernate)
-
-            // OPÇÃO 2: Mapear para um DTO que o frontend entende
+            // Criar um DTO customizado com todos os campos necessários
             Map<String, Object> response = new HashMap<>();
+
+            // Campos básicos (da tabela Report)
             response.put("reportId", report.getReportId());
             response.put("uuid", report.getUuid());
             response.put("site", report.getSite());
@@ -230,18 +225,35 @@ public class PerformanceRepairElevatorController {
             response.put("createDate", report.getCreateDate());
             response.put("modifiedDate", report.getModifiedDate());
             response.put("locked", report.getLocked());
+            response.put("permission2Edit", report.getPermission2Edit());
+            response.put("typeReport", report.getTypeReport());
+            response.put("reportType", report.getReportType());
 
-            // ✅ Mapear dados específicos para os campos que o frontend lê
-            response.put("additionalField1Text", report.getInpectorsWorkers());  // Inspectors
-            response.put("additionalField2Text", report.getWorkCompleted());     // Work Completed
-            response.put("additionalField3Text", report.getTurbineOperable());   // Turbine Operable
-            response.put("additionalField4Text", report.getPerformanceReport()); // Performance Report
-
-            // Dados específicos adicionais (se o frontend precisar)
+            // ✅ Campos específicos (da tabela PerformanceReportRepairElevator)
             response.put("reportNumber", report.getReportNumber());
+            response.put("inpectorsWorkers", report.getInpectorsWorkers());
             response.put("statementOfwork", report.getStatementOfwork());
+            response.put("workCompleted", report.getWorkCompleted());
+            response.put("turbineOperable", report.getTurbineOperable());
             response.put("placeDate", report.getPlaceDate());
             response.put("responsibleTechnician", report.getResponsibleTechnician());
+            response.put("performanceReport", report.getPerformanceReport());
+
+            // Campos adicionais genéricos (se existirem)
+            response.put("additionalField1Label", report.getAdditionalField1Label());
+            response.put("additionalField1Text", report.getAdditionalField1Text());
+            response.put("additionalField2Label", report.getAdditionalField2Label());
+            response.put("additionalField2Text", report.getAdditionalField2Text());
+            response.put("additionalField3Label", report.getAdditionalField3Label());
+            response.put("additionalField3Text", report.getAdditionalField3Text());
+            response.put("additionalField4Label", report.getAdditionalField4Label());
+            response.put("additionalField4Text", report.getAdditionalField4Text());
+            response.put("additionalField5Label", report.getAdditionalField5Label());
+            response.put("additionalField5Text", report.getAdditionalField5Text());
+            response.put("additionalField6Label", report.getAdditionalField6Label());
+            response.put("additionalField6Text", report.getAdditionalField6Text());
+            response.put("additionalField7Label", report.getAdditionalField7Label());
+            response.put("additionalField7Text", report.getAdditionalField7Text());
 
             return ResponseEntity.ok(response);
 
@@ -251,6 +263,14 @@ public class PerformanceRepairElevatorController {
                     .body(errorResponse("Error fetching report: " + e.getMessage()));
         }
     }
+
+
+
+
+
+
+
+
 
 // ====================================================================
 // GET BY TURBINE - Obter todos os relatórios de uma turbina
