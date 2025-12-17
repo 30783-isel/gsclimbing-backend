@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.entity.Turbine;
+import com.gsclimbing.x.database.service.PerformanceRepairElevatorService.PerformanceReportRepairElevatorSpecificData;
 import com.gsclimbing.x.dto.MobileReportDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,7 @@ import java.util.UUID;
 
 /**
  * Adapter para Performance Report Repair Elevator
- * Converte entre DTOs mobile e entidade Report
+ * Converte entre DTOs mobile e entidade Report + dados específicos
  */
 @Component
 public class PerformanceRepairElevatorAdapter {
@@ -24,6 +25,7 @@ public class PerformanceRepairElevatorAdapter {
 
     /**
      * Converter DTO mobile para entidade Report (CREATE)
+     * Retorna apenas a entidade Report - use toSpecificData() para obter dados específicos
      */
     public Report toEntity(MobileReportDTO.ReportCreateUpdateDTO dto, Turbine turbine) throws Exception {
         logger.info("📋 Converting DTO to Performance Report Repair Elevator entity");
@@ -43,48 +45,25 @@ public class PerformanceRepairElevatorAdapter {
         report.setWtgType(getStringValue(reportData, "wtgType"));
         report.setYearConstruction(getStringValue(reportData, "yearConstruction"));
 
-        // IDs
-        report.setProjectoId(getJsonInteger(reportData, "projectoId"));
-        report.setTurbinaId(dto.getTurbineId().intValue());
+        // IDs - turbineId vem do DTO, projectoId vem do reportData JSON
+        report.setTurbinaId(dto.getTurbineId() != null ? dto.getTurbineId().intValue() : null);
+        report.setProjectoId(getIntegerValue(reportData, "projectoId"));
         report.setTurbine(turbine);
 
-        // Tipo de relatório (6 = Performance Report Repair Elevator)
-        report.setTypeReport(6);
-
-        // Campos específicos do Performance Report Repair Elevator
-        // Página 2: Statement of Work
-        if (reportData.has("workCompleted")) {
-            report.setAdditionalField1Label("Work Completed");
-            report.setAdditionalField1Text(getStringValue(reportData, "workCompleted"));
-        }
-        if (reportData.has("windturbineOperable")) {
-            report.setAdditionalField2Label("Windturbine Operable");
-            report.setAdditionalField2Text(getStringValue(reportData, "windturbineOperable"));
-        }
-
-        // Página 3: Performance Report (campo de texto livre)
-        if (reportData.has("performanceReport")) {
-            report.setAdditionalField3Label("Performance Report");
-            report.setAdditionalField3Text(getStringValue(reportData, "performanceReport"));
-        }
-
-        // Inspectors/Workers
-        if (reportData.has("inspectors")) {
-            report.setAdditionalField4Label("Inspectors/Workers");
-            report.setAdditionalField4Text(getStringValue(reportData, "inspectors"));
-        }
-
-        // Campos adicionais extras (Página 5)
-        int fieldIndex = 5;
-        for (int i = 1; i <= 3; i++) {
-            String labelKey = "additionalField" + i;
-            if (reportData.has(labelKey)) {
-                JsonNode field = reportData.get(labelKey);
-                if (field.has("label") && field.has("value")) {
-                    setAdditionalField(report, fieldIndex,
-                            field.get("label").asText(),
-                            field.get("value").asText());
-                    fieldIndex++;
+        // Additional Fields (se existirem no DTO)
+        if (reportData.has("additionalFields")) {
+            JsonNode additionalFields = reportData.get("additionalFields");
+            if (additionalFields.isArray()) {
+                int fieldIndex = 1;
+                for (JsonNode field : additionalFields) {
+                    if (field.has("label") && field.has("value") && fieldIndex <= 7) {
+                        setAdditionalField(
+                                report,
+                                fieldIndex,
+                                field.get("label").asText(),
+                                field.get("value").asText());
+                        fieldIndex++;
+                    }
                 }
             }
         }
@@ -99,13 +78,30 @@ public class PerformanceRepairElevatorAdapter {
     }
 
     /**
-     * Método auxiliar para extrair integer do JSON
+     * Extrair dados específicos do DTO para PerformanceReportRepairElevator
+     *
+     * @param dto DTO com os dados do relatório
+     * @return Objeto com dados específicos do Performance Report Repair Elevator
      */
-    private Integer getJsonInteger(JsonNode node, String fieldName) {
-        if (node.has(fieldName) && !node.get(fieldName).isNull()) {
-            return node.get(fieldName).asInt();
-        }
-        return null;
+    public PerformanceReportRepairElevatorSpecificData toSpecificData(MobileReportDTO.ReportCreateUpdateDTO dto) throws Exception {
+        logger.info("📋 Extracting specific data for Performance Report Repair Elevator");
+
+        JsonNode reportData = objectMapper.readTree(dto.getReportData());
+
+        PerformanceReportRepairElevatorSpecificData specificData = new PerformanceReportRepairElevatorSpecificData();
+
+        // Campos específicos do Performance Report Repair Elevator
+        specificData.setReportNumber(getStringValue(reportData, "reportNumber"));
+        specificData.setInpectorsWorkers(getStringValue(reportData, "inspectors")); // ou "inpectorsWorkers"
+        specificData.setStatementOfwork(getStringValue(reportData, "statementOfwork"));
+        specificData.setWorkCompleted(getStringValue(reportData, "workCompleted"));
+        specificData.setTurbineOperable(getStringValue(reportData, "windturbineOperable")); // ou "turbineOperable"
+        specificData.setPlaceDate(getStringValue(reportData, "placeDate"));
+        specificData.setResponsibleTechnician(getStringValue(reportData, "responsibleTechnician"));
+        specificData.setPerformanceReport(getStringValue(reportData, "performanceReport"));
+
+        logger.info("✅ Specific data extracted");
+        return specificData;
     }
 
     /**
@@ -130,50 +126,97 @@ public class PerformanceRepairElevatorAdapter {
             report.setYearConstruction(getStringValue(reportData, "yearConstruction"));
         }
 
-        // Atualizar campos específicos
-        if (reportData.has("workCompleted")) {
-            report.setAdditionalField1Label("Work Completed");
-            report.setAdditionalField1Text(getStringValue(reportData, "workCompleted"));
-        }
-        if (reportData.has("windturbineOperable")) {
-            report.setAdditionalField2Label("Windturbine Operable");
-            report.setAdditionalField2Text(getStringValue(reportData, "windturbineOperable"));
-        }
-        if (reportData.has("performanceReport")) {
-            report.setAdditionalField3Label("Performance Report");
-            report.setAdditionalField3Text(getStringValue(reportData, "performanceReport"));
-        }
-        if (reportData.has("inspectors")) {
-            report.setAdditionalField4Label("Inspectors/Workers");
-            report.setAdditionalField4Text(getStringValue(reportData, "inspectors"));
-        }
+        // Atualizar timestamp
+        report.setModifiedDate(LocalDateTime.now());
 
-        // Atualizar campos adicionais extras
-        int fieldIndex = 5;
-        for (int i = 1; i <= 3; i++) {
-            String labelKey = "additionalField" + i;
-            if (reportData.has(labelKey)) {
-                JsonNode field = reportData.get(labelKey);
-                if (field.has("label") && field.has("value")) {
-                    setAdditionalField(report, fieldIndex,
-                            field.get("label").asText(),
-                            field.get("value").asText());
-                    fieldIndex++;
+        // Atualizar Additional Fields se existirem
+        if (reportData.has("additionalFields")) {
+            JsonNode additionalFields = reportData.get("additionalFields");
+            if (additionalFields.isArray()) {
+                int fieldIndex = 1;
+                for (JsonNode field : additionalFields) {
+                    if (field.has("label") && field.has("value") && fieldIndex <= 7) {
+                        setAdditionalField(
+                                report,
+                                fieldIndex,
+                                field.get("label").asText(),
+                                field.get("value").asText());
+                        fieldIndex++;
+                    }
                 }
             }
         }
 
-        report.setModifiedDate(LocalDateTime.now());
         logger.info("✅ Entity updated");
     }
 
-    // Métodos auxiliares
-    private String getStringValue(JsonNode node, String fieldName) {
-        return node.has(fieldName) && !node.get(fieldName).isNull()
-                ? node.get(fieldName).asText()
-                : "";
+    /**
+     * Atualizar dados específicos existentes com dados do DTO (UPDATE)
+     */
+    public void updateSpecificData(PerformanceReportRepairElevatorSpecificData specificData,
+                                   MobileReportDTO.ReportCreateUpdateDTO dto) throws Exception {
+        logger.info("📝 Updating specific data for Performance Report Repair Elevator");
+
+        JsonNode reportData = objectMapper.readTree(dto.getReportData());
+
+        // Atualizar apenas campos que existem no DTO
+        if (reportData.has("reportNumber")) {
+            specificData.setReportNumber(getStringValue(reportData, "reportNumber"));
+        }
+        if (reportData.has("inspectors") || reportData.has("inpectorsWorkers")) {
+            String inspectors = reportData.has("inspectors")
+                    ? getStringValue(reportData, "inspectors")
+                    : getStringValue(reportData, "inpectorsWorkers");
+            specificData.setInpectorsWorkers(inspectors);
+        }
+        if (reportData.has("statementOfwork")) {
+            specificData.setStatementOfwork(getStringValue(reportData, "statementOfwork"));
+        }
+        if (reportData.has("workCompleted")) {
+            specificData.setWorkCompleted(getStringValue(reportData, "workCompleted"));
+        }
+        if (reportData.has("windturbineOperable") || reportData.has("turbineOperable")) {
+            String operable = reportData.has("windturbineOperable")
+                    ? getStringValue(reportData, "windturbineOperable")
+                    : getStringValue(reportData, "turbineOperable");
+            specificData.setTurbineOperable(operable);
+        }
+        if (reportData.has("placeDate")) {
+            specificData.setPlaceDate(getStringValue(reportData, "placeDate"));
+        }
+        if (reportData.has("responsibleTechnician")) {
+            specificData.setResponsibleTechnician(getStringValue(reportData, "responsibleTechnician"));
+        }
+        if (reportData.has("performanceReport")) {
+            specificData.setPerformanceReport(getStringValue(reportData, "performanceReport"));
+        }
+
+        logger.info("✅ Specific data updated");
     }
 
+    /**
+     * Método auxiliar para extrair string do JSON
+     */
+    private String getStringValue(JsonNode node, String fieldName) {
+        if (node.has(fieldName) && !node.get(fieldName).isNull()) {
+            return node.get(fieldName).asText();
+        }
+        return null;
+    }
+
+    /**
+     * Método auxiliar para extrair integer do JSON
+     */
+    private Integer getIntegerValue(JsonNode node, String fieldName) {
+        if (node.has(fieldName) && !node.get(fieldName).isNull()) {
+            return node.get(fieldName).asInt();
+        }
+        return null;
+    }
+
+    /**
+     * Método auxiliar para definir campos adicionais na entidade Report
+     */
     private void setAdditionalField(Report report, int index, String label, String value) {
         switch (index) {
             case 1:
@@ -203,6 +246,9 @@ public class PerformanceRepairElevatorAdapter {
             case 7:
                 report.setAdditionalField7Label(label);
                 report.setAdditionalField7Text(value);
+                break;
+            default:
+                logger.warn("⚠️ Invalid additional field index: {}", index);
                 break;
         }
     }
