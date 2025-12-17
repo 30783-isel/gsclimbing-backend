@@ -902,16 +902,37 @@ public class MobileReportsController {
             List<ReportHistory> history = historyService.getReportHistory(reportId);
 
             List<MobileReportDTO.ReportHistoryDTO> historyDTOs = history.stream()
-                    .map(h -> MobileReportDTO.ReportHistoryDTO.builder()
-                            .id(h.getId())
-                            .changedBy(h.getChangedBy())
-                            .changedAt(h.getChangedAt())
-                            .action(h.getAction().name())
-                            .fieldName(h.getFieldName())
-                            .oldValue(h.getOldValue())
-                            .newValue(h.getNewValue())
-                            .description(h.getDescription())
-                            .build())
+                    .map(h -> {
+                        String oldValue = h.getOldValue();
+                        String newValue = h.getNewValue();
+
+                        // ✅ NOVO: Se é alteração de foto E ainda não tem hash, adicionar
+                        if ("photo_added".equals(h.getFieldName()) || "photo_removed".equals(h.getFieldName())) {
+                            // Verificar se já tem hash (formato: "Foto ID: 123|hash")
+                            boolean oldValueHasHash = oldValue != null && oldValue.contains("|");
+                            boolean newValueHasHash = newValue != null && newValue.contains("|");
+
+                            // Se não tem hash, buscar e adicionar
+                            if (!oldValueHasHash && oldValue != null && oldValue.startsWith("Foto ID: ")) {
+                                oldValue = addHashToPhotoValue(oldValue);
+                            }
+
+                            if (!newValueHasHash && newValue != null && newValue.startsWith("Foto ID: ")) {
+                                newValue = addHashToPhotoValue(newValue);
+                            }
+                        }
+
+                        return MobileReportDTO.ReportHistoryDTO.builder()
+                                .id(h.getId())
+                                .changedBy(h.getChangedBy())
+                                .changedAt(h.getChangedAt())
+                                .action(h.getAction().name())
+                                .fieldName(h.getFieldName())
+                                .oldValue(oldValue)
+                                .newValue(newValue)
+                                .description(h.getDescription())
+                                .build();
+                    })
                     .collect(Collectors.toList());
 
             logger.info("✅ Returning {} history entries", historyDTOs.size());
@@ -921,6 +942,33 @@ public class MobileReportsController {
             logger.error("❌ Error getting history for report {}", reportId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro ao obter histórico: " + e.getMessage());
+        }
+    }
+
+    /**
+     * ✅ NOVO MÉTODO: Adiciona hash ao valor da foto
+     * Converte "Foto ID: 123" para "Foto ID: 123|abcdef456"
+     */
+    private String addHashToPhotoValue(String photoValue) {
+        try {
+            // Extrair ID: "Foto ID: 123" -> "123"
+            String photoIdStr = photoValue.replace("Foto ID: ", "").trim();
+            Integer photoId = Integer.parseInt(photoIdStr);
+
+            // Buscar FileData para obter hash
+            Optional<FileData> fileData = fileService.readFile(photoId);
+
+            if (fileData.isPresent() && fileData.get().getHash() != null) {
+                String hash = fileData.get().getHash();
+                logger.debug("📸 Added hash to photo {}: {}", photoId, hash);
+                return "Foto ID: " + photoId + "|" + hash;
+            } else {
+                logger.warn("⚠️ Photo {} not found or has no hash", photoId);
+                return photoValue; // Retornar original se não encontrar
+            }
+        } catch (Exception e) {
+            logger.error("❌ Error adding hash to photo value: {}", photoValue, e);
+            return photoValue; // Retornar original em caso de erro
         }
     }
 
