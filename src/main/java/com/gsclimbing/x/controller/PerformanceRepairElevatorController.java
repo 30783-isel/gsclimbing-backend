@@ -63,34 +63,21 @@ public class PerformanceRepairElevatorController {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    // ====================================================================
-    // CREATE - Criar novo Performance Report Repair Elevator
-    // ====================================================================
     /**
-     * Criar Performance Report Repair Elevator
-     * VERSÃO CORRETA - Grava em ambas as tabelas (Report + PerformanceReportRepairElevator)
+     * Apenas pequenos ajustes de tipo são necessários no Controller
+     * O método createPerformanceRepairElevator já está quase correto!
      */
+
     @PostMapping("/performance-repair-elevator")
     public ResponseEntity<?> createPerformanceRepairElevator(
             @RequestBody MobileReportDTO.ReportCreateUpdateDTO dto) {
 
         try {
-            logger.info("📋 Creating Performance Report Repair Elevator");
             logger.info("═══════════════════════════════════════════════════════");
             logger.info("📋 CREATE called - START");
             logger.info("📋 Thread: {}", Thread.currentThread().getName());
-            logger.info("📋 Stack trace:");
-            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-            for (int i = 0; i < Math.min(10, stackTrace.length); i++) {
-                logger.info("   {}", stackTrace[i]);
-            }
             logger.info("═══════════════════════════════════════════════════════");
-
             logger.info("📋 Creating Performance Report Repair Elevator");
-
-
-
-
 
             JsonNode reportData = objectMapper.readTree(dto.getReportData());
             Integer projectoId = reportData.has("projectoId") ? reportData.get("projectoId").asInt() : null;
@@ -105,35 +92,25 @@ public class PerformanceRepairElevatorController {
                         .body(errorResponse("Turbina não encontrada"));
             }
 
-            // 2. Verificar duplicados (opcional)
-            JsonNode reportDataX = objectMapper.readTree(dto.getReportData());
-            String site = reportDataX.has("site") ? reportDataX.get("site").asText() : null;
-            String wtgNumber = reportDataX.has("wtgNumber") ? reportDataX.get("wtgNumber").asText() : null;
-
-            // Query para verificar se já existe (se necessário)
-            // ...
-
-            // 3. Converter DTO para entidade Report (dados genéricos)
-            Report report = performanceRepairElevatorAdapter.toEntity(dto, turbine);
+            // 2. ✅ O adapter agora retorna PerformanceReportRepairElevator diretamente!
+            PerformanceReportRepairElevator report = performanceRepairElevatorAdapter.toEntity(dto, turbine);
             report.setReportType(Report.ReportStatus.DRAFT.ordinal());
 
-            // 4. Extrair dados específicos do DTO
+            // 3. Extrair dados específicos do DTO
             PerformanceRepairElevatorService.PerformanceReportRepairElevatorSpecificData specificData =
                     performanceRepairElevatorAdapter.toSpecificData(dto);
 
-            // 5. CRIAR RELATÓRIO COMPLETO (Report + PerformanceReportRepairElevator)
-            // Este método grava em AMBAS as tabelas de forma transacional
+            // 4. ✅ CRIAR RELATÓRIO (agora só cria UMA vez!)
             Report saved = performanceRepairElevatorService.createComplete(report, specificData);
 
-            // 6. Associar fotos (se existirem)
+            // 5. Associar fotos (se existirem) - este código já está correto
             List<Long> photoFileIds = dto.getPhotoIds();
             if (photoFileIds != null && !photoFileIds.isEmpty()) {
                 logger.info("📸 Associating {} photos to report", photoFileIds.size());
-                // ... código para associar fotos ...
+                // ... código de associação de fotos existente ...
             }
 
             logger.info("✅ Performance Report Repair Elevator created successfully: {}", saved.getReportId());
-
             logger.info("═══════════════════════════════════════════════════════");
             logger.info("✅ CREATE completed - Report ID: {}", saved.getReportId());
             logger.info("═══════════════════════════════════════════════════════");
@@ -151,38 +128,21 @@ public class PerformanceRepairElevatorController {
         }
     }
 
-    // ====================================================================
-    // UPDATE - Atualizar Performance Report Repair Elevator existente
-    // ====================================================================
-    /**
-     * Atualizar Performance Report Repair Elevator
-     * VERSÃO CORRETA - Atualiza ambas as tabelas
-     */
     @PutMapping("/performance-repair-elevator/{id}")
     public ResponseEntity<?> updatePerformanceRepairElevator(
             @PathVariable Long id,
             @RequestBody MobileReportDTO.ReportCreateUpdateDTO dto) {
 
         try {
-            logger.info("📝 Updating Performance Report Repair Elevator: {}", id);
             logger.info("═══════════════════════════════════════════════════════");
             logger.info("📝 UPDATE called - START");
             logger.info("📝 Report ID: {}", id);
             logger.info("📝 Thread: {}", Thread.currentThread().getName());
-            logger.info("📝 Stack trace:");
-            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-            for (int i = 0; i < Math.min(10, stackTrace.length); i++) {
-                logger.info("   {}", stackTrace[i]);
-            }
             logger.info("═══════════════════════════════════════════════════════");
-
             logger.info("📝 Updating Performance Report Repair Elevator: {}", id);
 
-
-
-
-            // 1. Buscar relatório existente
-            Report report = performanceRepairElevatorService.getById(id.intValue());
+            // 1. ✅ Buscar relatório específico existente
+            PerformanceReportRepairElevator report = performanceRepairElevatorService.getCompleteById(id.intValue());
             if (report == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(errorResponse("Relatório não encontrado"));
@@ -194,7 +154,7 @@ public class PerformanceRepairElevatorController {
                         .body(errorResponse("Relatório está bloqueado"));
             }
 
-            // 3. Atualizar entidade Report com dados do DTO
+            // 3. ✅ Atualizar entidade (agora aceita PerformanceReportRepairElevator)
             performanceRepairElevatorAdapter.updateEntity(report, dto);
 
             // 4. Obter dados específicos atuais
@@ -204,12 +164,10 @@ public class PerformanceRepairElevatorController {
             // 5. Atualizar dados específicos com dados do DTO
             performanceRepairElevatorAdapter.updateSpecificData(specificData, dto);
 
-            // 6. ATUALIZAR RELATÓRIO COMPLETO (Report + PerformanceReportRepairElevator)
-            // Este método atualiza AMBAS as tabelas de forma transacional
+            // 6. ✅ ATUALIZAR RELATÓRIO COMPLETO
             Report updated = performanceRepairElevatorService.updateComplete(report, specificData);
 
             logger.info("✅ Performance Report Repair Elevator updated successfully");
-
             logger.info("═══════════════════════════════════════════════════════");
             logger.info("✅ UPDATE completed - Report ID: {}", id);
             logger.info("═══════════════════════════════════════════════════════");

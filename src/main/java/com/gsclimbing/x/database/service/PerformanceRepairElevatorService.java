@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Service para Performance Report Repair Elevator
- * Gere tanto a entidade Report (genérica) como PerformanceReportRepairElevator (específica)
+ * ✅ CORRIGIDO: Service para Performance Report Repair Elevator
  */
 @Service
 public class PerformanceRepairElevatorService {
@@ -30,79 +29,51 @@ public class PerformanceRepairElevatorService {
     private PerformanceReportRepairElevatorRepository performanceReportRepairElevatorRepository;
 
     /**
-     * Criar novo relatório completo (Report + PerformanceReportRepairElevator)
+     * ✅ CORRIGIDO: Criar novo relatório completo (Report + PerformanceReportRepairElevator)
      *
-     * @param report Entidade Report com dados genéricos
+     * MUDANÇA PRINCIPAL: Recebe PerformanceReportRepairElevator e salva UMA ÚNICA VEZ
+     *
+     * @param report PerformanceReportRepairElevator já criado pelo adapter
      * @param specificData Dados específicos do PerformanceReportRepairElevator
      * @return Report criado com ID gerado
      */
     @Transactional
-    public Report createComplete(Report report, PerformanceReportRepairElevatorSpecificData specificData) {
+    public Report createComplete(PerformanceReportRepairElevator report, PerformanceReportRepairElevatorSpecificData specificData) {
+        logger.info("═══════════════════════════════════════════════════════");
+        logger.info("🔧 createComplete() called");
+        logger.info("🔧 Thread: {}", Thread.currentThread().getName());
         logger.info("📝 Creating Performance Report Repair Elevator (COMPLETE)");
 
-        // 1. Primeiro, guardar o Report (tabela pai)
+        // ✅ CORREÇÃO: Não criar nova instância!
+        // O report já vem como PerformanceReportRepairElevator do adapter
+
+        // 1. Preencher dados específicos diretamente no objeto recebido
+        report.setReportNumber(specificData.getReportNumber());
+        report.setInpectorsWorkers(specificData.getInpectorsWorkers());
+        report.setStatementOfwork(specificData.getStatementOfwork());
+        report.setWorkCompleted(specificData.getWorkCompleted());
+        report.setTurbineOperable(specificData.getTurbineOperable());
+        report.setPlaceDate(specificData.getPlaceDate());
+        report.setResponsibleTechnician(specificData.getResponsibleTechnician());
+        report.setPerformanceReport(specificData.getPerformanceReport());
+
+        // 2. Definir tipo de relatório
         report.setTypeReport(REPORT_TYPE);
-        logger.info("💾 About to save Report to database...");
-        Report savedReport = reportRepository.save(report);
-        logger.info("✅ Report base created with ID: {}", savedReport.getReportId());
 
-        // 2. Depois, criar e guardar PerformanceReportRepairElevator (tabela filha)
-        PerformanceReportRepairElevator specificReport = new PerformanceReportRepairElevator();
-
-        // Copiar dados básicos do Report
-        specificReport.setReportId(savedReport.getReportId());
-        specificReport.setUuid(savedReport.getUuid());
-        specificReport.setCreateDate(savedReport.getCreateDate());
-        specificReport.setModifiedDate(savedReport.getModifiedDate());
-        specificReport.setSite(savedReport.getSite());
-        specificReport.setWtgNumber(savedReport.getWtgNumber());
-        specificReport.setWtgType(savedReport.getWtgType());
-        specificReport.setYearConstruction(savedReport.getYearConstruction());
-        specificReport.setProjectoId(savedReport.getProjectoId());
-        specificReport.setTurbinaId(savedReport.getTurbinaId());
-        specificReport.setTurbine(savedReport.getTurbine());
-        specificReport.setTypeReport(savedReport.getTypeReport());
-        specificReport.setReportType(savedReport.getReportType());
-        specificReport.setLocked(savedReport.getLocked());
-        specificReport.setPermission2Edit(savedReport.getPermission2Edit());
-        specificReport.setInsertImagesChk(savedReport.getInsertImagesChk());
-
-        // Adicionar dados específicos
-        specificReport.setReportNumber(specificData.getReportNumber());
-        specificReport.setInpectorsWorkers(specificData.getInpectorsWorkers());
-        specificReport.setStatementOfwork(specificData.getStatementOfwork());
-        specificReport.setWorkCompleted(specificData.getWorkCompleted());
-        specificReport.setTurbineOperable(specificData.getTurbineOperable());
-        specificReport.setPlaceDate(specificData.getPlaceDate());
-        specificReport.setResponsibleTechnician(specificData.getResponsibleTechnician());
-        specificReport.setPerformanceReport(specificData.getPerformanceReport());
-
+        // 3. ✅ SALVAR UMA ÚNICA VEZ
+        // Com JOINED inheritance, isto cria registos em AMBAS as tabelas (report e performance_report_repair_elevator)
         logger.info("💾 About to save PerformanceReportRepairElevator to database...");
-        PerformanceReportRepairElevator savedSpecific = performanceReportRepairElevatorRepository.save(specificReport);
-        logger.info("✅ Performance Report Repair Elevator specific data created with ID: {}", savedSpecific.getReportId());
+        PerformanceReportRepairElevator savedReport = performanceReportRepairElevatorRepository.save(report);
 
+        logger.info("✅ Report base created with ID: {}", savedReport.getReportId());
+        logger.info("✅ Performance Report Repair Elevator specific data created with SAME ID: {}", savedReport.getReportId());
         logger.info("═══════════════════════════════════════════════════════");
 
         return savedReport;
     }
 
     /**
-     * Criar novo relatório (método original - apenas Report)
-     * DEPRECATED: Use createComplete() para criar relatórios completos
-     */
-    @Transactional
-    @Deprecated
-    public Report create(Report report) {
-        logger.warn("⚠️ Using deprecated create() method. Consider using createComplete() instead.");
-        logger.info("📝 Creating Performance Report Repair Elevator (INCOMPLETE - only Report table)");
-        report.setTypeReport(REPORT_TYPE);
-        Report saved = reportRepository.save(report);
-        logger.info("✅ Report created with ID: {}", saved.getReportId());
-        return saved;
-    }
-
-    /**
-     * Atualizar relatório existente completo
+     * ✅ CORRIGIDO: Atualizar relatório existente completo
      *
      * @param report Entidade Report com dados genéricos atualizados
      * @param specificData Dados específicos atualizados
@@ -113,45 +84,48 @@ public class PerformanceRepairElevatorService {
         logger.info("═══════════════════════════════════════════════════════");
         logger.info("🔧 updateComplete() called for Report ID: {}", report.getReportId());
         logger.info("🔧 Thread: {}", Thread.currentThread().getName());
-
         logger.info("📝 Updating Performance Report Repair Elevator ID: {} (COMPLETE)", report.getReportId());
 
-        // 1. Atualizar Report (tabela pai)
-        logger.info("💾 About to update Report in database...");
-        // 1. Atualizar Report (tabela pai)
-        Report updatedReport = reportRepository.save(report);
-        logger.info("✅ Report base updated");
-
+        // 1. Buscar a entidade específica existente
         logger.info("🔍 Looking for specific data with ID: {}", report.getReportId());
-        // 2. Atualizar PerformanceReportRepairElevator (tabela filha)
         PerformanceReportRepairElevator specificReport = performanceReportRepairElevatorRepository
                 .findById(report.getReportId())
                 .orElse(null);
 
-        // Se não existir, criar novo (caso de migração de dados antigos)
         if (specificReport == null) {
-            logger.warn("⚠️ Specific data not found for Report ID: {}. Creating new entry.", report.getReportId());
-            specificReport = new PerformanceReportRepairElevator();
-
-            // Copiar TODOS os campos obrigatórios do Report
-            specificReport.setReportId(updatedReport.getReportId());
-            specificReport.setUuid(updatedReport.getUuid());
-            specificReport.setCreateDate(updatedReport.getCreateDate());
-            specificReport.setSite(updatedReport.getSite());
-            specificReport.setWtgNumber(updatedReport.getWtgNumber());
-            specificReport.setWtgType(updatedReport.getWtgType());
-            specificReport.setYearConstruction(updatedReport.getYearConstruction());
-            specificReport.setProjectoId(updatedReport.getProjectoId());
-            specificReport.setTurbinaId(updatedReport.getTurbinaId());
-            specificReport.setTurbine(updatedReport.getTurbine());
-            specificReport.setTypeReport(updatedReport.getTypeReport());
-            specificReport.setReportType(updatedReport.getReportType());
-            specificReport.setLocked(updatedReport.getLocked());
-            specificReport.setPermission2Edit(updatedReport.getPermission2Edit());
-            specificReport.setInsertImagesChk(updatedReport.getInsertImagesChk());
+            logger.error("❌ ERRO CRÍTICO: Specific data not found for Report ID: {}", report.getReportId());
+            throw new RuntimeException("PerformanceReportRepairElevator not found for ID: " + report.getReportId());
         }
 
-        // Atualizar dados específicos
+        logger.info("✅ Found existing PerformanceReportRepairElevator");
+
+        // 2. Atualizar campos básicos (do Report pai)
+        specificReport.setSite(report.getSite());
+        specificReport.setWtgNumber(report.getWtgNumber());
+        specificReport.setWtgType(report.getWtgType());
+        specificReport.setYearConstruction(report.getYearConstruction());
+        specificReport.setModifiedDate(report.getModifiedDate());
+        specificReport.setLocked(report.getLocked());
+        specificReport.setPermission2Edit(report.getPermission2Edit());
+        specificReport.setInsertImagesChk(report.getInsertImagesChk());
+
+        // Copiar campos adicionais
+        specificReport.setAdditionalField1Label(report.getAdditionalField1Label());
+        specificReport.setAdditionalField1Text(report.getAdditionalField1Text());
+        specificReport.setAdditionalField2Label(report.getAdditionalField2Label());
+        specificReport.setAdditionalField2Text(report.getAdditionalField2Text());
+        specificReport.setAdditionalField3Label(report.getAdditionalField3Label());
+        specificReport.setAdditionalField3Text(report.getAdditionalField3Text());
+        specificReport.setAdditionalField4Label(report.getAdditionalField4Label());
+        specificReport.setAdditionalField4Text(report.getAdditionalField4Text());
+        specificReport.setAdditionalField5Label(report.getAdditionalField5Label());
+        specificReport.setAdditionalField5Text(report.getAdditionalField5Text());
+        specificReport.setAdditionalField6Label(report.getAdditionalField6Label());
+        specificReport.setAdditionalField6Text(report.getAdditionalField6Text());
+        specificReport.setAdditionalField7Label(report.getAdditionalField7Label());
+        specificReport.setAdditionalField7Text(report.getAdditionalField7Text());
+
+        // 3. Atualizar dados específicos
         specificReport.setReportNumber(specificData.getReportNumber());
         specificReport.setInpectorsWorkers(specificData.getInpectorsWorkers());
         specificReport.setStatementOfwork(specificData.getStatementOfwork());
@@ -160,33 +134,18 @@ public class PerformanceRepairElevatorService {
         specificReport.setPlaceDate(specificData.getPlaceDate());
         specificReport.setResponsibleTechnician(specificData.getResponsibleTechnician());
         specificReport.setPerformanceReport(specificData.getPerformanceReport());
-        specificReport.setModifiedDate(updatedReport.getModifiedDate());
 
+        // 4. Salvar
         logger.info("💾 About to save/update PerformanceReportRepairElevator...");
-        performanceReportRepairElevatorRepository.save(specificReport);
-        logger.info("✅ Performance Report Repair Elevator specific data updated");
-
+        PerformanceReportRepairElevator updated = performanceReportRepairElevatorRepository.save(specificReport);
+        logger.info("✅ Performance Report Repair Elevator updated successfully");
         logger.info("═══════════════════════════════════════════════════════");
 
-        return updatedReport;
-    }
-
-    /**
-     * Atualizar relatório existente (método original - apenas Report)
-     * DEPRECATED: Use updateComplete() para atualizar relatórios completos
-     */
-    @Transactional
-    @Deprecated
-    public Report update(Report report) {
-        logger.warn("⚠️ Using deprecated update() method. Consider using updateComplete() instead.");
-        logger.info("📝 Updating Performance Report Repair Elevator ID: {} (INCOMPLETE - only Report table)", report.getReportId());
-        Report updated = reportRepository.save(report);
-        logger.info("✅ Report updated");
         return updated;
     }
 
     /**
-     * Obter relatório por ID
+     * Obter relatório por ID (retorna Report base)
      */
     public Report getById(Integer id) {
         return reportRepository.findById(id)
@@ -261,28 +220,68 @@ public class PerformanceRepairElevatorService {
         private String performanceReport;
 
         // Getters e Setters
-        public String getReportNumber() { return reportNumber; }
-        public void setReportNumber(String reportNumber) { this.reportNumber = reportNumber; }
+        public String getReportNumber() {
+            return reportNumber;
+        }
 
-        public String getInpectorsWorkers() { return inpectorsWorkers; }
-        public void setInpectorsWorkers(String inpectorsWorkers) { this.inpectorsWorkers = inpectorsWorkers; }
+        public void setReportNumber(String reportNumber) {
+            this.reportNumber = reportNumber;
+        }
 
-        public String getStatementOfwork() { return statementOfwork; }
-        public void setStatementOfwork(String statementOfwork) { this.statementOfwork = statementOfwork; }
+        public String getInpectorsWorkers() {
+            return inpectorsWorkers;
+        }
 
-        public String getWorkCompleted() { return workCompleted; }
-        public void setWorkCompleted(String workCompleted) { this.workCompleted = workCompleted; }
+        public void setInpectorsWorkers(String inpectorsWorkers) {
+            this.inpectorsWorkers = inpectorsWorkers;
+        }
 
-        public String getTurbineOperable() { return turbineOperable; }
-        public void setTurbineOperable(String turbineOperable) { this.turbineOperable = turbineOperable; }
+        public String getStatementOfwork() {
+            return statementOfwork;
+        }
 
-        public String getPlaceDate() { return placeDate; }
-        public void setPlaceDate(String placeDate) { this.placeDate = placeDate; }
+        public void setStatementOfwork(String statementOfwork) {
+            this.statementOfwork = statementOfwork;
+        }
 
-        public String getResponsibleTechnician() { return responsibleTechnician; }
-        public void setResponsibleTechnician(String responsibleTechnician) { this.responsibleTechnician = responsibleTechnician; }
+        public String getWorkCompleted() {
+            return workCompleted;
+        }
 
-        public String getPerformanceReport() { return performanceReport; }
-        public void setPerformanceReport(String performanceReport) { this.performanceReport = performanceReport; }
+        public void setWorkCompleted(String workCompleted) {
+            this.workCompleted = workCompleted;
+        }
+
+        public String getTurbineOperable() {
+            return turbineOperable;
+        }
+
+        public void setTurbineOperable(String turbineOperable) {
+            this.turbineOperable = turbineOperable;
+        }
+
+        public String getPlaceDate() {
+            return placeDate;
+        }
+
+        public void setPlaceDate(String placeDate) {
+            this.placeDate = placeDate;
+        }
+
+        public String getResponsibleTechnician() {
+            return responsibleTechnician;
+        }
+
+        public void setResponsibleTechnician(String responsibleTechnician) {
+            this.responsibleTechnician = responsibleTechnician;
+        }
+
+        public String getPerformanceReport() {
+            return performanceReport;
+        }
+
+        public void setPerformanceReport(String performanceReport) {
+            this.performanceReport = performanceReport;
+        }
     }
 }
