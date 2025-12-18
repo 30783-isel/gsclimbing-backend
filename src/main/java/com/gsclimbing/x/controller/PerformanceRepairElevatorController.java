@@ -76,6 +76,21 @@ public class PerformanceRepairElevatorController {
 
         try {
             logger.info("📋 Creating Performance Report Repair Elevator");
+            logger.info("═══════════════════════════════════════════════════════");
+            logger.info("📋 CREATE called - START");
+            logger.info("📋 Thread: {}", Thread.currentThread().getName());
+            logger.info("📋 Stack trace:");
+            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+            for (int i = 0; i < Math.min(10, stackTrace.length); i++) {
+                logger.info("   {}", stackTrace[i]);
+            }
+            logger.info("═══════════════════════════════════════════════════════");
+
+            logger.info("📋 Creating Performance Report Repair Elevator");
+
+
+
+
 
             JsonNode reportData = objectMapper.readTree(dto.getReportData());
             Integer projectoId = reportData.has("projectoId") ? reportData.get("projectoId").asInt() : null;
@@ -119,6 +134,10 @@ public class PerformanceRepairElevatorController {
 
             logger.info("✅ Performance Report Repair Elevator created successfully: {}", saved.getReportId());
 
+            logger.info("═══════════════════════════════════════════════════════");
+            logger.info("✅ CREATE completed - Report ID: {}", saved.getReportId());
+            logger.info("═══════════════════════════════════════════════════════");
+
             return ResponseEntity.ok(successResponse(
                     "Report created successfully",
                     "reportId", saved.getReportId(),
@@ -146,6 +165,21 @@ public class PerformanceRepairElevatorController {
 
         try {
             logger.info("📝 Updating Performance Report Repair Elevator: {}", id);
+            logger.info("═══════════════════════════════════════════════════════");
+            logger.info("📝 UPDATE called - START");
+            logger.info("📝 Report ID: {}", id);
+            logger.info("📝 Thread: {}", Thread.currentThread().getName());
+            logger.info("📝 Stack trace:");
+            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+            for (int i = 0; i < Math.min(10, stackTrace.length); i++) {
+                logger.info("   {}", stackTrace[i]);
+            }
+            logger.info("═══════════════════════════════════════════════════════");
+
+            logger.info("📝 Updating Performance Report Repair Elevator: {}", id);
+
+
+
 
             // 1. Buscar relatório existente
             Report report = performanceRepairElevatorService.getById(id.intValue());
@@ -175,6 +209,10 @@ public class PerformanceRepairElevatorController {
             Report updated = performanceRepairElevatorService.updateComplete(report, specificData);
 
             logger.info("✅ Performance Report Repair Elevator updated successfully");
+
+            logger.info("═══════════════════════════════════════════════════════");
+            logger.info("✅ UPDATE completed - Report ID: {}", id);
+            logger.info("═══════════════════════════════════════════════════════");
 
             return ResponseEntity.ok(successResponse(
                     "Report updated successfully",

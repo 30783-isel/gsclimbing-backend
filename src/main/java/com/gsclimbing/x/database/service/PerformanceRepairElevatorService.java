@@ -42,6 +42,7 @@ public class PerformanceRepairElevatorService {
 
         // 1. Primeiro, guardar o Report (tabela pai)
         report.setTypeReport(REPORT_TYPE);
+        logger.info("💾 About to save Report to database...");
         Report savedReport = reportRepository.save(report);
         logger.info("✅ Report base created with ID: {}", savedReport.getReportId());
 
@@ -76,8 +77,11 @@ public class PerformanceRepairElevatorService {
         specificReport.setResponsibleTechnician(specificData.getResponsibleTechnician());
         specificReport.setPerformanceReport(specificData.getPerformanceReport());
 
+        logger.info("💾 About to save PerformanceReportRepairElevator to database...");
         PerformanceReportRepairElevator savedSpecific = performanceReportRepairElevatorRepository.save(specificReport);
         logger.info("✅ Performance Report Repair Elevator specific data created with ID: {}", savedSpecific.getReportId());
+
+        logger.info("═══════════════════════════════════════════════════════");
 
         return savedReport;
     }
@@ -106,12 +110,19 @@ public class PerformanceRepairElevatorService {
      */
     @Transactional
     public Report updateComplete(Report report, PerformanceReportRepairElevatorSpecificData specificData) {
+        logger.info("═══════════════════════════════════════════════════════");
+        logger.info("🔧 updateComplete() called for Report ID: {}", report.getReportId());
+        logger.info("🔧 Thread: {}", Thread.currentThread().getName());
+
         logger.info("📝 Updating Performance Report Repair Elevator ID: {} (COMPLETE)", report.getReportId());
 
+        // 1. Atualizar Report (tabela pai)
+        logger.info("💾 About to update Report in database...");
         // 1. Atualizar Report (tabela pai)
         Report updatedReport = reportRepository.save(report);
         logger.info("✅ Report base updated");
 
+        logger.info("🔍 Looking for specific data with ID: {}", report.getReportId());
         // 2. Atualizar PerformanceReportRepairElevator (tabela filha)
         PerformanceReportRepairElevator specificReport = performanceReportRepairElevatorRepository
                 .findById(report.getReportId())
@@ -151,8 +162,11 @@ public class PerformanceRepairElevatorService {
         specificReport.setPerformanceReport(specificData.getPerformanceReport());
         specificReport.setModifiedDate(updatedReport.getModifiedDate());
 
+        logger.info("💾 About to save/update PerformanceReportRepairElevator...");
         performanceReportRepairElevatorRepository.save(specificReport);
         logger.info("✅ Performance Report Repair Elevator specific data updated");
+
+        logger.info("═══════════════════════════════════════════════════════");
 
         return updatedReport;
     }
