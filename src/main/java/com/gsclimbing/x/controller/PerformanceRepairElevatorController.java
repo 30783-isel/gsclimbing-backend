@@ -436,41 +436,65 @@ public class PerformanceRepairElevatorController {
 // GET PHOTOS - Obter fotos de um relatório
 // ====================================================================
     /**
-     * Obter fotos de um Performance Report
+     * Obter fotos de um Performance Report Repair Elevator
+     *
+     * Endpoint: GET /api/reports/mobile/performance-repair-elevator/{id}/photos
+     *
+     * @param id ID do relatório
+     * @return Lista de fotos com URLs para download
      */
     @GetMapping("/performance-repair-elevator/{id}/photos")
     public ResponseEntity<?> getPerformanceRepairElevatorPhotos(@PathVariable Long id) {
         try {
             logger.info("📸 Fetching photos for Performance Report: {}", id);
 
+            // 1. Buscar relatório
             Report report = performanceRepairElevatorService.getById(id.intValue());
 
             if (report == null) {
+                logger.error("❌ Report not found with ID: {}", id);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(errorResponse("Relatório não encontrado"));
+                        .body(errorResponse("Report not found with ID: " + id));
             }
 
-            List<FileData> photos = fileService.readFile(report.getUuid());
+            // 2. Buscar fotos ativas usando o UUID do relatório
+            List<FileData> photos = fileService.readActiveFilesByUuid(report.getUuid());
 
+            if (photos == null || photos.isEmpty()) {
+                logger.info("ℹ️ No active photos found for report {}", id);
+                return ResponseEntity.ok(new ArrayList<>());
+            }
+
+            // 3. Converter para DTOs com URLs de download
             List<Map<String, Object>> photoList = new ArrayList<>();
+
             for (FileData photo : photos) {
                 Map<String, Object> photoData = new HashMap<>();
                 photoData.put("fileId", photo.getFileId());
                 photoData.put("hash", photo.getHash());
-                photoData.put("downloadUrl", "reports/mobile/files/download/" + photo.getHash());
-                // ... outros campos
+                photoData.put("name", photo.getName());
+                photoData.put("description", photo.getDescription());
+                photoData.put("mimeType", photo.getMimeType());
+                photoData.put("size", photo.getSize());
+                photoData.put("createDate", photo.getCreateDate());
+
+                // URL para download da foto
+                // O frontend usa este caminho para fazer download via /api/reports/mobile/files/download/{hash}
+                photoData.put("downloadUrl", "/api/reports/mobile/files/download/" + photo.getHash());
+
                 photoList.add(photoData);
             }
 
-            logger.info("✅ Found {} photos", photos.size());
+            logger.info("✅ Returning {} active photos for report {}", photoList.size(), id);
             return ResponseEntity.ok(photoList);
 
         } catch (Exception e) {
-            logger.error("❌ Error fetching photos", e);
+            logger.error("❌ Error getting photos for report {}", id, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(errorResponse("Error fetching photos: " + e.getMessage()));
+                    .body(errorResponse("Error getting photos: " + e.getMessage()));
         }
     }
+
 
 // ====================================================================
 // MÉTODO AUXILIAR - Obter valor de campo adicional (para Report genérico)
