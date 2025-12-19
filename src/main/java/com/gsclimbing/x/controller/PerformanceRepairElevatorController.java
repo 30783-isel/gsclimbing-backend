@@ -21,9 +21,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -131,57 +133,247 @@ public class PerformanceRepairElevatorController {
     @PutMapping("/performance-repair-elevator/{id}")
     public ResponseEntity<?> updatePerformanceRepairElevator(
             @PathVariable Long id,
-            @RequestBody MobileReportDTO.ReportCreateUpdateDTO dto) {
+            @RequestBody MobileReportDTO.ReportCreateUpdateDTO dto,
+            Authentication authentication) {  // ✅ ADICIONAR Authentication
 
         try {
+            // ✅ OBTER USERNAME DO UTILIZADOR LOGADO
+            String username = authentication.getName();
+
             logger.info("═══════════════════════════════════════════════════════");
             logger.info("📝 UPDATE called - START");
             logger.info("📝 Report ID: {}", id);
-            logger.info("📝 Thread: {}", Thread.currentThread().getName());
+            logger.info("📝 User: {}", username);
             logger.info("═══════════════════════════════════════════════════════");
-            logger.info("📝 Updating Performance Report Repair Elevator: {}", id);
 
             // 1. ✅ Buscar relatório específico existente
-            PerformanceReportRepairElevator report = performanceRepairElevatorService.getCompleteById(id.intValue());
-            if (report == null) {
+            PerformanceReportRepairElevator oldReport = performanceRepairElevatorService.getCompleteById(id.intValue());
+            if (oldReport == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(errorResponse("Relatório não encontrado"));
             }
 
-            // 2. Verificar permissões (se necessário)
-            if ("Y".equals(report.getLocked())) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(errorResponse("Relatório está bloqueado"));
+            // ✅ GUARDAR VALORES ANTIGOS ANTES DE ATUALIZAR
+            String oldSite = oldReport.getSite();
+            String oldWtgNumber = oldReport.getWtgNumber();
+            String oldWtgType = oldReport.getWtgType();
+            String oldYearConstruction = oldReport.getYearConstruction();
+            String oldReportNumber = oldReport.getReportNumber();
+            String oldInspectorsWorkers = oldReport.getInpectorsWorkers();
+            String oldStatementOfWork = oldReport.getStatementOfwork();
+            String oldWorkCompleted = oldReport.getWorkCompleted();
+            String oldTurbineOperable = oldReport.getTurbineOperable();
+            String oldPlaceDate = oldReport.getPlaceDate();
+            String oldResponsibleTechnician = oldReport.getResponsibleTechnician();
+            String oldPerformanceReport = oldReport.getPerformanceReport();
+
+            // Guardar campos adicionais antigos
+            Map<String, String> oldAdditionalFields = new HashMap<>();
+            for (int i = 1; i <= 3; i++) {
+                oldAdditionalFields.put("additionalField" + i + "Label", getAdditionalFieldValue(oldReport, i, true));
+                oldAdditionalFields.put("additionalField" + i + "Text", getAdditionalFieldValue(oldReport, i, false));
             }
 
-            // 3. ✅ Atualizar entidade (agora aceita PerformanceReportRepairElevator)
-            performanceRepairElevatorAdapter.updateEntity(report, dto);
+            // ✅ GUARDAR FOTOS ANTIGAS (excluindo as recém-carregadas)
+            List<FileData> allPhotosFileData = fileService.readFile(oldReport.getUuid());
+            LocalDateTime twoSecondsAgo = LocalDateTime.now().minusSeconds(2);
 
-            // 4. Obter dados específicos atuais
+            List<Long> oldPhotoIds = allPhotosFileData.stream()
+                    .filter(fd -> fd != null && fd.getFileId() != null)
+                    .filter(FileData::isActive)
+                    .filter(fd -> fd.getCreateDate() != null && fd.getCreateDate().isBefore(twoSecondsAgo))
+                    .map(FileData::getFileId)
+                    .map(Integer::longValue)
+                    .collect(Collectors.toList());
+
+            logger.info("📸 FOTOS ANTIGAS (>2s): {} fotos encontradas", oldPhotoIds.size());
+
+            // 2. ✅ Atualizar entidade
+            performanceRepairElevatorAdapter.updateEntity(oldReport, dto);
+
+            // 3. Obter dados específicos do DTO
             PerformanceRepairElevatorService.PerformanceReportRepairElevatorSpecificData specificData =
                     new PerformanceRepairElevatorService.PerformanceReportRepairElevatorSpecificData();
 
-            // 5. Atualizar dados específicos com dados do DTO
+            // 4. Atualizar dados específicos
             performanceRepairElevatorAdapter.updateSpecificData(specificData, dto);
 
-            // 6. ✅ ATUALIZAR RELATÓRIO COMPLETO
-            Report updated = performanceRepairElevatorService.updateComplete(report, specificData);
+            // 5. ✅ ATUALIZAR RELATÓRIO COMPLETO
+            Report updated = performanceRepairElevatorService.updateComplete(oldReport, specificData);
+
+            // ✅ OBTER VALORES NOVOS APÓS ATUALIZAÇÃO
+            PerformanceReportRepairElevator newReport = performanceRepairElevatorService.getCompleteById(id.intValue());
+
+            // ✅ 6. DETECTAR E REGISTAR ALTERAÇÕES NOS CAMPOS
+            logger.info("🔍 Detecting field changes...");
+            List<FieldChange> fieldChanges = new ArrayList<>();
+
+            // Comparar campos básicos
+            if (!Objects.equals(oldSite, newReport.getSite())) {
+                fieldChanges.add(new FieldChange("site", oldSite, newReport.getSite()));
+            }
+            if (!Objects.equals(oldWtgNumber, newReport.getWtgNumber())) {
+                fieldChanges.add(new FieldChange("wtgNumber", oldWtgNumber, newReport.getWtgNumber()));
+            }
+            if (!Objects.equals(oldWtgType, newReport.getWtgType())) {
+                fieldChanges.add(new FieldChange("wtgType", oldWtgType, newReport.getWtgType()));
+            }
+            if (!Objects.equals(oldYearConstruction, newReport.getYearConstruction())) {
+                fieldChanges.add(new FieldChange("yearConstruction", oldYearConstruction, newReport.getYearConstruction()));
+            }
+
+            // Comparar campos específicos
+            if (!Objects.equals(oldReportNumber, newReport.getReportNumber())) {
+                fieldChanges.add(new FieldChange("reportNumber", oldReportNumber, newReport.getReportNumber()));
+            }
+            if (!Objects.equals(oldInspectorsWorkers, newReport.getInpectorsWorkers())) {
+                fieldChanges.add(new FieldChange("inspectorsWorkers", oldInspectorsWorkers, newReport.getInpectorsWorkers()));
+            }
+            if (!Objects.equals(oldStatementOfWork, newReport.getStatementOfwork())) {
+                fieldChanges.add(new FieldChange("statementOfWork", oldStatementOfWork, newReport.getStatementOfwork()));
+            }
+            if (!Objects.equals(oldWorkCompleted, newReport.getWorkCompleted())) {
+                fieldChanges.add(new FieldChange("workCompleted", oldWorkCompleted, newReport.getWorkCompleted()));
+            }
+            if (!Objects.equals(oldTurbineOperable, newReport.getTurbineOperable())) {
+                fieldChanges.add(new FieldChange("turbineOperable", oldTurbineOperable, newReport.getTurbineOperable()));
+            }
+            if (!Objects.equals(oldPlaceDate, newReport.getPlaceDate())) {
+                fieldChanges.add(new FieldChange("placeDate", oldPlaceDate, newReport.getPlaceDate()));
+            }
+            if (!Objects.equals(oldResponsibleTechnician, newReport.getResponsibleTechnician())) {
+                fieldChanges.add(new FieldChange("responsibleTechnician", oldResponsibleTechnician, newReport.getResponsibleTechnician()));
+            }
+            if (!Objects.equals(oldPerformanceReport, newReport.getPerformanceReport())) {
+                fieldChanges.add(new FieldChange("performanceReport", oldPerformanceReport, newReport.getPerformanceReport()));
+            }
+
+            // Comparar campos adicionais
+            for (int i = 1; i <= 3; i++) {
+                String labelKey = "additionalField" + i + "Label";
+                String textKey = "additionalField" + i + "Text";
+
+                String oldLabel = oldAdditionalFields.get(labelKey);
+                String newLabel = getAdditionalFieldValue(newReport, i, true);
+                if (!Objects.equals(oldLabel, newLabel)) {
+                    fieldChanges.add(new FieldChange(labelKey, oldLabel, newLabel));
+                }
+
+                String oldText = oldAdditionalFields.get(textKey);
+                String newText = getAdditionalFieldValue(newReport, i, false);
+                if (!Objects.equals(oldText, newText)) {
+                    fieldChanges.add(new FieldChange(textKey, oldText, newText));
+                }
+            }
+
+            logger.info("📊 Detected {} field changes", fieldChanges.size());
+
+            // ✅ REGISTAR ALTERAÇÕES NO HISTÓRICO
+            for (FieldChange fieldChange : fieldChanges) {
+                historyService.createFieldChangeEntry(
+                        updated,
+                        username,
+                        fieldChange.getFieldName(),
+                        fieldChange.getOldValue(),
+                        fieldChange.getNewValue()
+                );
+                logger.info("✏️ Field '{}' changed: '{}' -> '{}'",
+                        fieldChange.getFieldName(),
+                        fieldChange.getOldValue(),
+                        fieldChange.getNewValue());
+            }
+
+            // ✅ 7. PROCESSAR ALTERAÇÕES DE FOTOS
+            logger.info("🔍 ========== COMPARAÇÃO DE FOTOS ==========");
+
+            if (dto.getPhotoIds() != null && !dto.getPhotoIds().isEmpty()) {
+                logger.info("📸 DTO photoIds: {}", dto.getPhotoIds());
+
+                // Converter IDs do DTO para Long
+                List<Long> newPhotoIds = dto.getPhotoIds();
+
+                logger.info("📸 FOTOS NOVAS: {} fotos", newPhotoIds.size());
+                logger.info("🔍 Comparando fotos antigas vs novas...");
+                logger.info("   Antigas (>2s): {}", oldPhotoIds);
+                logger.info("   Novas: {}", newPhotoIds);
+
+                // Se não havia fotos antigas, são as PRIMEIRAS fotos → NÃO registar no histórico
+                if (oldPhotoIds.isEmpty() && !newPhotoIds.isEmpty()) {
+                    logger.info("ℹ️ Primeiras fotos do relatório - não registar no histórico");
+                } else {
+                    // Comparar fotos APENAS se já existiam fotos antigas
+                    List<FieldChange> photoChanges = comparisonService.comparePhotos(oldPhotoIds, newPhotoIds);
+
+                    logger.info("📊 Resultado da comparação: {} alterações de fotos", photoChanges.size());
+
+                    // Registar e processar remoções
+                    for (FieldChange photoChange : photoChanges) {
+                        historyService.createFieldChangeEntry(
+                                updated,
+                                username,
+                                photoChange.getFieldName(),
+                                photoChange.getOldValue(),
+                                photoChange.getNewValue()
+                        );
+                        logger.info("📸 {} | OLD: '{}' | NEW: '{}'",
+                                photoChange.getFieldName(),
+                                photoChange.getOldValue(),
+                                photoChange.getNewValue());
+
+                        // Se foi removida, apagar fisicamente
+                        if ("photo_removed".equals(photoChange.getFieldName())) {
+                            try {
+                                String oldValue = photoChange.getOldValue();
+                                if (oldValue != null && oldValue.startsWith("Foto ID: ")) {
+                                    String photoIdStr = oldValue.replace("Foto ID: ", "").split("\\|")[0].trim();
+                                    Integer photoId = Integer.parseInt(photoIdStr);
+
+                                    logger.info("🗑️ Apagando foto removida: ID {}", photoId);
+                                    fileService.deleteFile(photoId);
+                                    logger.info("✅ Foto {} marcada como removida", photoId);
+                                }
+                            } catch (Exception e) {
+                                logger.error("❌ Erro ao apagar foto: {}", photoChange.getOldValue(), e);
+                            }
+                        }
+                    }
+                }
+            } else {
+                logger.info("ℹ️ Nenhum photoId fornecido no DTO");
+            }
 
             logger.info("✅ Performance Report Repair Elevator updated successfully");
             logger.info("═══════════════════════════════════════════════════════");
-            logger.info("✅ UPDATE completed - Report ID: {}", id);
+            logger.info("✅ UPDATE completed - Report ID: {} - {} changes", id, fieldChanges.size());
             logger.info("═══════════════════════════════════════════════════════");
 
             return ResponseEntity.ok(successResponse(
                     "Report updated successfully",
                     "reportId", updated.getReportId(),
-                    "uuid", updated.getUuid()
+                    "uuid", updated.getUuid(),
+                    "changes", fieldChanges.size()
             ));
 
         } catch (Exception e) {
             logger.error("❌ Error updating Performance Report Repair Elevator", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(errorResponse("Error updating report: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * ✅ MÉTODO AUXILIAR: Obter valor de campo adicional
+     */
+    private String getAdditionalFieldValue(PerformanceReportRepairElevator report, int fieldNumber, boolean isLabel) {
+        switch (fieldNumber) {
+            case 1:
+                return isLabel ? report.getAdditionalField1Label() : report.getAdditionalField1Text();
+            case 2:
+                return isLabel ? report.getAdditionalField2Label() : report.getAdditionalField2Text();
+            case 3:
+                return isLabel ? report.getAdditionalField3Label() : report.getAdditionalField3Text();
+            default:
+                return null;
         }
     }
 
