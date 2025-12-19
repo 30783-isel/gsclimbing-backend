@@ -134,7 +134,7 @@ public class PerformanceRepairElevatorController {
     public ResponseEntity<?> updatePerformanceRepairElevator(
             @PathVariable Long id,
             @RequestBody MobileReportDTO.ReportCreateUpdateDTO dto,
-            Authentication authentication) {  // ✅ ADICIONAR Authentication
+            Authentication authentication) {
 
         try {
             // ✅ OBTER USERNAME DO UTILIZADOR LOGADO
@@ -187,6 +187,7 @@ public class PerformanceRepairElevatorController {
                     .collect(Collectors.toList());
 
             logger.info("📸 FOTOS ANTIGAS (>2s): {} fotos encontradas", oldPhotoIds.size());
+            oldPhotoIds.forEach(photoId -> logger.info("   - Foto antiga ID: {}", photoId));
 
             // 2. ✅ Atualizar entidade
             performanceRepairElevatorAdapter.updateEntity(oldReport, dto);
@@ -293,6 +294,8 @@ public class PerformanceRepairElevatorController {
                 List<Long> newPhotoIds = dto.getPhotoIds();
 
                 logger.info("📸 FOTOS NOVAS: {} fotos", newPhotoIds.size());
+                newPhotoIds.forEach(photoId -> logger.info("   - Foto nova ID: {}", photoId));
+
                 logger.info("🔍 Comparando fotos antigas vs novas...");
                 logger.info("   Antigas (>2s): {}", oldPhotoIds);
                 logger.info("   Novas: {}", newPhotoIds);
@@ -344,7 +347,7 @@ public class PerformanceRepairElevatorController {
 
             logger.info("✅ Performance Report Repair Elevator updated successfully");
             logger.info("═══════════════════════════════════════════════════════");
-            logger.info("✅ UPDATE completed - Report ID: {} - {} changes", id, fieldChanges.size());
+            logger.info("✅ UPDATE completed - Report ID: {} - {} field changes", id, fieldChanges.size());
             logger.info("═══════════════════════════════════════════════════════");
 
             return ResponseEntity.ok(successResponse(
