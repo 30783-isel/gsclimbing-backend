@@ -195,15 +195,24 @@ public class PerformanceRepairElevatorService {
     public void delete(Integer id) {
         logger.info("🗑️ Deleting Performance Report Repair Elevator ID: {}", id);
 
-        // Eliminar dados específicos primeiro
-        if (performanceReportRepairElevatorRepository.existsById(id)) {
-            performanceReportRepairElevatorRepository.deleteById(id);
-            logger.info("✅ Specific data deleted");
-        }
+        try {
+            // ✅ CORREÇÃO: Eliminar diretamente pela tabela específica
+            // Com JOINED inheritance, isto elimina automaticamente da tabela pai (report) também
 
-        // Depois eliminar o Report base
-        reportRepository.deleteById(id);
-        logger.info("✅ Report deleted");
+            // Verificar se existe
+            if (!performanceReportRepairElevatorRepository.existsById(id)) {
+                logger.error("❌ Performance Report Repair Elevator não encontrado: {}", id);
+                throw new RuntimeException("Performance Report Repair Elevator not found with ID: " + id);
+            }
+
+            // Eliminar (com cascade, elimina também da tabela report)
+            performanceReportRepairElevatorRepository.deleteById(id);
+            logger.info("✅ Performance Report Repair Elevator deleted successfully");
+
+        } catch (Exception e) {
+            logger.error("❌ Error deleting Performance Report Repair Elevator: {}", id, e);
+            throw new RuntimeException("Error deleting report: " + e.getMessage(), e);
+        }
     }
 
     /**
