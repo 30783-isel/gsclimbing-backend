@@ -532,7 +532,7 @@ public class DefectInspectionReportsController {
                 photoData.put("mimeType", photo.getMimeType());
                 photoData.put("size", photo.getSize());
                 photoData.put("createDate", photo.getCreateDate());
-                photoData.put("downloadUrl", "reports/files/download/" + photo.getHash());
+                photoData.put("downloadUrl", "/api/reports/mobile/files/download/" + photo.getHash());
 
                 photoList.add(photoData);
             }
