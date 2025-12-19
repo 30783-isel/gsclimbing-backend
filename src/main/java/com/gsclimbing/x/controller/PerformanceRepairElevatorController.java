@@ -411,21 +411,80 @@ public class PerformanceRepairElevatorController {
     /**
      * Obter histórico de alterações de um Performance Report
      */
+    /**
+     * GET /api/reports/mobile/performance-repair-elevator/{id}/history
+     * Obter histórico de alterações de um Performance Report Repair Elevator
+     */
     @GetMapping("/performance-repair-elevator/{id}/history")
     public ResponseEntity<?> getPerformanceRepairElevatorHistory(@PathVariable Long id) {
         try {
-            logger.info("📜 Fetching history for Performance Report: {}", id);
+            logger.info("📜 Getting history for Performance Report: {}", id);
 
             List<ReportHistory> history = historyService.getReportHistory(id);
 
-            logger.info("✅ Found {} history entries", history.size());
-            return ResponseEntity.ok(history);
+            // ✅ CONVERTER para DTO (igual ao Defect Inspection)
+            List<MobileReportDTO.ReportHistoryDTO> historyDTOs = history.stream()
+                    .map(h -> {
+                        String oldValue = h.getOldValue();
+                        String newValue = h.getNewValue();
+
+                        // ✅ Se é alteração de foto E ainda não tem hash, adicionar
+                        if ("photo_added".equals(h.getFieldName()) || "photo_removed".equals(h.getFieldName())) {
+                            boolean oldValueHasHash = oldValue != null && oldValue.contains("|");
+                            boolean newValueHasHash = newValue != null && newValue.contains("|");
+
+                            if (!oldValueHasHash && oldValue != null && oldValue.startsWith("Foto ID: ")) {
+                                oldValue = addHashToPhotoValue(oldValue);
+                            }
+
+                            if (!newValueHasHash && newValue != null && newValue.startsWith("Foto ID: ")) {
+                                newValue = addHashToPhotoValue(newValue);
+                            }
+                        }
+
+                        return MobileReportDTO.ReportHistoryDTO.builder()
+                                .id(h.getId())
+                                .changedBy(h.getChangedBy())
+                                .changedAt(h.getChangedAt())
+                                .action(h.getAction().name())
+                                .fieldName(h.getFieldName())
+                                .oldValue(oldValue)
+                                .newValue(newValue)
+                                .description(h.getDescription())
+                                .build();
+                    })
+                    .collect(Collectors.toList());
+
+            logger.info("✅ Returning {} history entries", historyDTOs.size());
+            return ResponseEntity.ok(historyDTOs);
 
         } catch (Exception e) {
-            logger.error("❌ Error fetching report history", e);
+            logger.error("❌ Error getting history for Performance Report {}", id, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(errorResponse("Error fetching history: " + e.getMessage()));
+                    .body("Erro ao obter histórico: " + e.getMessage());
         }
+    }
+
+    /**
+     * ✅ MÉTODO AUXILIAR: Adicionar hash às fotos
+     * (Copiar do DefectInspectionReportsController)
+     */
+    private String addHashToPhotoValue(String photoValue) {
+        try {
+            // Extrair ID da foto: "Foto ID: 123" -> 123
+            String idStr = photoValue.replace("Foto ID: ", "").trim();
+            Integer photoId = Integer.parseInt(idStr);
+
+            // Buscar foto no banco de dados
+            Optional<FileData> photo = fileService.readFile(photoId);
+            if (photo.isPresent() && photo.get().getHash() != null) {
+                // Adicionar hash: "Foto ID: 123|abc123..."
+                return photoValue + "|" + photo.get().getHash();
+            }
+        } catch (Exception e) {
+            logger.warn("⚠️ Não foi possível adicionar hash à foto: {}", photoValue, e);
+        }
+        return photoValue;
     }
 
 // ====================================================================
