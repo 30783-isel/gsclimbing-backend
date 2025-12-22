@@ -5,8 +5,14 @@ import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.x.dto.DefectInspectionReportDTO;
 import com.gsclimbing.x.pdf.defectInspectionReport.DefectInspectionPdfService;
+import com.gsclimbing.x.util.DefectInstectionReportUtils;
 import com.lowagie.text.pdf.PdfReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,74 +36,61 @@ import java.util.UUID;
 @RequestMapping(path = "/api/reports/pdf")
 public class PDFController {
 
-    @GetMapping("/generate-defect-inspection-report")
-    public void generateGefectInspectionReport() {
+    @Autowired
+    private DefectInstectionReportUtils defectInstectionReportUtils;
+    private static final Logger logger = LoggerFactory.getLogger(PDFController.class);
+    @GetMapping("/generate-defect-inspection-report/{reportId}")
+    public ResponseEntity<?> generateGefectInspectionReport(@PathVariable Integer reportId) {
         try {
-            // DTO de exemplo
-            DefectInspectionReportDTO dto = buildSampleDto();
-
+            DefectInspectionReportDTO dto = defectInstectionReportUtils.getDefectInspectionReportDto(reportId);
             // Template via classpath
             ClassPathResource templateResource =
                     new ClassPathResource("templates/Defect Inspection Report.pdf");
-
             PdfReader reader;
             try (InputStream is = templateResource.getInputStream()) {
                 reader = new PdfReader(is);
             }
-
             // Garantir que a pasta de output existe
             File outputDir = new File("output");
             if (!outputDir.exists()) {
                 outputDir.mkdirs();
             }
-
-            // Output stream para o PDF
             try (FileOutputStream fos = new FileOutputStream(
-                    "output/report-" + dto.getWtgNumber() + ".pdf")) {
-
-                // Aqui chamaria o serviço de geração, passando reader e fos
+                    "output/Defect Inspection Report-" + dto.getWtgNumber() + ".pdf")) {
                 DefectInspectionPdfService pdfService = new DefectInspectionPdfService();
                 pdfService.generate(dto, reader, fos);
-
             }
-
-            System.out.println("PDF gerado com sucesso em output/");
-
+            logger.info("PDF gerado com sucesso em output/");
+            return ResponseEntity.status(HttpStatus.CREATED).body("Defect Inspection Report Created");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("❌ Error creating Defect Inspection Report PDF", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error creating Defect Inspection Report PDF: " + e.getMessage());
         }
     }
 
     public static DefectInspectionReportDTO buildSampleDto() {
         LocalDateTime now = LocalDateTime.now();
         DefectInspectionReportDTO dto = DefectInspectionReportDTO.builder()
-                // ---------- Dados base ----------
                 .site("Parque Eólico de Sines")
                 .wtgNumber("WTG-07")
                 .wtgType("Vestas V90")
                 .yearConstruction("2018")
-
                 .projectoId(101)
                 .turbinaId(7)
-
                 .userId("mobile-user-123")
                 .reportType(0)
-
                 // ---------- Estado ----------
                 .status(Report.ReportStatus.DRAFT)
                 .syncStatus(Report.SyncStatus.SYNCED)
                 .offlineCreated(false)
-
                 // ---------- Datas ----------
                 .createdAt(now)
                 .updatedAt(now)
                 .submittedAt(now)
-
                 .submittedBy("joao.silva")
-
                 // ---------- Idioma ----------
                 .language("EN")
-
                 // ---------- Campos adicionais ----------
                 .additionalField1(
                         DefectInspectionReportDTO.AdditionalFieldDTO.builder()
@@ -143,29 +136,23 @@ public class PDFController {
                 )
 
                 .build();
-
         // ---------- Fotos ----------
         dto.setListaFileData(Arrays.asList(
                 createFileData("foto1.jpg", "Corrosão na escada"),
                 createFileData("foto2.jpg", "Desgaste no ponto de ancoragem"),
                 createFileData("foto3.jpg", "Fixação danificada no patamar intermédio")
         ));
-
-        // IDs das fotos (simulação mobile)
         dto.setPhotoFileIds(Arrays.asList(
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString()
         ));
-
         return dto;
     }
-
     // ---------------------------------------
     // FileData mock (sem JPA)
     // ---------------------------------------
     private static FileData createFileData(String path, String description) {
-
         FileData f = new FileData();
         f.setUrl(path);
         f.setDescription(description);
@@ -173,7 +160,6 @@ public class PDFController {
         f.setIsDeleted("N");
         f.setMimeType("image/jpeg");
         f.setName(path);
-
         return f;
     }
 }
