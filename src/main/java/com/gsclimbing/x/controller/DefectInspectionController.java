@@ -135,7 +135,7 @@ public class DefectInspectionController {
             // Associar fotos ao relatório
             int numberPictures = 0;
             if (dto.getPhotoIds() != null && !dto.getPhotoIds().isEmpty()) {
-                numberPictures = associatePhotosToReport(
+                numberPictures = defectInstectionReportUtils.associatePhotosToReport(
                         savedReport.getReportId(),
                         dto.getPhotoIds().stream()
                                 .map(String::valueOf)
@@ -297,7 +297,7 @@ public class DefectInspectionController {
             // Associar fotos ao relatório (se foram enviados IDs)
             int numberPictures = 0;
             if (dto.getPhotoFileIds() != null && !dto.getPhotoFileIds().isEmpty()) {
-                numberPictures = associatePhotosToReport(
+                numberPictures = defectInstectionReportUtils.associatePhotosToReport(
                         savedReport.getReportId(),
                         dto.getPhotoFileIds()
                 );
@@ -317,63 +317,7 @@ public class DefectInspectionController {
     }
 
 
-    /**
-     * Associar fotos já carregadas ao relatório
-     * ✅ SUPORTA tanto IDs numéricos como hashes (UUIDs)
-     *
-     * @param reportId     ID do relatório
-     * @param photoFileIds Lista de IDs ou hashes de ficheiros de fotos
-     * @return Número de fotos associadas
-     */
-    private int associatePhotosToReport(Integer reportId, List<String> photoFileIds) {
-        int count = 0;
 
-        logger.info("🔗 Associando {} fotos ao relatório {}", photoFileIds.size(), reportId);
-
-        for (String fileId : photoFileIds) {
-            try {
-                FileData fileData = null;
-
-                // Tentar converter para Integer (caso seja ID numérico)
-                try {
-                    Integer numericId = Integer.parseInt(fileId);
-                    Optional<FileData> optionalFileData = fileService.readFile(numericId);
-
-                    if (optionalFileData.isPresent()) {
-                        fileData = optionalFileData.get();
-                        logger.info("   ✅ Foto encontrada por ID: {}", numericId);
-                    } else {
-                        logger.warn("   ⚠️ FileData não encontrado para ID: {}", numericId);
-                    }
-
-                } catch (NumberFormatException e) {
-                    // Não é número, tentar buscar por hash (UUID)
-                    logger.info("   🔍 '{}' não é número, buscando por hash...", fileId);
-                    fileData = fileService.readFileByHash(fileId);
-
-                    if (fileData != null) {
-                        logger.info("   ✅ Foto encontrada por hash: {} (ID: {})", fileId, fileData.getFileId());
-                    } else {
-                        logger.error("   ❌ FileData não encontrado para hash: {}", fileId);
-                    }
-                }
-
-                // Se encontrou a foto, associar ao relatório
-                if (fileData != null) {
-                    // A relação Report -> FileData já existe através do campo report em FileData
-                    // Não é necessário fazer nada extra, apenas contar
-                    count++;
-                    logger.info("   📎 Foto {} associada ao relatório {}", fileData.getFileId(), reportId);
-                }
-
-            } catch (Exception e) {
-                logger.error("❌ Erro ao associar foto {} ao relatório {}", fileId, reportId, e);
-            }
-        }
-
-        logger.info("✅ Total: {} fotos associadas ao relatório {}", count, reportId);
-        return count;
-    }
 
     /**
      * Obter relatório por ID (para o mobile)

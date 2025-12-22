@@ -4,6 +4,7 @@ package com.gsclimbing.x.controller;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.x.dto.DefectInspectionReportDTO;
+import com.gsclimbing.x.dto.DefectInspectionReportResponseDTO;
 import com.gsclimbing.x.pdf.defectInspectionReport.DefectInspectionPdfService;
 import com.gsclimbing.x.util.DefectInstectionReportUtils;
 import com.lowagie.text.pdf.PdfReader;
@@ -42,7 +43,7 @@ public class PDFController {
     @GetMapping("/generate-defect-inspection-report/{reportId}")
     public ResponseEntity<?> generateGefectInspectionReport(@PathVariable Integer reportId) {
         try {
-            DefectInspectionReportDTO dto = defectInstectionReportUtils.getDefectInspectionReportDto(reportId);
+            DefectInspectionReportResponseDTO dto = defectInstectionReportUtils.getDefectInspectionReport2PDFDto(reportId);
             // Template via classpath
             ClassPathResource templateResource =
                     new ClassPathResource("templates/Defect Inspection Report.pdf");
