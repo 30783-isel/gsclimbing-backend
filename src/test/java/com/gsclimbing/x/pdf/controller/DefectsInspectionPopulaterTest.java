@@ -1,12 +1,12 @@
-package com.gsclimbing.x.pdf.reports;
+package com.gsclimbing.x.pdf.controller;
 
 import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.service.FileService;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 
-import com.gsclimbing.reports.populater.DefectsInspectionPopulater;
 import com.gsclimbing.x.pdf.common.PdfImageService;
+import com.gsclimbing.x.pdf.populaters.DefectsInspectionPopulaterR;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

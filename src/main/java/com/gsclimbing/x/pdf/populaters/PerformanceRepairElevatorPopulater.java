@@ -1,4 +1,4 @@
-package com.gsclimbing.x.pdf.reports;
+package com.gsclimbing.x.pdf.populaters;
 
 import com.gsclimbing.database.entity.PerformanceReportRepairElevator;
 import com.gsclimbing.x.pdf.common.AbstractPdfReportPopulator;
