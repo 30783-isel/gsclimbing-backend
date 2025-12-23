@@ -50,22 +50,9 @@ import java.util.stream.Collectors;
 @Transactional
 @RestController
 @RequestMapping(path = "/api/reports/mobile")
-<<<<<<<< HEAD:src/main/java/com/gsclimbing/x/controller/DefectInspectionReportsController.java
-public class DefectInspectionReportsController {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefectInspectionReportsController.class);
-
-    @Autowired
-    private PerformanceRepairElevatorService performanceRepairElevatorService;
-
-    @Autowired
-    private PerformanceRepairElevatorAdapter performanceRepairElevatorAdapter;
-
-========
 public class DefectInspectionController {
-
     private static final Logger logger = LoggerFactory.getLogger(DefectInspectionController.class);
->>>>>>>> adicionar_performance_repair_elevator_report:src/main/java/com/gsclimbing/x/controller/DefectInspectionController.java
 
     @Autowired
     private DefectsInspectionReportService defectsInspectionReportService;
