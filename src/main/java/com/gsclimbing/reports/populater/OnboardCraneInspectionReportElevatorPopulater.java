@@ -74,7 +74,16 @@ public class OnboardCraneInspectionReportElevatorPopulater {
 		setField("site", report.getSite());
 		setField("wtgNumber", report.getWtgNumber());
 		setField("wtgType", report.getWtgType());
-		setField("insertImagesChk", report.getInsertImagesChk());
+
+		String insertImagesValue = "Off"; // default
+		if (report.getInsertImagesChk() != null) {
+			if (report.getInsertImagesChk().equalsIgnoreCase("Y") ||
+					report.getInsertImagesChk().equalsIgnoreCase("YES")) {
+				insertImagesValue = "Yes";
+			}
+		}
+		setField("insertImagesChk", insertImagesValue);
+
 		setField("manufacturerOnboardCrane", report.getManufacturerOnboardCrane());
 		setField("type", report.getType());
 		setField("yearBuild", report.getYearBuild());

@@ -1,10 +1,12 @@
-package com.gsclimbing.x.pdf.defectInsperctionReport;
+package com.gsclimbing.x.pdf.reports;
 
 import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.service.FileService;
 import com.gsclimbing.ftp.FTPDownloadFiles;
-import com.gsclimbing.reports.service.PdfImageService;
+
+import com.gsclimbing.reports.populater.DefectsInspectionPopulater;
+import com.gsclimbing.x.pdf.common.PdfImageService;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +41,7 @@ class DefectsInspectionPopulaterTest {
     private PdfImageService pdfImageService;
 
     @InjectMocks
-    private DefectsInspectionPopulater populator;
+    private DefectsInspectionPopulaterR populator;
 
     private DefectsInspectionReport mockReport;
     private InputStream mockPdfStream;

@@ -20,7 +20,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Controller refatorizado para geração e download de relatórios PDF.
@@ -42,9 +41,9 @@ import java.util.stream.Collectors;
 @Transactional
 @RestController
 @RequestMapping(path = "/api/reports/files")
-public class FileReportsController {
+public class FileReportsControllerR {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileReportsController.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileReportsControllerR.class);
 
     // ============================================================================
     // Services
@@ -120,7 +119,7 @@ public class FileReportsController {
      * @param id ID do relatório
      * @return PDF bytes com headers apropriados
      */
-    @RequestMapping("/download_pdf/{typeReport}/{id}")
+    @RequestMapping("/download_pdfR/{typeReport}/{id}")
     public ResponseEntity<byte[]> downloadSingleReport(
             @PathVariable Integer typeReport,
             @PathVariable Integer id) {
@@ -158,7 +157,7 @@ public class FileReportsController {
      * @param projectId ID do projeto
      * @return ZIP file com todos os relatórios
      */
-    @RequestMapping("/download_zip/{projectId}")
+    @RequestMapping("/download_zipR/{projectId}")
     public ResponseEntity<byte[]> downloadProjectReportsZip(@PathVariable int projectId) {
 
         logger.info("📦 Creating ZIP for project: id={}", projectId);
@@ -197,7 +196,7 @@ public class FileReportsController {
      * @param projectId ID do projeto (para nome do ZIP e dados básicos)
      * @return ZIP file com templates limpos
      */
-    @RequestMapping("/download_clean_zip/{projectId}")
+    @RequestMapping("/download_clean_zipR/{projectId}")
     public ResponseEntity<byte[]> downloadCleanTemplatesZip(@PathVariable int projectId) {
 
         logger.info("📦 Creating clean templates ZIP for project: id={}", projectId);

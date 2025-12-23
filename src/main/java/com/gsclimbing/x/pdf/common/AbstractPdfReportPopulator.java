@@ -185,7 +185,7 @@ public abstract class AbstractPdfReportPopulator<T extends Report> {
     /**
      * Carrega as imagens associadas ao relatório
      */
-    protected List<FileData> loadReportImages(T report) {
+    public List<FileData> loadReportImages(T report) {
         if (report == null || report.getUuid() == null) {
             return new ArrayList<>();
         }
@@ -201,7 +201,7 @@ public abstract class AbstractPdfReportPopulator<T extends Report> {
     /**
      * Verifica se um ficheiro é uma imagem
      */
-    protected boolean isImageFile(FileData fileData) {
+    public boolean isImageFile(FileData fileData) {
         if (fileData == null || fileData.getMimeType() == null) {
             return false;
         }

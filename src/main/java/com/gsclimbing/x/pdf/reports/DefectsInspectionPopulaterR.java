@@ -1,7 +1,6 @@
-package com.gsclimbing.x.pdf.defectInspectionReport;
+package com.gsclimbing.x.pdf.reports;
 
 import com.gsclimbing.database.entity.DefectsInspectionReport;
-import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.x.pdf.common.AbstractPdfReportPopulator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +13,9 @@ import java.io.IOException;
  * Estende AbstractPdfReportPopulator para reutilizar funcionalidades comuns.
  */
 @Service
-public class DefectsInspectionPopulater extends AbstractPdfReportPopulator<DefectsInspectionReport> {
+public class DefectsInspectionPopulaterR extends AbstractPdfReportPopulator<DefectsInspectionReport> {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefectsInspectionPopulater.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefectsInspectionPopulaterR.class);
     
     private static final String PDF_TEMPLATE_FOLDER = "/defectInspectionReport/";
     private static final String PDF_TEMPLATE_FILENAME = "Defect Inspection Report.pdf";

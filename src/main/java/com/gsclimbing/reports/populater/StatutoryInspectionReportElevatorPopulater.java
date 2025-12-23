@@ -584,8 +584,15 @@ public class StatutoryInspectionReportElevatorPopulater {
 		setField("inspectionDescenderDevice4Chk", statutoryInspectionReportInspectionDescenderDevice.isInspectionDescenderDevice4Chk() ? "Yes" : "Off");
 		setField("inspectionDescenderDevice5Chk", statutoryInspectionReportInspectionDescenderDevice.isInspectionDescenderDevice5Chk() ? "Yes" : "Off");
 		setField("inspectionDescenderDevice6Chk", statutoryInspectionReportInspectionDescenderDevice.isInspectionDescenderDevice6Chk() ? "Yes" : "Off");
-		
-		setField("insertImagesChk", report.getInsertImagesChk());
+
+		String insertImagesValue = "Off"; // default
+		if (report.getInsertImagesChk() != null) {
+			if (report.getInsertImagesChk().equalsIgnoreCase("Y") ||
+					report.getInsertImagesChk().equalsIgnoreCase("YES")) {
+				insertImagesValue = "Yes";
+			}
+		}
+		setField("insertImagesChk", insertImagesValue);
 		
 		setField("additionalField1Label", report.getAdditionalField1Label());
 		setField("additionalField1Text", report.getAdditionalField1Text());

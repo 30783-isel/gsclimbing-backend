@@ -217,8 +217,16 @@ public class Medidas690V400VPopulater {
 		setField("conclusion", report.getConclusion());
 		setField("performedBy", report.getPerformedBy());
 		setField("closedDate", report.getClosedDate());
-		
-		setField("insertImagesChk", report.getInsertImagesChk());
+
+		String insertImagesValue = "Off"; // default
+		if (report.getInsertImagesChk() != null) {
+			if (report.getInsertImagesChk().equalsIgnoreCase("Y") ||
+					report.getInsertImagesChk().equalsIgnoreCase("YES")) {
+				insertImagesValue = "Yes";
+			}
+		}
+		setField("insertImagesChk", insertImagesValue);
+
 		setField("additionalField1Label", report.getAdditionalField1Label());
 		setField("additionalField1Text", report.getAdditionalField1Text());
 		setField("additionalField2Label", report.getAdditionalField2Label());
