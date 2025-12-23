@@ -20,6 +20,7 @@ import com.gsclimbing.x.database.service.ReportValidationService;
 import com.gsclimbing.x.dto.DefectInspectionReportDTO;
 import com.gsclimbing.x.dto.DefectInspectionReportResponseDTO;
 import com.gsclimbing.x.dto.MobileReportDTO;
+import com.gsclimbing.x.util.DefectInstectionReportUtils;
 import com.gsclimbing.x.util.FieldChange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,7 @@ import java.util.stream.Collectors;
 @Transactional
 @RestController
 @RequestMapping(path = "/api/reports/mobile")
+<<<<<<<< HEAD:src/main/java/com/gsclimbing/x/controller/DefectInspectionReportsController.java
 public class DefectInspectionReportsController {
 
     private static final Logger logger = LoggerFactory.getLogger(DefectInspectionReportsController.class);
@@ -59,6 +61,11 @@ public class DefectInspectionReportsController {
     @Autowired
     private PerformanceRepairElevatorAdapter performanceRepairElevatorAdapter;
 
+========
+public class DefectInspectionController {
+
+    private static final Logger logger = LoggerFactory.getLogger(DefectInspectionController.class);
+>>>>>>>> adicionar_performance_repair_elevator_report:src/main/java/com/gsclimbing/x/controller/DefectInspectionController.java
 
     @Autowired
     private DefectsInspectionReportService defectsInspectionReportService;
@@ -76,7 +83,10 @@ public class DefectInspectionReportsController {
     private ReportValidationService validationService;
 
     @Autowired
-    private DefectInspectionReportAdapter adapter;
+    private DefectInspectionReportAdapter defectInspectionReportAdapter;
+
+    @Autowired
+    private DefectInstectionReportUtils defectInstectionReportUtils;
 
     @Autowired
     private ReportComparisonService comparisonService;
@@ -129,7 +139,7 @@ public class DefectInspectionReportsController {
             }
 
             // Converter DTO para entidade
-            DefectsInspectionReport report = adapter.toEntity(dto, turbine);
+            DefectsInspectionReport report = defectInspectionReportAdapter.toEntity(dto, turbine);
 
             // Salvar relatório
             DefectsInspectionReport savedReport =
@@ -140,7 +150,7 @@ public class DefectInspectionReportsController {
             // Associar fotos ao relatório
             int numberPictures = 0;
             if (dto.getPhotoIds() != null && !dto.getPhotoIds().isEmpty()) {
-                numberPictures = associatePhotosToReport(
+                numberPictures = defectInstectionReportUtils.associatePhotosToReport(
                         savedReport.getReportId(),
                         dto.getPhotoIds().stream()
                                 .map(String::valueOf)
@@ -150,7 +160,7 @@ public class DefectInspectionReportsController {
 
             // Criar resposta
             DefectInspectionReportResponseDTO response =
-                    adapter.toResponseDTO(savedReport, numberPictures);
+                    defectInspectionReportAdapter.toResponseDTO(savedReport, numberPictures);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
@@ -291,7 +301,7 @@ public class DefectInspectionReportsController {
 
 
             // Converter DTO para entidade
-            DefectsInspectionReport report = adapter.toEntity(dto, turbine);
+            DefectsInspectionReport report = defectInspectionReportAdapter.toEntity(dto, turbine);
 
             // Salvar relatório
             DefectsInspectionReport savedReport =
@@ -302,7 +312,7 @@ public class DefectInspectionReportsController {
             // Associar fotos ao relatório (se foram enviados IDs)
             int numberPictures = 0;
             if (dto.getPhotoFileIds() != null && !dto.getPhotoFileIds().isEmpty()) {
-                numberPictures = associatePhotosToReport(
+                numberPictures = defectInstectionReportUtils.associatePhotosToReport(
                         savedReport.getReportId(),
                         dto.getPhotoFileIds()
                 );
@@ -310,7 +320,7 @@ public class DefectInspectionReportsController {
 
             // Criar resposta
             DefectInspectionReportResponseDTO response =
-                    adapter.toResponseDTO(savedReport, numberPictures);
+                    defectInspectionReportAdapter.toResponseDTO(savedReport, numberPictures);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
@@ -322,63 +332,7 @@ public class DefectInspectionReportsController {
     }
 
 
-    /**
-     * Associar fotos já carregadas ao relatório
-     * ✅ SUPORTA tanto IDs numéricos como hashes (UUIDs)
-     *
-     * @param reportId     ID do relatório
-     * @param photoFileIds Lista de IDs ou hashes de ficheiros de fotos
-     * @return Número de fotos associadas
-     */
-    private int associatePhotosToReport(Integer reportId, List<String> photoFileIds) {
-        int count = 0;
 
-        logger.info("🔗 Associando {} fotos ao relatório {}", photoFileIds.size(), reportId);
-
-        for (String fileId : photoFileIds) {
-            try {
-                FileData fileData = null;
-
-                // Tentar converter para Integer (caso seja ID numérico)
-                try {
-                    Integer numericId = Integer.parseInt(fileId);
-                    Optional<FileData> optionalFileData = fileService.readFile(numericId);
-
-                    if (optionalFileData.isPresent()) {
-                        fileData = optionalFileData.get();
-                        logger.info("   ✅ Foto encontrada por ID: {}", numericId);
-                    } else {
-                        logger.warn("   ⚠️ FileData não encontrado para ID: {}", numericId);
-                    }
-
-                } catch (NumberFormatException e) {
-                    // Não é número, tentar buscar por hash (UUID)
-                    logger.info("   🔍 '{}' não é número, buscando por hash...", fileId);
-                    fileData = fileService.readFileByHash(fileId);
-
-                    if (fileData != null) {
-                        logger.info("   ✅ Foto encontrada por hash: {} (ID: {})", fileId, fileData.getFileId());
-                    } else {
-                        logger.error("   ❌ FileData não encontrado para hash: {}", fileId);
-                    }
-                }
-
-                // Se encontrou a foto, associar ao relatório
-                if (fileData != null) {
-                    // A relação Report -> FileData já existe através do campo report em FileData
-                    // Não é necessário fazer nada extra, apenas contar
-                    count++;
-                    logger.info("   📎 Foto {} associada ao relatório {}", fileData.getFileId(), reportId);
-                }
-
-            } catch (Exception e) {
-                logger.error("❌ Erro ao associar foto {} ao relatório {}", fileId, reportId, e);
-            }
-        }
-
-        logger.info("✅ Total: {} fotos associadas ao relatório {}", count, reportId);
-        return count;
-    }
 
     /**
      * Obter relatório por ID (para o mobile)
@@ -389,29 +343,20 @@ public class DefectInspectionReportsController {
     @GetMapping("/defect-inspection/{reportId}")
     public ResponseEntity<?> getDefectInspectionReport(@PathVariable Integer reportId) {
         try {
-            DefectsInspectionReport report =
-                    defectsInspectionReportService.readDefectsInspectionReport(reportId);
-
-            if (report == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Report not found with ID: " + reportId);
-            }
-
-            // Contar fotos usando o UUID do relatório
-            List<FileData> photos = fileService.readFile(report.getUuid());
-            int numberPictures = photos != null ? photos.size() : 0;
-
-            DefectInspectionReportResponseDTO response =
-                    adapter.toResponseDTO(report, numberPictures);
-
+            DefectInspectionReportResponseDTO response = defectInstectionReportUtils.getDefectInspectionReportDto(reportId);
             return ResponseEntity.ok(response);
-
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             logger.error("Error getting report", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error getting report: " + e.getMessage());
         }
     }
+
+
+
+
 
     /**
      * Método auxiliar para atualizar campos adicionais
@@ -474,7 +419,7 @@ public class DefectInspectionReportsController {
 
                 // Criar response DTO
                 DefectInspectionReportResponseDTO responseDTO =
-                        adapter.toResponseDTO(report, numberPictures);
+                        defectInspectionReportAdapter.toResponseDTO(report, numberPictures);
 
                 responseDTOs.add(responseDTO);
             }
@@ -1274,7 +1219,7 @@ public class DefectInspectionReportsController {
             int numberPictures = photos != null ? photos.size() : 0;
 
             // 11. Retornar resposta
-            DefectInspectionReportResponseDTO response = adapter.toResponseDTO(report, numberPictures);
+            DefectInspectionReportResponseDTO response = defectInspectionReportAdapter.toResponseDTO(report, numberPictures);
             response.setMessage(fieldChanges.size() + " campo(s) alterado(s)");
 
             logger.info("✅ Relatório {} atualizado com sucesso. {} alterações registadas",
