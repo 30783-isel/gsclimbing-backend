@@ -140,16 +140,20 @@ public class PdfImageService {
      * Cria o appearance stream para a imagem no widget
      */
     private void createImageAppearanceStream(PDDocument pdfDocument, PDAnnotationWidget widget,
-                                            PDImageXObject pdImage, PDRectangle buttonRect,
-                                            float imageAspectRatio) throws IOException {
-        
+                                             PDImageXObject pdImage, PDRectangle buttonRect,
+                                             float imageAspectRatio) throws IOException {
+
         PDAppearanceStream appearanceStream = new PDAppearanceStream(pdfDocument);
-        appearanceStream.setResources(new PDResources());
+
+        // ✅ CRÍTICO: Adicionar a imagem aos resources!
+        PDResources resources = new PDResources();
+        COSName imageName = resources.add(pdImage);
+        appearanceStream.setResources(resources);
         appearanceStream.setBBox(buttonRect);
 
         try (PDPageContentStream contentStream = new PDPageContentStream(
                 pdfDocument, appearanceStream)) {
-            
+
             // Calcular dimensões mantendo proporção
             float buttonWidth = buttonRect.getWidth();
             float buttonHeight = buttonRect.getHeight();
