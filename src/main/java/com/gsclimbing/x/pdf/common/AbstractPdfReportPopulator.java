@@ -189,8 +189,8 @@ public abstract class AbstractPdfReportPopulator<T extends Report> {
         if (report == null || report.getUuid() == null) {
             return new ArrayList<>();
         }
-        
-        List<FileData> allFiles = fileService.readFile(report.getUuid());
+
+        List<FileData> allFiles = fileService.readActiveFilesByUuid(report.getUuid());
         
         // Filtrar apenas imagens JPG (pode ser customizado)
         return allFiles.stream()
