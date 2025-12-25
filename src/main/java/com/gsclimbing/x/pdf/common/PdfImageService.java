@@ -35,14 +35,9 @@ public class PdfImageService {
 
     private static final Logger logger = LoggerFactory.getLogger(PdfImageService.class);
     private static final String DEFAULT_IMAGE_FORMAT = "jpg";
-    private static final int DEFAULT_IMAGE_QUALITY = 85;
 
     /**
      * Carrega uma imagem do servidor FTP e converte para BufferedImage
-     *
-     * @param fileData Dados do ficheiro a carregar
-     * @return BufferedImage da imagem carregada
-     * @throws IOException se ocorrer erro ao carregar ou processar a imagem
      */
     public BufferedImage loadImageFromFtp(FileData fileData) throws IOException {
         if (fileData == null) {
@@ -52,18 +47,18 @@ public class PdfImageService {
         logger.debug("Loading image from FTP: hash={}, name={}", fileData.getHash(), fileData.getName());
 
         byte[] imageBytes = FTPDownloadFiles.downloadFile2FTPServer(fileData.getHash());
-        
+
         if (imageBytes == null || imageBytes.length == 0) {
             throw new IOException("Failed to download image or empty file: " + fileData.getHash());
         }
 
         try (InputStream imageStream = new ByteArrayInputStream(imageBytes)) {
             BufferedImage image = ImageIO.read(imageStream);
-            
+
             if (image == null) {
                 throw new IOException("Failed to decode image: " + fileData.getName());
             }
-            
+
             logger.debug("Image loaded successfully: {}x{}", image.getWidth(), image.getHeight());
             return image;
         }
@@ -71,16 +66,11 @@ public class PdfImageService {
 
     /**
      * Insere uma imagem num campo PDF do tipo PushButton
-     *
-     * @param pdfDocument Documento PDF onde inserir a imagem
-     * @param pushButton Campo do tipo PushButton onde inserir a imagem
-     * @param image Imagem a inserir
-     * @param imageName Nome da imagem (para logging)
-     * @throws IOException se ocorrer erro ao inserir a imagem
+     * VERSÃO CORRIGIDA - baseada no código antigo que funciona
      */
-    public void insertImageInPushButton(PDDocument pdfDocument, PDPushButton pushButton, 
-                                       BufferedImage image, String imageName) throws IOException {
-        
+    public void insertImageInPushButton(PDDocument pdfDocument, PDPushButton pushButton,
+                                        BufferedImage image, String imageName) throws IOException {
+
         if (pdfDocument == null || pushButton == null || image == null) {
             throw new IllegalArgumentException("PDF document, push button, and image cannot be null");
         }
@@ -88,27 +78,61 @@ public class PdfImageService {
         logger.debug("Inserting image '{}' into push button field", imageName);
 
         List<PDAnnotationWidget> widgets = pushButton.getWidgets();
-        
+
         if (widgets == null || widgets.isEmpty()) {
             logger.warn("No widgets found for push button field: {}", imageName);
             return;
         }
 
         PDAnnotationWidget widget = widgets.get(0);
-        
+
         // Converter BufferedImage para bytes
         byte[] imageBytes = convertImageToBytes(image);
-        
+
         // Criar PDImageXObject
         PDImageXObject pdImage = PDImageXObject.createFromByteArray(pdfDocument, imageBytes, imageName);
-        
-        // Calcular proporções
-        float imageAspectRatio = (float) pdImage.getHeight() / (float) pdImage.getWidth();
+
+        // Obter posição do botão
         PDRectangle buttonRect = getWidgetRectangle(widget);
-        
-        // Criar appearance stream
-        createImageAppearanceStream(pdfDocument, widget, pdImage, buttonRect, imageAspectRatio);
-        
+        float x = buttonRect.getLowerLeftX();
+        float y = buttonRect.getLowerLeftY();
+
+        // ⚠️ CRÍTICO: Usar a lógica do código antigo para calcular dimensões
+        float imageWidth;
+        float imageHeight;
+
+        if (pdImage.getWidth() > pdImage.getHeight()) {
+            // Imagem horizontal - ajustar pela largura
+            float ratio = (float) pdImage.getWidth() / (float) pdImage.getHeight();
+            imageWidth = buttonRect.getWidth();
+            imageHeight = imageWidth / ratio;
+        } else {
+            // Imagem vertical - ajustar pela altura
+            float ratio = (float) pdImage.getHeight() / (float) pdImage.getWidth();
+            imageHeight = buttonRect.getHeight();
+            imageWidth = imageHeight / ratio;
+        }
+
+        // ⚠️ CRÍTICO: Criar appearance stream SEM adicionar imagem aos resources
+        // (o código antigo não faz isso e funciona!)
+        PDAppearanceStream appearanceStream = new PDAppearanceStream(pdfDocument);
+        appearanceStream.setResources(new PDResources());
+
+        try (PDPageContentStream contentStream = new PDPageContentStream(pdfDocument, appearanceStream)) {
+            contentStream.drawImage(pdImage, x, y, imageWidth, imageHeight);
+        }
+
+        // ⚠️ CRÍTICO: BBox usa as coordenadas x, y do botão
+        appearanceStream.setBBox(new PDRectangle(x, y, buttonRect.getWidth(), buttonRect.getHeight()));
+
+        // Definir appearance
+        PDAppearanceDictionary appearanceDictionary = widget.getAppearance();
+        if (appearanceDictionary == null) {
+            appearanceDictionary = new PDAppearanceDictionary();
+            widget.setAppearance(appearanceDictionary);
+        }
+        appearanceDictionary.setNormalAppearance(appearanceStream);
+
         logger.debug("Image inserted successfully: {}", imageName);
     }
 
@@ -134,81 +158,6 @@ public class PdfImageService {
             return new PDRectangle(0, 0, 100, 100);
         }
         return rect;
-    }
-
-    /**
-     * Cria o appearance stream para a imagem no widget
-     */
-    private void createImageAppearanceStream(PDDocument pdfDocument, PDAnnotationWidget widget,
-                                             PDImageXObject pdImage, PDRectangle buttonRect,
-                                             float imageAspectRatio) throws IOException {
-
-        PDAppearanceStream appearanceStream = new PDAppearanceStream(pdfDocument);
-
-        // ✅ CRÍTICO: Adicionar a imagem aos resources!
-        PDResources resources = new PDResources();
-        COSName imageName = resources.add(pdImage);
-        appearanceStream.setResources(resources);
-        appearanceStream.setBBox(buttonRect);
-
-        try (PDPageContentStream contentStream = new PDPageContentStream(
-                pdfDocument, appearanceStream)) {
-
-            // Calcular dimensões mantendo proporção
-            float buttonWidth = buttonRect.getWidth();
-            float buttonHeight = buttonRect.getHeight();
-            float buttonAspectRatio = buttonHeight / buttonWidth;
-
-            float drawWidth, drawHeight;
-            float xOffset = 0, yOffset = 0;
-
-            if (imageAspectRatio > buttonAspectRatio) {
-                // Imagem mais alta que o botão - ajustar pela altura
-                drawHeight = buttonHeight;
-                drawWidth = drawHeight / imageAspectRatio;
-                xOffset = (buttonWidth - drawWidth) / 2;
-            } else {
-                // Imagem mais larga que o botão - ajustar pela largura
-                drawWidth = buttonWidth;
-                drawHeight = drawWidth * imageAspectRatio;
-                yOffset = (buttonHeight - drawHeight) / 2;
-            }
-
-            // Desenhar imagem
-            contentStream.drawImage(pdImage, xOffset, yOffset, drawWidth, drawHeight);
-        }
-
-        // Definir appearance
-        PDAppearanceDictionary appearanceDictionary = widget.getAppearance();
-        if (appearanceDictionary == null) {
-            appearanceDictionary = new PDAppearanceDictionary();
-            widget.setAppearance(appearanceDictionary);
-        }
-        appearanceDictionary.setNormalAppearance(appearanceStream);
-
-        // Atualizar appearance state
-        COSDictionary cosWidget = widget.getCOSObject();
-        cosWidget.setItem(COSName.AS, COSName.N);
-
-        // Configurar appearance characteristics
-        updateAppearanceCharacteristics(widget, pdImage);
-    }
-
-    /**
-     * Atualiza as características de aparência do widget
-     */
-    private void updateAppearanceCharacteristics(PDAnnotationWidget widget, PDImageXObject pdImage) {
-        COSDictionary cosWidget = widget.getCOSObject();
-        COSDictionary mk = (COSDictionary) cosWidget.getDictionaryObject(COSName.MK);
-        
-        if (mk == null) {
-            mk = new COSDictionary();
-            cosWidget.setItem(COSName.MK, mk);
-        }
-
-        COSArray i = new COSArray();
-        i.add(pdImage.getCOSObject());
-        mk.setItem(COSName.I, i);
     }
 
     /**
@@ -250,8 +199,8 @@ public class PdfImageService {
 
         BufferedImage resized = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
         resized.createGraphics().drawImage(
-            original.getScaledInstance(newWidth, newHeight, java.awt.Image.SCALE_SMOOTH),
-            0, 0, null
+                original.getScaledInstance(newWidth, newHeight, java.awt.Image.SCALE_SMOOTH),
+                0, 0, null
         );
 
         return resized;
