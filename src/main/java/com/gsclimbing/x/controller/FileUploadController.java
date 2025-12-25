@@ -43,6 +43,7 @@ public class FileUploadController {
      *
      * @param reportUuid UUID do relatório
      * @param file Ficheiro da foto
+     * @param fieldName Nome do campo no PDF (photoOne, photoTwo, etc) - OBRIGATÓRIO
      * @param description Descrição da foto (opcional)
      * @return Resposta com fileId e success
      */
@@ -50,10 +51,11 @@ public class FileUploadController {
     public ResponseEntity<?> uploadPhoto(
             @PathVariable String reportUuid,
             @RequestParam("file") MultipartFile file,
+            @RequestParam("fieldName") String fieldName,  // ✅ NOVO - OBRIGATÓRIO
             @RequestParam(value = "description", required = false) String description) {
 
         try {
-            logger.info("📤 Uploading photo for report UUID: {}", reportUuid);
+            logger.info("📤 Uploading photo for report UUID: {}, fieldName: {}", reportUuid, fieldName);
 
             // Validar ficheiro
             if (file.isEmpty()) {
@@ -65,6 +67,12 @@ public class FileUploadController {
             if (reportUuid == null || reportUuid.trim().isEmpty()) {
                 return ResponseEntity.badRequest()
                         .body(createErrorResponse("Report UUID is required"));
+            }
+
+            // ✅ Validar fieldName
+            if (fieldName == null || fieldName.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(createErrorResponse("Field name is required (e.g., photoOne, photoTwo)"));
             }
 
             // Gerar hash único para a foto
@@ -85,7 +93,13 @@ public class FileUploadController {
             // Criar registo na base de dados
             FileData fileData = new FileData();
             fileData.setHash(fileHash);
-            fileData.setName(file.getOriginalFilename());
+
+            // ✅ CRÍTICO: Guardar o nome do campo do PDF, NÃO o nome do ficheiro!
+            fileData.setName(fieldName);  // photoOne, photoTwo, photoThree, etc
+
+            // ✅ nameField é usado para o campo de descrição no PDF
+            fileData.setNameField(fieldName + "Txt");  // photoOneTxt, photoTwoTxt, etc
+
             fileData.setMimeType(file.getContentType());
             fileData.setDescription(description != null ? description : "");
             fileData.setUuid(reportUuid); // Associar ao relatório
@@ -100,13 +114,15 @@ public class FileUploadController {
             // ✅ AGORA o fileId já foi gerado pelo @GeneratedValue
             Integer generatedFileId = fileData.getFileId();
 
-            logger.info("✅ Photo uploaded successfully - Hash: {}, FileId: {}", fileHash, generatedFileId);
+            logger.info("✅ Photo uploaded successfully - FieldName: {}, Hash: {}, FileId: {}",
+                    fieldName, fileHash, generatedFileId);
 
             // ✅ Retornar resposta com fileId NUMÉRICO
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("fileId", generatedFileId);  // ✅ Retorna ID numérico, não hash!
             response.put("hash", fileHash);  // Incluir hash também para referência
+            response.put("fieldName", fieldName);  // ✅ Retornar o fieldName
             response.put("fileName", file.getOriginalFilename());
             response.put("message", "Photo uploaded successfully");
 
