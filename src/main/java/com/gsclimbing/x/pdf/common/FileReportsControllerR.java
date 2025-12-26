@@ -6,6 +6,7 @@ import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.service.*;
 import com.gsclimbing.reports.populater.*;
+import com.gsclimbing.x.database.service.DefectsInspectionReportService;
 import com.gsclimbing.zip.ZipUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -410,7 +411,7 @@ public class FileReportsControllerR {
         try {
             switch (reportType) {
                 case DIR:
-                    Report dirReport = defectsInspectionReportService.readDefectsInspectionReport(reportId);
+                    Report dirReport = defectsInspectionReportService.getDefectsInspectionReportById(reportId);
                     return defectsInspectionPopulater.generatePDF(dirReport);
 
                 case ET:

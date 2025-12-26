@@ -6,6 +6,7 @@ import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.database.service.*;
 import com.gsclimbing.ftp.FTPDownloadFiles;
 import com.gsclimbing.reports.populater.*;
+import com.gsclimbing.x.database.service.DefectsInspectionReportService;
 import com.gsclimbing.zip.ZipUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -85,7 +86,7 @@ public class FileReportsController {
 		ReportEnum reportEnum = ReportEnum.values()[typeReport];
 		switch (reportEnum) {
 		case DIR:
-			return defectsInspectionPopulater.generatePDF(defectsInspectionReportService.readDefectsInspectionReport(id));
+			return defectsInspectionPopulater.generatePDF(defectsInspectionReportService.getDefectsInspectionReportById(id));
 		case ET:
 			return examinationTransformerPopulater.generatePDF(examinationTransformerService.readExaminationTransformer(id));
 		case MMSSC:

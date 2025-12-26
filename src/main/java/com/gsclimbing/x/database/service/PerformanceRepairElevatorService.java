@@ -4,10 +4,11 @@ import com.gsclimbing.database.entity.PerformanceReportRepairElevator;
 import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.repository.PerformanceReportRepairElevatorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -32,14 +33,30 @@ public class PerformanceRepairElevatorService extends BaseReportService<Performa
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    protected JpaRepository<PerformanceReportRepairElevator, Integer> getSpecificRepository() {
-        return (JpaRepository<PerformanceReportRepairElevator, Integer>) performanceReportRepairElevatorRepository;
+    protected String getReportName() {
+        return "Performance Report Repair Elevator";
     }
 
     @Override
-    protected String getReportName() {
-        return "Performance Report Repair Elevator";
+    protected Optional<PerformanceReportRepairElevator> findById(Integer id) {
+        return performanceReportRepairElevatorRepository.findById(id);
+    }
+
+    @Override
+    protected PerformanceReportRepairElevator save(PerformanceReportRepairElevator entity) {
+        return performanceReportRepairElevatorRepository.save(entity);
+    }
+
+    @Override
+    protected void deleteById(Integer id) {
+        performanceReportRepairElevatorRepository.deleteById(id);
+    }
+
+    @Override
+    protected List<PerformanceReportRepairElevator> findAll() {
+        List<PerformanceReportRepairElevator> list = new ArrayList<>();
+        performanceReportRepairElevatorRepository.findAll().forEach(list::add);
+        return list;
     }
 
     // ========================================

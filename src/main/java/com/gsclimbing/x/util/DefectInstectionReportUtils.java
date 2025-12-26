@@ -2,11 +2,10 @@ package com.gsclimbing.x.util;
 
 import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.entity.FileData;
-import com.gsclimbing.database.service.DefectsInspectionReportService;
 import com.gsclimbing.database.service.FileService;
-import com.gsclimbing.database.service.TurbineService;
 import com.gsclimbing.x.adapter.DefectInspectionReportAdapter;
 import com.gsclimbing.x.controller.DefectInspectionController;
+import com.gsclimbing.x.database.service.DefectsInspectionReportService;
 import com.gsclimbing.x.dto.DefectInspectionReportResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class DefectInstectionReportUtils {
@@ -28,7 +26,7 @@ public class DefectInstectionReportUtils {
     private FileService fileService;
 
     public DefectInspectionReportResponseDTO getDefectInspectionReportDto(Integer reportId) throws Exception {
-        DefectsInspectionReport report = defectsInspectionReportService.readDefectsInspectionReport(reportId);
+        DefectsInspectionReport report = defectsInspectionReportService.getDefectsInspectionReportById(reportId);
         if (report == null) {
             throw new IllegalArgumentException("Report not found with ID: " + reportId);
         }
@@ -38,7 +36,7 @@ public class DefectInstectionReportUtils {
     }
 
     public DefectInspectionReportResponseDTO getDefectInspectionReport2PDFDto(Integer reportId) throws Exception {
-        DefectsInspectionReport report = defectsInspectionReportService.readDefectsInspectionReport(reportId);
+        DefectsInspectionReport report = defectsInspectionReportService.getDefectsInspectionReportById(reportId);
         if (report == null) {
             throw new IllegalArgumentException("Report not found with ID: " + reportId);
         }

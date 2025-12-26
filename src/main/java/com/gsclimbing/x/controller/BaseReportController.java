@@ -266,7 +266,10 @@ public abstract class BaseReportController<T extends Report> {
             T updatedReport = getReportService().update(reportId, oldReport);
 
             // 5. Detectar e registar alterações
-            List<FieldChange> fieldChanges = comparisonService.detectChanges(oldValues, updatedReport);
+            String oldJson = oldValues.get("reportData");
+            String newJson = captureCurrentReportData(updatedReport);
+
+            List<FieldChange> fieldChanges = comparisonService.compareReportData(oldJson, newJson);
 
             if (!fieldChanges.isEmpty()) {
                 logger.info("🔍 Detected {} field changes", fieldChanges.size());
@@ -561,5 +564,18 @@ public abstract class BaseReportController<T extends Report> {
         response.put("success", false);
         response.put("error", error);
         return response;
+    }
+
+    /**
+     * Capturar reportData atual do relatório
+     */
+    private String captureCurrentReportData(T report) {
+        try {
+            // Usar reflection para obter getReportData()
+            return (String) report.getClass().getMethod("getReportData").invoke(report);
+        } catch (Exception e) {
+            logger.error("Error capturing reportData", e);
+            return "{}";
+        }
     }
 }

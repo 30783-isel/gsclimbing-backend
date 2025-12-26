@@ -2,11 +2,12 @@ package com.gsclimbing.x.database.service;
 
 import com.gsclimbing.database.entity.DefectsInspectionReport;
 import com.gsclimbing.database.repository.DefectsInspectionReportRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DefectsInspectionReportService extends BaseReportService<DefectsInspectionReport> {
@@ -16,15 +17,13 @@ public class DefectsInspectionReportService extends BaseReportService<DefectsIns
     @Autowired
     private DefectsInspectionReportRepository defectsInspectionReportRepository;
 
+    // ========================================
+    // IMPLEMENTAÇÃO DOS MÉTODOS ABSTRATOS
+    // ========================================
+
     @Override
     protected int getReportType() {
         return REPORT_TYPE;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    protected JpaRepository<DefectsInspectionReport, Integer> getSpecificRepository() {
-        return (JpaRepository<DefectsInspectionReport, Integer>) defectsInspectionReportRepository;
     }
 
     @Override
@@ -32,7 +31,30 @@ public class DefectsInspectionReportService extends BaseReportService<DefectsIns
         return "Defects Inspection Report";
     }
 
-    // Métodos de compatibilidade mantidos...
+    @Override
+    protected Optional<DefectsInspectionReport> findById(Integer id) {
+        return defectsInspectionReportRepository.findById(id);
+    }
+
+    @Override
+    protected DefectsInspectionReport save(DefectsInspectionReport entity) {
+        return defectsInspectionReportRepository.save(entity);
+    }
+
+    @Override
+    protected void deleteById(Integer id) {
+        defectsInspectionReportRepository.deleteById(id);
+    }
+
+    @Override
+    protected List<DefectsInspectionReport> findAll() {
+        return (List<DefectsInspectionReport>)defectsInspectionReportRepository.findAll();
+    }
+
+    // ========================================
+    // MÉTODOS DE COMPATIBILIDADE
+    // ========================================
+
     @Transactional
     public DefectsInspectionReport createDefectsInspectionReport(DefectsInspectionReport report) {
         logger.info("📝 Creating Defects Inspection Report via compatibility method");
@@ -56,5 +78,10 @@ public class DefectsInspectionReportService extends BaseReportService<DefectsIns
     public void deleteDefectsInspectionReport(Integer id) {
         logger.info("🗑️ Deleting Defects Inspection Report via compatibility method");
         delete(id);
+    }
+
+    public List<DefectsInspectionReport> readDefectsInspectionReportByTurbineId(Integer turbineId) {
+        logger.info("🔍 Fetching reports by turbine ID via compatibility method");
+        return getByTurbineId(turbineId);
     }
 }

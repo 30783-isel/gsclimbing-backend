@@ -144,6 +144,19 @@ public class ReportHistoryService {
     }
 
     /**
+     * Registar eliminação de relatório
+     */
+    @Transactional
+    public void logDelete(Report report, String username) {
+        createHistoryEntry(
+                report,
+                username,
+                ReportHistory.HistoryAction.DELETE,
+                "Relatório eliminado"
+        );
+    }
+
+    /**
      * Obter histórico de um relatório
      */
     public List<ReportHistory> getReportHistory(Long reportId) {

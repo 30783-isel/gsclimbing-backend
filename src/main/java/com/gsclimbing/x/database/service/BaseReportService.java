@@ -5,7 +5,6 @@ import com.gsclimbing.database.repository.ReportRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -25,17 +24,17 @@ public abstract class BaseReportService<T extends Report> {
     protected ReportRepository reportRepository;
 
     // ========================================
-    // MÉTODOS ABSTRATOS
+    // MÉTODOS ABSTRATOS - Delegam para repository específico
     // ========================================
 
     protected abstract int getReportType();
-
-    /**
-     * ✅ CORRIGIDO: Retorna o repository específico (sem type checking)
-     */
-    protected abstract JpaRepository<T, Integer> getSpecificRepository();
-
     protected abstract String getReportName();
+
+    // Métodos de acesso ao repository específico
+    protected abstract Optional<T> findById(Integer id);
+    protected abstract T save(T entity);
+    protected abstract void deleteById(Integer id);
+    protected abstract List<T> findAll();
 
     // ========================================
     // MÉTODOS COMUNS
@@ -53,7 +52,7 @@ public abstract class BaseReportService<T extends Report> {
         report.setSyncStatus(Report.SyncStatus.SYNCED);
         report.setOfflineCreated(false);
 
-        T saved = getSpecificRepository().save(report);
+        T saved = save(report);
 
         logger.info("✅ {} created successfully with ID: {}", getReportName(), saved.getReportId());
         return saved;
@@ -69,7 +68,7 @@ public abstract class BaseReportService<T extends Report> {
         updatedReport.setModifiedDate(LocalDateTime.now());
         updatedReport.setReportId(id);
 
-        T saved = getSpecificRepository().save(updatedReport);
+        T saved = save(updatedReport);
 
         logger.info("✅ {} updated successfully", getReportName());
         return saved;
@@ -77,7 +76,7 @@ public abstract class BaseReportService<T extends Report> {
 
     public Optional<T> getById(Integer id) {
         logger.info("🔍 Fetching {} by ID: {}", getReportName(), id);
-        return getSpecificRepository().findById(id);
+        return findById(id);
     }
 
     public List<T> getByTurbineId(Integer turbineId) {
@@ -85,13 +84,16 @@ public abstract class BaseReportService<T extends Report> {
 
         List<Report> baseReports = reportRepository.findByTurbinaIdAndTypeReport(turbineId, getReportType());
 
-        List<T> specificReports = baseReports.stream()
-                .map(r -> getById(r.getReportId()).orElse(null))
-                .filter(r -> r != null)
+        List<T> typedReports = baseReports.stream()
+                .map(report -> {
+                    Optional<T> typedReport = findById(report.getReportId());
+                    return typedReport.orElse(null);
+                })
+                .filter(report -> report != null)
                 .collect(Collectors.toList());
 
-        logger.info("✅ Found {} {} reports", specificReports.size(), getReportName());
-        return specificReports;
+        logger.info("✅ Found {} {} reports for turbine {}", typedReports.size(), getReportName(), turbineId);
+        return typedReports;
     }
 
     public List<T> getByProjectId(Integer projectId) {
@@ -99,30 +101,27 @@ public abstract class BaseReportService<T extends Report> {
 
         List<Report> baseReports = reportRepository.findByProjectoIdAndTypeReport(projectId, getReportType());
 
-        List<T> specificReports = baseReports.stream()
-                .map(r -> getById(r.getReportId()).orElse(null))
-                .filter(r -> r != null)
+        List<T> typedReports = baseReports.stream()
+                .map(report -> {
+                    Optional<T> typedReport = findById(report.getReportId());
+                    return typedReport.orElse(null);
+                })
+                .filter(report -> report != null)
                 .collect(Collectors.toList());
 
-        logger.info("✅ Found {} {} reports", specificReports.size(), getReportName());
-        return specificReports;
+        logger.info("✅ Found {} {} reports", typedReports.size(), getReportName());
+        return typedReports;
     }
 
     @Transactional
     public void delete(Integer id) {
         logger.info("🗑️ Deleting {} ID: {}", getReportName(), id);
-
-        if (!getSpecificRepository().existsById(id)) {
-            throw new RuntimeException(getReportName() + " not found: " + id);
-        }
-
-        getSpecificRepository().deleteById(id);
-
+        deleteById(id);
         logger.info("✅ {} deleted successfully", getReportName());
     }
 
-    public boolean existsByTurbineId(Integer turbineId) {
-        List<T> existing = getByTurbineId(turbineId);
-        return !existing.isEmpty();
+    public List<T> getAll() {
+        logger.info("🔍 Fetching all {}", getReportName());
+        return findAll();
     }
 }

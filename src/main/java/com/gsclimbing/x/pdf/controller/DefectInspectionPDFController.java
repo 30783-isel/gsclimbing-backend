@@ -1,7 +1,7 @@
 package com.gsclimbing.x.pdf.controller;
 
 import com.gsclimbing.database.entity.DefectsInspectionReport;
-import com.gsclimbing.database.service.DefectsInspectionReportService;
+import com.gsclimbing.x.database.service.DefectsInspectionReportService;
 import com.gsclimbing.x.pdf.populaters.DefectsInspectionPopulaterR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +70,7 @@ public class DefectInspectionPDFController {
         try {
             // 1. Buscar relatório na base de dados
             DefectsInspectionReport report = defectsInspectionReportService
-                    .readDefectsInspectionReport(id);
+                    .getDefectsInspectionReportById(id);
 
             if (report == null) {
                 logger.error("❌ [DOWNLOAD] Relatório não encontrado: id={}", id);
@@ -136,7 +136,7 @@ public class DefectInspectionPDFController {
         try {
             // Buscar relatório
             DefectsInspectionReport report = defectsInspectionReportService
-                    .readDefectsInspectionReport(id);
+                    .getDefectsInspectionReportById(id);
 
             if (report == null) {
                 logger.error("❌ [PREVIEW] Relatório não encontrado: id={}", id);
@@ -189,7 +189,7 @@ public class DefectInspectionPDFController {
         try {
             // Buscar relatório
             DefectsInspectionReport report = defectsInspectionReportService
-                    .readDefectsInspectionReport(id);
+                    .getDefectsInspectionReportById(id);
 
             if (report == null) {
                 logger.error("❌ [INFO] Relatório não encontrado: id={}", id);
@@ -249,7 +249,7 @@ public class DefectInspectionPDFController {
 
         try {
             DefectsInspectionReport report = defectsInspectionReportService
-                    .readDefectsInspectionReport(id);
+                    .getDefectsInspectionReportById(id);
 
             if (report == null) {
                 logger.info("❌ [EXISTS] Relatório não encontrado: id={}", id);
