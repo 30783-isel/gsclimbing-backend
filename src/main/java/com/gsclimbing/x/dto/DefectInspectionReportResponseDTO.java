@@ -28,4 +28,20 @@ public class DefectInspectionReportResponseDTO {
     private Integer numberPictures;
     private String message;
     private boolean success;
+
+    // Campos adicionais
+    private String additionalField1Label;
+    private String additionalField1Text;
+    private String additionalField2Label;
+    private String additionalField2Text;
+    private String additionalField3Label;
+    private String additionalField3Text;
+    private String additionalField4Label;
+    private String additionalField4Text;
+    private String additionalField5Label;
+    private String additionalField5Text;
+    private String additionalField6Label;
+    private String additionalField6Text;
+    private String additionalField7Label;
+    private String additionalField7Text;
 }
