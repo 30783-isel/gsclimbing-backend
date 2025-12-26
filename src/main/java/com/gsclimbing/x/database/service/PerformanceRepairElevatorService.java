@@ -30,7 +30,7 @@ public class PerformanceRepairElevatorService extends BaseReportService<Performa
     protected int getReportType() {
         return REPORT_TYPE;
     }
-    
+
     @Override
     @SuppressWarnings("unchecked")
     protected JpaRepository<PerformanceReportRepairElevator, Integer> getSpecificRepository() {
