@@ -47,7 +47,9 @@ public abstract class BaseReportService<T extends Report> {
         report.setUuid(UUID.randomUUID().toString());
         report.setCreateDate(LocalDateTime.now());
         report.setModifiedDate(LocalDateTime.now());
-        report.setTypeReport(getReportType());
+        if (report.getTypeReport() == null) {
+            report.setTypeReport(getReportType());
+        }
         report.setStatus(Report.ReportStatus.DRAFT);
         report.setSyncStatus(Report.SyncStatus.SYNCED);
         report.setOfflineCreated(false);
