@@ -1,63 +1,52 @@
 package com.gsclimbing.x.adapter;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gsclimbing.database.entity.PerformanceReportRepairElevator;
 import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.x.database.service.PerformanceRepairElevatorService.PerformanceReportRepairElevatorSpecificData;
 import com.gsclimbing.x.dto.MobileReportDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * Adapter para Performance Report Repair Elevator
- * ✅ CORRIGIDO: Retorna PerformanceReportRepairElevator em vez de Report
+ * Estende BaseReportAdapter para reutilizar lógica comum
  */
 @Component
-public class PerformanceRepairElevatorAdapter {
+public class PerformanceRepairElevatorAdapter extends BaseReportAdapter<PerformanceReportRepairElevator> {
 
-    private static final Logger logger = LoggerFactory.getLogger(PerformanceRepairElevatorAdapter.class);
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    // ========================================
+    // CONVERSÃO DTO -> ENTIDADE (CREATE)
+    // ========================================
 
-    /**
-     * ✅ CORRIGIDO: Converter DTO mobile para entidade PerformanceReportRepairElevator (CREATE)
-     * MUDANÇA: Return type agora é PerformanceReportRepairElevator em vez de Report
-     */
-    public PerformanceReportRepairElevator toEntity(MobileReportDTO.ReportCreateUpdateDTO dto, Turbine turbine) throws Exception {
+    @Override
+    public PerformanceReportRepairElevator toEntity(
+            MobileReportDTO.ReportCreateUpdateDTO dto,
+            Turbine turbine) throws Exception {
+
         logger.info("📋 Converting DTO to Performance Report Repair Elevator entity");
 
-        JsonNode reportData = objectMapper.readTree(dto.getReportData());
-
-        // ✅ CORREÇÃO: Criar diretamente PerformanceReportRepairElevator!
+        // Criar nova entidade
         PerformanceReportRepairElevator report = new PerformanceReportRepairElevator();
 
-        // UUID e timestamps
-        report.setUuid(UUID.randomUUID().toString());
-        report.setCreateDate(LocalDateTime.now());
-        report.setModifiedDate(LocalDateTime.now());
+        // Preencher campos base usando método da classe pai
+        populateBaseFields(report, dto, turbine);
 
-        // Informações básicas do relatório
-        report.setSite(getStringValue(reportData, "site"));
-        report.setWtgNumber(getStringValue(reportData, "wtgNumber"));
-        report.setWtgType(getStringValue(reportData, "wtgType"));
-        report.setYearConstruction(getStringValue(reportData, "yearConstruction"));
+        // Preencher campos específicos
+        JsonNode reportData = objectMapper.readTree(dto.getReportData());
 
-        // IDs - turbineId vem do DTO, projectoId vem do reportData JSON
-        report.setTurbinaId(dto.getTurbineId() != null ? dto.getTurbineId().intValue() : null);
-        report.setProjectoId(reportData.has("projectoId") ? reportData.get("projectoId").asInt() : null);
-        report.setTurbine(turbine);
+        report.setReportNumber(getStringValue(reportData, "reportNumber"));
+        report.setInpectorsWorkers(getStringValue(reportData, "inspectors"));
+        report.setStatementOfwork(getStringValue(reportData, "statementOfwork"));
+        report.setWorkCompleted(getStringValue(reportData, "workCompleted"));
+        report.setTurbineOperable(getStringValue(reportData, "windturbineOperable"));
+        report.setPlaceDate(getStringValue(reportData, "placeDate"));
+        report.setResponsibleTechnician(getStringValue(reportData, "responsibleTechnician"));
+        report.setPerformanceReport(getStringValue(reportData, "performanceReport"));
 
-        // Status e permissões
-        report.setLocked("N");
-        report.setPermission2Edit("Y");
-        report.setInsertImagesChk("N");
-
-        // Campos adicionais (se existirem no DTO)
+        // Campos adicionais (1-7)
         for (int i = 1; i <= 7; i++) {
             JsonNode fieldNode = reportData.get("additionalField" + i);
             if (fieldNode != null && fieldNode.has("label") && fieldNode.has("value")) {
@@ -67,22 +56,26 @@ public class PerformanceRepairElevatorAdapter {
             }
         }
 
-        logger.info("✅ Entity created with UUID: {}", report.getUuid());
+        logger.info("✅ Performance Report entity created");
         return report;
     }
 
+    // ========================================
+    // EXTRAIR DADOS ESPECÍFICOS
+    // ========================================
+
     /**
-     * Extrair dados específicos do DTO para PerformanceReportRepairElevator
+     * Extrai dados específicos do DTO para a classe de dados específicos
      */
-    public PerformanceReportRepairElevatorSpecificData toSpecificData(MobileReportDTO.ReportCreateUpdateDTO dto) throws Exception {
-        logger.info("📋 Extracting specific data for Performance Report Repair Elevator");
+    public PerformanceReportRepairElevatorSpecificData toSpecificData(
+            MobileReportDTO.ReportCreateUpdateDTO dto) throws Exception {
+
+        logger.info("📋 Extracting specific data for Performance Report");
 
         JsonNode reportData = objectMapper.readTree(dto.getReportData());
-
         PerformanceReportRepairElevatorSpecificData specificData =
                 new PerformanceReportRepairElevatorSpecificData();
 
-        // Campos específicos do Performance Report Repair Elevator
         specificData.setReportNumber(getStringValue(reportData, "reportNumber"));
         specificData.setInpectorsWorkers(getStringValue(reportData, "inspectors"));
         specificData.setStatementOfwork(getStringValue(reportData, "statementOfwork"));
@@ -96,16 +89,22 @@ public class PerformanceRepairElevatorAdapter {
         return specificData;
     }
 
+    // ========================================
+    // ATUALIZAÇÃO (UPDATE)
+    // ========================================
+
     /**
-     * ✅ CORRIGIDO: Atualizar entidade existente com dados do DTO (UPDATE)
-     * MUDANÇA: Aceita PerformanceReportRepairElevator em vez de Report
+     * Atualiza entidade existente com dados do DTO
      */
-    public void updateEntity(PerformanceReportRepairElevator report, MobileReportDTO.ReportCreateUpdateDTO dto) throws Exception {
-        logger.info("📝 Updating Performance Report Repair Elevator entity: {}", report.getReportId());
+    public void updateEntity(
+            PerformanceReportRepairElevator report,
+            MobileReportDTO.ReportCreateUpdateDTO dto) throws Exception {
+
+        logger.info("📝 Updating Performance Report entity: {}", report.getReportId());
 
         JsonNode reportData = objectMapper.readTree(dto.getReportData());
 
-        // Atualizar campos básicos
+        // Atualizar campos base
         if (reportData.has("site")) {
             report.setSite(getStringValue(reportData, "site"));
         }
@@ -119,7 +118,7 @@ public class PerformanceRepairElevatorAdapter {
             report.setYearConstruction(getStringValue(reportData, "yearConstruction"));
         }
 
-        // Atualizar modified date
+        // Atualizar data de modificação
         report.setModifiedDate(LocalDateTime.now());
 
         // Atualizar campos adicionais
@@ -136,15 +135,16 @@ public class PerformanceRepairElevatorAdapter {
     }
 
     /**
-     * Atualizar dados específicos
+     * Atualiza dados específicos
      */
-    public void updateSpecificData(PerformanceReportRepairElevatorSpecificData specificData,
-                                   MobileReportDTO.ReportCreateUpdateDTO dto) throws Exception {
-        logger.info("📝 Updating specific data for Performance Report Repair Elevator");
+    public void updateSpecificData(
+            PerformanceReportRepairElevatorSpecificData specificData,
+            MobileReportDTO.ReportCreateUpdateDTO dto) throws Exception {
+
+        logger.info("📝 Updating specific data");
 
         JsonNode reportData = objectMapper.readTree(dto.getReportData());
 
-        // Atualizar campos específicos
         if (reportData.has("reportNumber")) {
             specificData.setReportNumber(getStringValue(reportData, "reportNumber"));
         }
@@ -173,22 +173,12 @@ public class PerformanceRepairElevatorAdapter {
         logger.info("✅ Specific data updated");
     }
 
-    // ====================================================================
-    // MÉTODOS AUXILIARES
-    // ====================================================================
+    // ========================================
+    // MÉTODOS AUXILIARES PRIVADOS
+    // ========================================
 
     /**
-     * Obter valor string de um JsonNode
-     */
-    private String getStringValue(JsonNode node, String fieldName) {
-        if (node.has(fieldName) && !node.get(fieldName).isNull()) {
-            return node.get(fieldName).asText();
-        }
-        return null;
-    }
-
-    /**
-     * Definir campo adicional
+     * Define campo adicional usando reflexão
      */
     private void setAdditionalField(Report report, int fieldNumber, String label, String text) {
         try {
