@@ -28,5 +28,7 @@ public interface ReportRepository extends CrudRepository<Report, Integer>, Query
 	 * Encontrar todos os relatórios de um projeto
 	 */
 	List<Report> findByProjectoId(Integer projectoId);
-	
+
+	List<Report> findByTurbinaIdAndTypeReport(Integer turbinaId, Integer typeReport);
+	List<Report> findByProjectoIdAndTypeReport(Integer projectoId, Integer typeReport);
 }
