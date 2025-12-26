@@ -1,7 +1,7 @@
 package com.gsclimbing.x.controller;
 
 import com.gsclimbing.database.entity.DefectsInspectionReport;
-import com.gsclimbing.database.service.DefectsInspectionReportService;
+import com.gsclimbing.x.database.service.DefectsInspectionReportService;
 import com.gsclimbing.x.adapter.DefectInspectionReportAdapter;
 import com.gsclimbing.x.database.service.BaseReportService;
 import com.gsclimbing.x.dto.MobileReportDTO;

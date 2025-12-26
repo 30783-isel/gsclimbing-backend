@@ -425,27 +425,24 @@ public abstract class BaseReportController<T extends Report> {
     /**
      * Associar fotos a um relatório
      */
-    protected int associatePhotosToReport(Integer reportId, List<String> photoIds) {
+    protected int associatePhotosToReport(Integer reportId, List<Long> photoIds) {
         int count = 0;
 
         logger.info("📸 Associating {} photos to report {}", photoIds.size(), reportId);
 
-        for (String fileId : photoIds) {
+        for (Long fileId : photoIds) {
             try {
-                FileData fileData = null;
-
-                // Tentar buscar por ID numérico
+                Optional<FileData> fileData = null;
                 try {
-                    Long numericId = Long.parseLong(fileId);
-                    fileData = fileService.readFileData(numericId.intValue());
-                } catch (NumberFormatException e) {
-                    // Tentar buscar por hash
-                    fileData = fileService.readFileByHash(fileId);
+                    fileData = fileService.readFile(fileId.intValue());
+                } catch (Exception e) {
+                    // Se falhar, tentar buscar por hash (string)
+                    fileData = Optional.ofNullable(fileService.readFileByHash(String.valueOf(fileId)));
                 }
 
-                if (fileData != null) {
+                if (fileData.isPresent()) {
                     count++;
-                    logger.info("   ✅ Photo {} associated", fileData.getFileId());
+                    logger.info("   ✅ Photo {} associated", fileData.get().getFileId());
                 }
 
             } catch (Exception e) {
@@ -503,8 +500,8 @@ public abstract class BaseReportController<T extends Report> {
             String reportUuid) {
 
         // Implementação básica - subclasses podem sobrescrever
-        if (dto.getPhotoFileIds() != null && !dto.getPhotoFileIds().isEmpty()) {
-            associatePhotosToReport(reportId, dto.getPhotoFileIds());
+        if (dto.getPhotoIds() != null && !dto.getPhotoIds().isEmpty()) {
+            associatePhotosToReport(reportId, dto.getPhotoIds());
         }
     }
 

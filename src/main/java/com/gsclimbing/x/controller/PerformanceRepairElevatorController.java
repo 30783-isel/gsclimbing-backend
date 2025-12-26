@@ -100,10 +100,10 @@ public class PerformanceRepairElevatorController extends BaseReportController<Pe
 
             // Associar fotos
             int numberPictures = 0;
-            if (dto.getPhotoFileIds() != null && !dto.getPhotoFileIds().isEmpty()) {
+            if (dto.getPhotoIds() != null && !dto.getPhotoIds().isEmpty()) {
                 numberPictures = associatePhotosToReport(
                         saved.getReportId(),
-                        dto.getPhotoFileIds()
+                        dto.getPhotoIds()
                 );
             }
 
