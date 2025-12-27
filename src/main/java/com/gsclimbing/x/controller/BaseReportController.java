@@ -475,19 +475,21 @@ public abstract class BaseReportController<T extends Report> {
      * Subclasses podem sobrescrever para campos específicos
      */
     protected void updateReportFromDTO(T report, MobileReportDTO.ReportCreateUpdateDTO dto) throws Exception {
-        JsonNode reportData = objectMapper.readTree(dto.getReportData());
+        if (dto.getReportData() != null && !dto.getReportData().isEmpty()) {
+            JsonNode reportData = objectMapper.readTree(dto.getReportData());
 
-        if (reportData.has("site")) {
-            report.setSite(reportData.get("site").asText());
-        }
-        if (reportData.has("wtgNumber")) {
-            report.setWtgNumber(reportData.get("wtgNumber").asText());
-        }
-        if (reportData.has("wtgType")) {
-            report.setWtgType(reportData.get("wtgType").asText());
-        }
-        if (reportData.has("yearConstruction")) {
-            report.setYearConstruction(reportData.get("yearConstruction").asText());
+            if (reportData.has("site")) {
+                report.setSite(reportData.get("site").asText());
+            }
+            if (reportData.has("wtgNumber")) {
+                report.setWtgNumber(reportData.get("wtgNumber").asText());
+            }
+            if (reportData.has("wtgType")) {
+                report.setWtgType(reportData.get("wtgType").asText());
+            }
+            if (reportData.has("yearConstruction")) {
+                report.setYearConstruction(reportData.get("yearConstruction").asText());
+            }
         }
 
         report.setModifiedDate(LocalDateTime.now());
