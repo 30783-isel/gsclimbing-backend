@@ -76,7 +76,7 @@ public class PerformanceRepairElevatorService extends BaseReportService<Performa
         logger.info("📝 Creating Performance Report Repair Elevator (COMPLETE)");
 
         // ✅ DEFINIR typeReport MANUALMENTE antes de criar
-        report.setTypeReport(REPORT_TYPE);
+        report.setReportType(REPORT_TYPE);
 
         // ✅ Preencher dados específicos
         populateSpecificData(report, specificData);

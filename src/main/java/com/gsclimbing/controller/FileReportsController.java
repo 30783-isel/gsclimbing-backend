@@ -115,8 +115,8 @@ public class FileReportsController {
 		for (Turbine turbine : turbineService.getTurbinesByProject(projectService.getProject(projectId))) {
 			Path path = Files.createTempDirectory(tmpDirOrig, turbine.getName() + " - ");
 			turbine.getListReports().stream().forEach(report -> {
-				byte[] byteArrayPDF = donwloadPdf(report.getTypeReport(), report.getReportId(), ReportEnum.values()[report.getTypeReport()].name() );
-				File file = new File(path.toString(), ReportEnum.values()[report.getTypeReport()].getLabel() + ".pdf");
+				byte[] byteArrayPDF = donwloadPdf(report.getReportType(), report.getReportId(), ReportEnum.values()[report.getReportType()].name() );
+				File file = new File(path.toString(), ReportEnum.values()[report.getReportType()].getLabel() + ".pdf");
 				try {
 					OutputStream outStream = new FileOutputStream(file);
 					outStream.write(byteArrayPDF);

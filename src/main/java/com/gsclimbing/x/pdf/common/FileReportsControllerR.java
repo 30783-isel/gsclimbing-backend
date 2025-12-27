@@ -287,7 +287,7 @@ public class FileReportsControllerR {
 
         for (Report report : turbine.getListReports()) {
             try {
-                ReportEnum reportType = ReportEnum.values()[report.getTypeReport()];
+                ReportEnum reportType = ReportEnum.values()[report.getReportType()];
                 String filename = reportType.getLabel() + ".pdf";
 
                 byte[] pdfBytes = generatePdfForReport(reportType, report.getReportId());

@@ -521,7 +521,7 @@ public abstract class BaseReportController<T extends Report> {
         response.put("yearConstruction", report.getYearConstruction());
         response.put("createDate", report.getCreateDate());
         response.put("modifiedDate", report.getModifiedDate());
-        response.put("typeReport", report.getTypeReport());
+        response.put("typeReport", report.getReportType());
         response.put("status", report.getStatus() != null ? report.getStatus().name() : null);
         return response;
     }
