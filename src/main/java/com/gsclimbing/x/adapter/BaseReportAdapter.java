@@ -41,6 +41,7 @@ public abstract class BaseReportAdapter<T extends Report> {
         report.setModifiedDate(LocalDateTime.now());
 
         logger.info("🔧 Setting typeReport from DTO: {}", dto.getReportType());
+        report.setTypeReport(dto.getReportType());
         report.setReportType(dto.getReportType());
         logger.info("✅ ReportType set to: {}", report.getReportType());
 

@@ -30,7 +30,7 @@ public class DefectInspectionReportAdapter extends BaseReportAdapter<DefectsInsp
 
         // Criar nova entidade
         DefectsInspectionReport report = new DefectsInspectionReport();
-
+        report.setTypeReport(0); // Defect Inspection Report
         // Preencher campos base usando método da classe pai
         populateBaseFields(report, dto, turbine);
 
