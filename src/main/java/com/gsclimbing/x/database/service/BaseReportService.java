@@ -57,11 +57,23 @@ public abstract class BaseReportService<T extends Report> {
 
         logger.info("🔍 TypeReport AFTER setting: {}", report.getReportType());
 
+        // ✅ ADICIONAR ESTES LOGS
+        logger.info("🔍 DEBUG CREATE: turbinaId={}, projectoId={}, typeReport={}",
+                report.getTurbinaId(),
+                report.getProjectoId(),
+                report.getReportType());
+
         report.setStatus(Report.ReportStatus.DRAFT);
         report.setSyncStatus(Report.SyncStatus.SYNCED);
         report.setOfflineCreated(false);
 
         T saved = save(report);
+
+        // ✅ ADICIONAR ESTE LOG
+        logger.info("✅ SAVED TO DB: reportId={}, turbinaId={}, typeReport={}",
+                saved.getReportId(),
+                saved.getTurbinaId(),
+                saved.getTypeReport());
 
         logger.info("✅ {} created successfully with ID: {}", getReportName(), saved.getReportId());
         return saved;

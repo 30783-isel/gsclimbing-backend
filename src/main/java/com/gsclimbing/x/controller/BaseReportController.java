@@ -186,7 +186,21 @@ public abstract class BaseReportController<T extends Report> {
         try {
             logger.info("📖 Fetching {} reports for turbine: {}", getEndpointName(), turbineId);
 
+            // ✅ ADICIONAR ESTE LOG
+            logger.info("🔍 DEBUG: Checking database for turbineId={}, typeReport={}",
+                    turbineId, getReportType());
+
             List<T> reports = getReportService().getByTurbineId(turbineId);
+
+            // ✅ ADICIONAR ESTE LOG
+            logger.info("🔍 DEBUG: Found {} reports in database", reports.size());
+            if (!reports.isEmpty()) {
+                logger.info("🔍 DEBUG: First report: ID={}, UUID={}, turbineId={}, typeReport={}",
+                        reports.get(0).getReportId(),
+                        reports.get(0).getUuid(),
+                        reports.get(0).getTurbinaId(),
+                        reports.get(0).getTypeReport());
+            }
 
             // Converter para DTOs
             List<Map<String, Object>> reportDTOs = reports.stream()
@@ -514,18 +528,28 @@ public abstract class BaseReportController<T extends Report> {
      * Converter entidade para DTO de resposta
      */
     protected Map<String, Object> convertToResponseDTO(T report) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("reportId", report.getReportId());
-        response.put("uuid", report.getUuid());
-        response.put("site", report.getSite());
-        response.put("wtgNumber", report.getWtgNumber());
-        response.put("wtgType", report.getWtgType());
-        response.put("yearConstruction", report.getYearConstruction());
-        response.put("createDate", report.getCreateDate());
-        response.put("modifiedDate", report.getModifiedDate());
-        response.put("typeReport", report.getReportType());
-        response.put("status", report.getStatus() != null ? report.getStatus().name() : null);
-        return response;
+        Map<String, Object> dto = new HashMap<>();
+
+        try {
+            dto.put("reportId", report.getReportId());
+            dto.put("uuid", report.getUuid());
+            dto.put("site", report.getSite());
+            dto.put("wtgNumber", report.getWtgNumber());
+            dto.put("wtgType", report.getWtgType());
+            dto.put("yearConstruction", report.getYearConstruction());
+            dto.put("turbinaId", report.getTurbinaId());
+            dto.put("projectoId", report.getProjectoId());
+            dto.put("typeReport", report.getTypeReport());
+            dto.put("createDate", report.getCreateDate());
+            dto.put("modifiedDate", report.getModifiedDate());
+            dto.put("status", report.getStatus() != null ? report.getStatus().name() : null);
+
+            logger.info("🔍 DEBUG DTO: reportId={}, turbinaId={}, typeReport={}",
+                    report.getReportId(), report.getTurbinaId(), report.getTypeReport());
+        } catch (Exception e) {
+            logger.error("❌ Error converting report to DTO", e);
+        }
+        return dto;
     }
 
     /**
