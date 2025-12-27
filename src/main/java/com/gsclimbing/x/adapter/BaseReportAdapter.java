@@ -40,6 +40,8 @@ public abstract class BaseReportAdapter<T extends Report> {
         report.setCreateDate(LocalDateTime.now());
         report.setModifiedDate(LocalDateTime.now());
 
+        report.setTypeReport(dto.getReportType());
+
         // Campos base comuns
         report.setSite(getStringValue(reportData, "site"));
         report.setWtgNumber(getStringValue(reportData, "wtgNumber"));
