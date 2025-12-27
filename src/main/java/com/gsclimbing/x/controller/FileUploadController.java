@@ -2,11 +2,13 @@ package com.gsclimbing.x.controller;
 
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.service.FileService;
+import com.gsclimbing.ftp.FTPDownloadFiles;
 import com.gsclimbing.ftp.FTPUploadFile;
 import com.gsclimbing.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -132,6 +134,41 @@ public class FileUploadController {
             logger.error("❌ Error uploading photo", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(createErrorResponse("Error uploading photo: " + e.getMessage()));
+        }
+    }
+
+
+    @GetMapping("/download/{hash}")
+    public ResponseEntity<byte[]> downloadPhoto(@PathVariable String hash) {
+        try {
+            logger.info("📥 Downloading photo with hash: {}", hash);
+
+            // Download do FTP
+            byte[] photoBytes = FTPDownloadFiles.downloadFile2FTPServer(hash);
+
+            if (photoBytes == null) {
+                logger.error("❌ Photo not found with hash: {}", hash);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            // Determinar o tipo de conteúdo (mime type)
+            FileData fileData = fileService.readFileByHash(hash);
+            String contentType = "image/jpeg"; // default
+
+            if (fileData != null && fileData.getMimeType() != null) {
+                contentType = fileData.getMimeType();
+            }
+
+            logger.info("✅ Photo downloaded successfully, size: {} bytes", photoBytes.length);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_TYPE, contentType)
+                    .header(HttpHeaders.CACHE_CONTROL, "max-age=3600")
+                    .body(photoBytes);
+
+        } catch (Exception e) {
+            logger.error("❌ Error downloading photo with hash: {}", hash, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
