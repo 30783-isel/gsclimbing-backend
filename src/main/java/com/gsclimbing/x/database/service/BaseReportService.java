@@ -44,12 +44,19 @@ public abstract class BaseReportService<T extends Report> {
     public T create(T report) {
         logger.info("📝 Creating {} - START", getReportName());
 
+        logger.info("🔍 TypeReport BEFORE create: {}", report.getTypeReport());
+
         report.setUuid(UUID.randomUUID().toString());
         report.setCreateDate(LocalDateTime.now());
         report.setModifiedDate(LocalDateTime.now());
+
         if (report.getTypeReport() == null) {
+            logger.warn("⚠️ TypeReport is NULL! Setting it now to: {}", getReportType());
             report.setTypeReport(getReportType());
         }
+
+        logger.info("🔍 TypeReport AFTER setting: {}", report.getTypeReport());
+
         report.setStatus(Report.ReportStatus.DRAFT);
         report.setSyncStatus(Report.SyncStatus.SYNCED);
         report.setOfflineCreated(false);

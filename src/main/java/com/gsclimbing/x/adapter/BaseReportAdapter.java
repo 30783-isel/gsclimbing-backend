@@ -40,9 +40,9 @@ public abstract class BaseReportAdapter<T extends Report> {
         report.setCreateDate(LocalDateTime.now());
         report.setModifiedDate(LocalDateTime.now());
 
-        if (report.getTypeReport() == null) {
-            report.setTypeReport(dto.getReportType());
-        }
+        logger.info("🔧 Setting typeReport from DTO: {}", dto.getReportType());
+        report.setTypeReport(dto.getReportType());
+        logger.info("✅ TypeReport set to: {}", report.getTypeReport());
 
         // Campos base comuns
         report.setSite(getStringValue(reportData, "site"));
