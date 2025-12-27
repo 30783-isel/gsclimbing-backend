@@ -407,7 +407,7 @@ public abstract class BaseReportController<T extends Report> {
                 photoList.add(photoData);
             }
 
-            logger.info("✅ Returning {} photos", photoList.size());
+            logger.info("✅ Returning {} photos   --- ", photoList.size());
             return ResponseEntity.ok(photoList);
 
         } catch (Exception e) {
