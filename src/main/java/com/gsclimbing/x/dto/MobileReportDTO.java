@@ -1,5 +1,6 @@
 package com.gsclimbing.x.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,7 +30,8 @@ public class MobileReportDTO {
         // Campos do relatório em JSON
         private String reportData; // JSON com todos os campos do relatório
         
-        // IDs das fotos já carregadas
+        // TODO Verificar todos o JsonAlias
+        @JsonAlias({"photoFileIds"})
         private List<Long> photoIds;
         private LocalDateTime inspectedBy;
 
