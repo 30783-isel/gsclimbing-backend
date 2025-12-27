@@ -252,9 +252,8 @@ public class PerformanceRepairElevatorController extends BaseReportController<Pe
      */
     @GetMapping("/performance-repair-elevator/{id}/photos")
     public ResponseEntity<?> getPerformanceRepairElevatorPhotos(@PathVariable Integer id) {
-
         logger.info("📸 GET /performance-repair-elevator/{}/photos called", id);
-        return getPhotos(id); // Método da classe base
+        return getPhotos(id); // ← Delega para BaseReportController
     }
 
     /**

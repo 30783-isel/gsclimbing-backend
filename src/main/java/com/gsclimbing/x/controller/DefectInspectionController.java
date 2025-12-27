@@ -138,10 +138,9 @@ public class DefectInspectionController extends BaseReportController<DefectsInsp
      * Obter fotos de um Defect Inspection Report
      */
     @GetMapping("/defect-inspection/{id}/photos")
-    public ResponseEntity<?> getDefectInspectionReportPhotos(@PathVariable Integer id) {
-
+    public ResponseEntity<?> getDefectInspectionPhotos(@PathVariable Integer id) {
         logger.info("📸 GET /defect-inspection/{}/photos called", id);
-        return getPhotos(id); // Método da classe base
+        return getPhotos(id); // ← Delega para BaseReportController
     }
 
     /**

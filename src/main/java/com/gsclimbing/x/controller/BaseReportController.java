@@ -354,7 +354,6 @@ public abstract class BaseReportController<T extends Report> {
     // ========================================
     // GET PHOTOS - Obter fotos de um relatório
     // ========================================
-
     public ResponseEntity<?> getPhotos(Integer reportId) {
         try {
             logger.info("📸 Fetching photos for report {}", reportId);
@@ -368,13 +367,29 @@ public abstract class BaseReportController<T extends Report> {
 
             T report = reportOpt.get();
 
+            // ✅ LOG DO UUID
+            logger.info("🔍 DEBUG: Report UUID = {}", report.getUuid());
+
             // Buscar fotos pelo UUID
             List<FileData> photos = fileService.readFile(report.getUuid());
+
+            // ✅ LOG ANTES DE FILTRAR
+            logger.info("🔍 DEBUG: Found {} photos BEFORE filter", photos.size());
+
+            if (!photos.isEmpty()) {
+                logger.info("🔍 DEBUG: First photo - fileId={}, hash={}, isDeleted={}",
+                        photos.get(0).getFileId(),
+                        photos.get(0).getHash(),
+                        photos.get(0).getIsDeleted());
+            }
 
             // Filtrar apenas fotos ativas
             photos = photos.stream()
                     .filter(FileData::isActive)
                     .collect(Collectors.toList());
+
+            // ✅ LOG DEPOIS DE FILTRAR
+            logger.info("🔍 DEBUG: Found {} photos AFTER filter (active only)", photos.size());
 
             // Converter para DTOs
             List<Map<String, Object>> photoList = new ArrayList<>();
@@ -597,10 +612,11 @@ public abstract class BaseReportController<T extends Report> {
      */
     private String captureCurrentReportData(T report) {
         try {
-            // Usar reflection para obter getReportData()
-            return (String) report.getClass().getMethod("getReportData").invoke(report);
+            // ✅ SOLUÇÃO: Serializar o objeto completo para JSON
+            return objectMapper.writeValueAsString(report);
         } catch (Exception e) {
-            logger.error("Error capturing reportData", e);
+            logger.error("❌ Error capturing reportData", e);
+            // ✅ Retornar JSON vazio em vez de lançar exception
             return "{}";
         }
     }
