@@ -2,9 +2,12 @@ package com.gsclimbing.x.database.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gsclimbing.database.entity.FileData;
+import com.gsclimbing.database.service.FileService;
 import com.gsclimbing.x.util.FieldChange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,6 +21,10 @@ public class ReportComparisonService {
 
     private static final Logger logger = LoggerFactory.getLogger(ReportComparisonService.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    // ✅ NOVO: Injetar FileService para obter hash das fotos
+    @Autowired
+    private FileService fileService;
 
     /**
      * Compara dois JSONs de reportData e retorna lista de campos alterados
@@ -100,7 +107,11 @@ public class ReportComparisonService {
 
     /**
      * Compara listas de IDs de fotos antigas vs novas
-     * ✅ CORREÇÃO: Ignora ordem, detecta adições e remoções reais
+     * ✅ CORREÇÃO COMPLETA: Ignora ordem, detecta adições/remoções e guarda hash
+     *
+     * @param oldPhotoIds Lista de IDs de fotos antigas
+     * @param newPhotoIds Lista de IDs de fotos novas
+     * @return Lista de alterações com hash incluído no valor
      */
     public List<FieldChange> comparePhotos(List<Long> oldPhotoIds, List<Long> newPhotoIds) {
         List<FieldChange> changes = new ArrayList<>();
@@ -117,27 +128,61 @@ public class ReportComparisonService {
         Set<Long> addedPhotos = new HashSet<>(newSet);
         addedPhotos.removeAll(oldSet);
 
-        // Registar remoções
+        // ✅ NOVO: Registar remoções COM HASH
         for (Long photoId : removedPhotos) {
+            String photoValue = buildPhotoValue(photoId);
+
             changes.add(new FieldChange(
                     "photo_removed",
-                    "Foto ID: " + photoId,
+                    photoValue,  // ✅ "Foto ID: 123|abc123hash"
                     ""
             ));
-            logger.info("📸 Foto removida: {}", photoId);
+            logger.info("📸 Foto removida: {} ({})", photoId, photoValue);
         }
 
-        // Registar adições
+        // ✅ NOVO: Registar adições COM HASH
         for (Long photoId : addedPhotos) {
+            String photoValue = buildPhotoValue(photoId);
+
             changes.add(new FieldChange(
                     "photo_added",
                     "",
-                    "Foto ID: " + photoId
+                    photoValue  // ✅ "Foto ID: 123|abc123hash"
             ));
-            logger.info("📸 Foto adicionada: {}", photoId);
+            logger.info("📸 Foto adicionada: {} ({})", photoId, photoValue);
         }
 
         return changes;
+    }
+
+    /**
+     * ✅ NOVO: Constrói o valor da foto no formato "Foto ID: 123|hash"
+     *
+     * @param photoId ID da foto
+     * @return String no formato "Foto ID: 123|hash" ou "Foto ID: 123|unknown" se não encontrar
+     */
+    private String buildPhotoValue(Long photoId) {
+        try {
+            // Buscar FileData para obter o hash
+            Optional<FileData> fileDataOpt = fileService.readFile(photoId.intValue());
+
+            if (fileDataOpt.isPresent()) {
+                FileData fileData = fileDataOpt.get();
+                String hash = fileData.getHash();
+
+                if (hash != null && !hash.isEmpty()) {
+                    // ✅ Formato esperado pelo Frontend: "Foto ID: 123|abc123hash"
+                    return "Foto ID: " + photoId + "|" + hash;
+                }
+            }
+
+            logger.warn("⚠️ Hash não encontrado para foto ID {}, usando 'unknown'", photoId);
+            return "Foto ID: " + photoId + "|unknown";
+
+        } catch (Exception e) {
+            logger.error("❌ Erro ao buscar hash da foto {}: {}", photoId, e.getMessage());
+            return "Foto ID: " + photoId + "|error";
+        }
     }
 
     /**

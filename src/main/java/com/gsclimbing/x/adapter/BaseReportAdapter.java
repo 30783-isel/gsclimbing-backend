@@ -7,6 +7,8 @@ import com.gsclimbing.database.entity.Turbine;
 import com.gsclimbing.x.dto.MobileReportDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -20,7 +22,9 @@ import java.util.UUID;
 public abstract class BaseReportAdapter<T extends Report> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
-    protected final ObjectMapper objectMapper = new ObjectMapper();
+    protected final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     /**
      * Converte DTO mobile completo para entidade

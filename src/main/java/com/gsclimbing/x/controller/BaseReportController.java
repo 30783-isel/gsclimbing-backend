@@ -1,7 +1,10 @@
 package com.gsclimbing.x.controller;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gsclimbing.database.entity.FileData;
 import com.gsclimbing.database.entity.Report;
 import com.gsclimbing.database.entity.Turbine;
@@ -48,7 +51,22 @@ public abstract class BaseReportController<T extends Report> {
     @Autowired
     protected ReportComparisonService comparisonService;
 
-    protected final ObjectMapper objectMapper = new ObjectMapper();
+    protected final ObjectMapper objectMapper;
+
+    // ✅ Construtor para configurar ObjectMapper
+    public BaseReportController() {
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        // ✅ Ignorar o campo historyList ao serializar (evita recursão infinita)
+        this.objectMapper.addMixIn(Report.class, ReportMixIn.class);
+    }
+
+    // ✅ MixIn para ignorar historyList
+    @JsonIgnoreProperties({"historyList"})
+    private abstract static class ReportMixIn {
+    }
 
     // ========================================
     // MÉTODOS ABSTRATOS (cada controller implementa)
@@ -186,13 +204,11 @@ public abstract class BaseReportController<T extends Report> {
         try {
             logger.info("📖 Fetching {} reports for turbine: {}", getEndpointName(), turbineId);
 
-            // ✅ ADICIONAR ESTE LOG
             logger.info("🔍 DEBUG: Checking database for turbineId={}, typeReport={}",
                     turbineId, getReportType());
 
             List<T> reports = getReportService().getByTurbineId(turbineId);
 
-            // ✅ ADICIONAR ESTE LOG
             logger.info("🔍 DEBUG: Found {} reports in database", reports.size());
             if (!reports.isEmpty()) {
                 logger.info("🔍 DEBUG: First report: ID={}, UUID={}, turbineId={}, typeReport={}",
@@ -367,13 +383,11 @@ public abstract class BaseReportController<T extends Report> {
 
             T report = reportOpt.get();
 
-            // ✅ LOG DO UUID
             logger.info("🔍 DEBUG: Report UUID = {}", report.getUuid());
 
             // Buscar fotos pelo UUID
             List<FileData> photos = fileService.readFile(report.getUuid());
 
-            // ✅ LOG ANTES DE FILTRAR
             logger.info("🔍 DEBUG: Found {} photos BEFORE filter", photos.size());
 
             if (!photos.isEmpty()) {
@@ -388,7 +402,6 @@ public abstract class BaseReportController<T extends Report> {
                     .filter(FileData::isActive)
                     .collect(Collectors.toList());
 
-            // ✅ LOG DEPOIS DE FILTRAR
             logger.info("🔍 DEBUG: Found {} photos AFTER filter (active only)", photos.size());
 
             // Converter para DTOs
@@ -423,30 +436,64 @@ public abstract class BaseReportController<T extends Report> {
 
     public ResponseEntity<?> getHistory(Long reportId) {
         try {
-            logger.info("📜 Getting history for report {}", reportId);
-
             List<ReportHistory> history = historyService.getReportHistory(reportId);
 
             List<MobileReportDTO.ReportHistoryDTO> historyDTOs = history.stream()
-                    .map(h -> MobileReportDTO.ReportHistoryDTO.builder()
-                            .id(h.getId())
-                            .changedBy(h.getChangedBy())
-                            .changedAt(h.getChangedAt())
-                            .action(h.getAction().name())
-                            .fieldName(h.getFieldName())
-                            .oldValue(h.getOldValue())
-                            .newValue(h.getNewValue())
-                            .description(h.getDescription())
-                            .build())
+                    .map(h -> {
+                        String oldValue = h.getOldValue();
+                        String newValue = h.getNewValue();
+
+                        // ✅ Processar valores de fotos
+                        if ("photo_added".equals(h.getFieldName()) ||
+                                "photo_removed".equals(h.getFieldName())) {
+
+                            boolean oldValueHasHash = oldValue != null && oldValue.contains("|");
+                            boolean newValueHasHash = newValue != null && newValue.contains("|");
+
+                            if (!oldValueHasHash && oldValue != null && oldValue.startsWith("Foto ID: ")) {
+                                oldValue = addHashToPhotoValue(oldValue);
+                            }
+
+                            if (!newValueHasHash && newValue != null && newValue.startsWith("Foto ID: ")) {
+                                newValue = addHashToPhotoValue(newValue);
+                            }
+                        }
+
+                        return MobileReportDTO.ReportHistoryDTO.builder()
+                                .id(h.getId())
+                                .changedBy(h.getChangedBy())
+                                .changedAt(h.getChangedAt())
+                                .action(h.getAction().name())
+                                .fieldName(h.getFieldName())
+                                .oldValue(oldValue)
+                                .newValue(newValue)
+                                .description(h.getDescription())
+                                .build();
+                    })
                     .collect(Collectors.toList());
 
-            logger.info("✅ Returning {} history entries", historyDTOs.size());
             return ResponseEntity.ok(historyDTOs);
-
         } catch (Exception e) {
-            logger.error("❌ Error getting history for report {}", reportId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(errorResponse("Error getting history: " + e.getMessage()));
+        }
+    }
+
+    // Método auxiliar
+    private String addHashToPhotoValue(String photoValue) {
+        try {
+            String photoIdStr = photoValue.replace("Foto ID: ", "").trim();
+            Integer photoId = Integer.parseInt(photoIdStr);
+
+            Optional<FileData> fileData = fileService.readFile(photoId);
+
+            if (fileData.isPresent() && fileData.get().getHash() != null) {
+                return "Foto ID: " + photoId + "|" + fileData.get().getHash();
+            }
+            return photoValue;
+        } catch (Exception e) {
+            logger.error("Erro ao adicionar hash: {}", e.getMessage());
+            return photoValue;
         }
     }
 
@@ -491,11 +538,23 @@ public abstract class BaseReportController<T extends Report> {
      */
     protected Map<String, String> captureOldValues(T report) {
         Map<String, String> oldValues = new HashMap<>();
+
+        // Guardar campos individuais (opcional, pode ser útil)
         oldValues.put("site", report.getSite());
         oldValues.put("wtgNumber", report.getWtgNumber());
         oldValues.put("wtgType", report.getWtgType());
         oldValues.put("yearConstruction", report.getYearConstruction());
-        // Adicionar outros campos conforme necessário
+
+        // ✅ CRÍTICO: Guardar JSON completo do relatório
+        try {
+            String reportJson = objectMapper.writeValueAsString(report);
+            oldValues.put("reportData", reportJson);
+            logger.debug("✅ Old report data captured successfully");
+        } catch (Exception e) {
+            logger.error("❌ Erro ao capturar reportData antigo", e);
+            oldValues.put("reportData", "{}");
+        }
+
         return oldValues;
     }
 
@@ -612,11 +671,9 @@ public abstract class BaseReportController<T extends Report> {
      */
     private String captureCurrentReportData(T report) {
         try {
-            // ✅ SOLUÇÃO: Serializar o objeto completo para JSON
             return objectMapper.writeValueAsString(report);
         } catch (Exception e) {
             logger.error("❌ Error capturing reportData", e);
-            // ✅ Retornar JSON vazio em vez de lançar exception
             return "{}";
         }
     }
