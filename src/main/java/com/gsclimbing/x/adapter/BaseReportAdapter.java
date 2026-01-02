@@ -30,7 +30,7 @@ public abstract class BaseReportAdapter<T extends Report> {
      * Converte DTO mobile completo para entidade
      * Cada adapter implementa isto
      */
-    public abstract T toEntity(MobileReportDTO.ReportCreateUpdateDTO dto, Turbine turbine) throws Exception;
+
 
     /**
      * Preenche campos base comuns a todos os relatórios
@@ -90,5 +90,8 @@ public abstract class BaseReportAdapter<T extends Report> {
         return node.has(fieldName) && !node.get(fieldName).isNull()
                 ? node.get(fieldName).asBoolean()
                 : null;
+    }
+
+    public void updateEntity(T report, MobileReportDTO.ReportCreateUpdateDTO dto) {
     }
 }
